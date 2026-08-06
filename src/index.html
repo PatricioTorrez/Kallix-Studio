@@ -10,7 +10,15 @@
         content="Kallix Studio es un estudio de software que diseña y construye aplicaciones web, apps móviles, plataformas SaaS, chatbots con IA y automatización de procesos para empresas.">
   <meta name="author" content="Kallix Studio">
   <meta name="theme-color" content="#04161C">
-  <meta name="color-scheme" content="dark">
+  <meta name="color-scheme" content="dark light">
+  <!-- Antes del primer pintado: quien ya eligió claro no debe ver un fogonazo
+       oscuro. El visitante nuevo no parpadea, porque oscuro es el default. -->
+  <script>
+    try {
+      var t = localStorage.getItem('kx-theme');
+      if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+    } catch (e) {}
+  </script>
   <link rel="canonical" href="https://kallix.studio/">
 
   <meta property="og:type" content="website">
