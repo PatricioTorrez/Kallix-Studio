@@ -1,0 +1,457 @@
+:host {
+  display: block;
+}
+
+.hero {
+  position: relative;
+  overflow: clip;
+  padding-block: clamp(56px, 9vw, 96px) clamp(72px, 10vw, 128px);
+}
+
+/* --- Fondo --------------------------------------------------------------- */
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Sol retro-futurista: disco cortado por bandas, el guiño ochentero de la marca. */
+.sun {
+  position: absolute;
+  top: -12%;
+  left: 50%;
+  width: min(760px, 92vw);
+  aspect-ratio: 1;
+  translate: -50% 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 45%, rgba(231, 168, 78, 0.42), rgba(217, 108, 44, 0.14) 58%, transparent 70%);
+  mask-image: repeating-linear-gradient(180deg, #000 0 10px, transparent 10px 15px);
+  -webkit-mask-image: repeating-linear-gradient(180deg, #000 0 10px, transparent 10px 15px);
+  opacity: 0.75;
+}
+
+.aurora--teal {
+  top: 18%;
+  left: -12%;
+  width: 46vw;
+  height: 46vw;
+  background: radial-gradient(circle, rgba(62, 155, 148, 0.35), transparent 65%);
+  animation: aurora-drift 32s var(--ease-in-out) infinite;
+}
+
+.aurora--amber {
+  right: -14%;
+  bottom: -18%;
+  width: 42vw;
+  height: 42vw;
+  background: radial-gradient(circle, rgba(231, 168, 78, 0.22), transparent 65%);
+  animation: aurora-drift 38s var(--ease-in-out) infinite reverse;
+}
+
+.scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(180deg, rgba(4, 22, 28, 0) 0 3px, rgba(4, 22, 28, 0.35) 3px 4px);
+  opacity: 0.35;
+}
+
+/* --- Contenido ----------------------------------------------------------- */
+
+.inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: clamp(2.5rem, 6vw, 4rem);
+  align-items: center;
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+/* El hero siempre está en pantalla al cargar: observarlo con IntersectionObserver
+   solo retrasaría el LCP. Entra escalonado con la carga y ya. */
+.copy > *,
+.stage {
+  animation: hero-in 640ms var(--ease-out) backwards;
+}
+
+.copy > *:nth-child(2) {
+  animation-delay: 60ms;
+}
+
+.copy > *:nth-child(3) {
+  animation-delay: 120ms;
+}
+
+.copy > *:nth-child(4) {
+  animation-delay: 180ms;
+}
+
+.copy > *:nth-child(5) {
+  animation-delay: 240ms;
+}
+
+.stage {
+  animation-delay: 140ms;
+}
+
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.9rem 0.4rem 0.75rem;
+  border: 1px solid var(--stroke-strong);
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: var(--teal-300);
+}
+
+.pulse {
+  position: relative;
+  width: 7px;
+  height: 7px;
+  flex: none;
+  background: var(--teal-400);
+}
+
+.pulse::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  animation: pulse-ring 2.4s var(--ease-out) infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(2.8);
+  }
+}
+
+.display {
+  max-width: 16ch;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(1.25rem, 4vw, 2.5rem);
+  margin: 0.5rem 0 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--stroke);
+  width: 100%;
+}
+
+.trust-item dt {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--sand-200);
+}
+
+.trust-item dd {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--text-dim);
+}
+
+/* --- Escenario ----------------------------------------------------------- */
+
+.stage {
+  position: relative;
+  justify-self: center;
+  width: min(100%, 520px);
+  /* La animación de entrada la fija el bloque de arriba; aquí solo la geometría. */
+}
+
+.window {
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-lg);
+}
+
+.window-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.1rem;
+  border-bottom: 1px solid var(--stroke);
+}
+
+.dots {
+  display: flex;
+  gap: 5px;
+}
+
+.dots i {
+  width: 8px;
+  height: 8px;
+  background: var(--surface-3);
+}
+
+.dots i:first-child {
+  background: var(--rust-500);
+}
+
+.dots i:nth-child(2) {
+  background: var(--amber-500);
+}
+
+.dots i:last-child {
+  background: var(--teal-500);
+}
+
+.window-title {
+  color: var(--text-dim);
+}
+
+.live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--teal-300);
+}
+
+.window-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.4rem;
+}
+
+.metric {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.metric-label {
+  color: var(--text-dim);
+}
+
+.metric-value {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--amber-500);
+}
+
+.chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.6rem;
+  height: 116px;
+  padding: 0.75rem;
+  border: 1px solid var(--stroke);
+  border-radius: var(--r-md);
+  background: rgba(4, 22, 28, 0.45);
+}
+
+.bar {
+  flex: 1;
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(180deg, var(--teal-400), rgba(62, 155, 148, 0.25));
+  transform-origin: bottom;
+  /* `both`: la barra debe quedarse arriba al terminar, no volver a cero. */
+  animation: bar-in 700ms var(--ease-out) both;
+}
+
+@keyframes bar-in {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+.bar:last-child {
+  background: linear-gradient(180deg, var(--amber-500), rgba(231, 168, 78, 0.3));
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0;
+}
+
+.chip {
+  padding: 0.28rem 0.65rem;
+  border: 1px solid var(--stroke);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.deploy {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--stroke);
+  color: var(--text-dim);
+}
+
+.deploy kx-icon {
+  color: var(--teal-400);
+}
+
+/* --- Sprites flotantes ---------------------------------------------------- */
+
+.sprite {
+  position: absolute;
+  width: 42px;
+  filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.55));
+}
+
+.sprite-float {
+  display: block;
+  animation: float 7s var(--ease-in-out) infinite;
+}
+
+.sprite--1 {
+  top: -26px;
+  right: 8%;
+  width: 52px;
+}
+
+.sprite--2 {
+  bottom: -22px;
+  left: -14px;
+  width: 46px;
+}
+
+.sprite--2 .sprite-float {
+  animation-duration: 8.5s;
+  animation-delay: -2s;
+}
+
+.sprite--3 {
+  top: 34%;
+  right: -26px;
+  width: 30px;
+}
+
+.sprite--3 .sprite-float {
+  animation-duration: 6s;
+  animation-delay: -1s;
+}
+
+.sprite--4 {
+  bottom: 18%;
+  left: -34px;
+  width: 34px;
+}
+
+.sprite--4 .sprite-float {
+  animation-duration: 9s;
+  animation-delay: -4s;
+}
+
+@keyframes float {
+  50% {
+    transform: translate3d(0, -12px, 0);
+  }
+}
+
+/* --- Pista de scroll ------------------------------------------------------ */
+
+.scroll-hint {
+  position: relative;
+  z-index: 1;
+  display: none;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: clamp(2rem, 5vw, 3.5rem);
+  padding-inline: var(--gutter);
+  color: var(--text-dim);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.scroll-hint .line {
+  width: 76px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--stroke-strong), transparent);
+  transform-origin: left;
+  animation: sweep 3.4s var(--ease-in-out) infinite;
+}
+
+@keyframes sweep {
+  50% {
+    transform: scaleX(1.5);
+  }
+}
+
+/* --- Adaptativo ---------------------------------------------------------- */
+
+@media (min-width: 620px) {
+  .sprite--2 {
+    left: -34px;
+  }
+}
+
+@media (min-width: 1000px) {
+  .inner {
+    grid-template-columns: 1.02fr 0.98fr;
+  }
+
+  .scroll-hint {
+    display: flex;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sprite-float,
+  .pulse::after,
+  .scroll-hint .line {
+    animation: none;
+  }
+
+  .copy > *,
+  .stage,
+  .bar {
+    animation-delay: 0ms !important;
+  }
+}

@@ -1,0 +1,350 @@
+:host {
+  display: block;
+  position: relative;
+  overflow: clip;
+}
+
+.glow {
+  position: absolute;
+  right: -10%;
+  bottom: -20%;
+  width: min(720px, 90vw);
+  height: 520px;
+  background: radial-gradient(ellipse at center, rgba(231, 168, 78, 0.14), transparent 66%);
+  pointer-events: none;
+}
+
+.layout {
+  display: grid;
+  gap: clamp(2rem, 5vw, 3.5rem);
+  align-items: start;
+}
+
+.aside {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* --- Canales ------------------------------------------------------------- */
+
+.channels {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.channels a,
+.channels .static {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--stroke);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  transition:
+    transform var(--d-base) var(--ease-out),
+    border-color var(--d-base) ease,
+    background-color var(--d-base) ease;
+}
+
+.ch-icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex: none;
+  border: 1px solid var(--stroke-strong);
+  border-radius: var(--r-sm);
+  color: var(--teal-300);
+  transition: color var(--d-base) ease;
+}
+
+.ch-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.ch-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.ch-value {
+  font-size: 0.94rem;
+  overflow-wrap: anywhere;
+}
+
+.ch-go {
+  margin-left: auto;
+  color: var(--text-dim);
+  transition: transform var(--d-base) var(--ease-out);
+}
+
+/* --- Formulario ----------------------------------------------------------- */
+
+.form-wrap {
+  padding: clamp(1.5rem, 3.5vw, 2.25rem);
+  border-radius: var(--r-xl);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.row {
+  display: grid;
+  gap: 1.1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+label {
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.optional {
+  color: var(--text-dim);
+  font-weight: 400;
+}
+
+input[type='text'],
+input[type='email'],
+textarea {
+  width: 100%;
+  padding: 0.8rem 0.95rem;
+  border: 1px solid var(--stroke);
+  border-radius: var(--r-sm);
+  background: rgba(4, 22, 28, 0.55);
+  color: var(--text);
+  font-size: 0.95rem;
+  transition:
+    border-color var(--d-base) ease,
+    background-color var(--d-base) ease,
+    box-shadow var(--d-base) ease;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(120, 151, 151, 0.7);
+}
+
+input:focus-visible,
+textarea:focus-visible {
+  outline: none;
+  border-color: var(--teal-500);
+  box-shadow: 0 0 0 3px rgba(62, 155, 148, 0.22);
+}
+
+[aria-invalid='true'] {
+  border-color: rgba(217, 108, 44, 0.7);
+}
+
+.error {
+  font-size: 0.8rem;
+  color: #eda274;
+}
+
+.error--block {
+  padding: 0.75rem 0.9rem;
+  border: 1px solid rgba(217, 108, 44, 0.4);
+  border-radius: var(--r-sm);
+  background: rgba(217, 108, 44, 0.12);
+}
+
+/* --- Chips --------------------------------------------------------------- */
+
+.chips-group {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  margin: 0;
+}
+
+legend {
+  margin-bottom: 0.55rem;
+  padding: 0;
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.chip {
+  position: relative;
+}
+
+.chip input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.chip span {
+  display: block;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid var(--stroke);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    transform var(--d-press) var(--ease-out),
+    background-color var(--d-base) ease,
+    border-color var(--d-base) ease,
+    color var(--d-base) ease;
+}
+
+.chip span:active {
+  transform: scale(0.96);
+}
+
+.chip input:checked + span {
+  background: var(--amber-500);
+  border-color: transparent;
+  color: var(--accent-ink);
+  font-weight: 500;
+}
+
+.chip input:focus-visible + span {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* --- Privacidad y envío --------------------------------------------------- */
+
+.privacy {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.privacy input {
+  width: 18px;
+  height: 18px;
+  margin-top: 0.15rem;
+  flex: none;
+  accent-color: var(--amber-500);
+  cursor: pointer;
+}
+
+.submit {
+  margin-top: 0.35rem;
+}
+
+/* El desenfoque tapa la costura del cambio de texto al enviar. */
+.submit-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  transition:
+    filter var(--d-base) ease,
+    opacity var(--d-base) ease;
+}
+
+.submit-label.is-busy {
+  filter: blur(2px);
+  opacity: 0.75;
+}
+
+.disclaimer {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+/* --- Éxito ---------------------------------------------------------------- */
+
+.success {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding-block: 1rem;
+  animation: success-in 320ms var(--ease-out) backwards;
+}
+
+@keyframes success-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+.success-sprite {
+  display: block;
+  width: 40px;
+}
+
+.success p {
+  color: var(--text-muted);
+}
+
+.success .btn {
+  margin-top: 0.5rem;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .channels a:hover {
+    transform: translate3d(0, -2px, 0);
+    border-color: var(--stroke-strong);
+    background: var(--surface-2);
+  }
+
+  .channels a:hover .ch-icon {
+    color: var(--amber-500);
+  }
+
+  .channels a:hover .ch-go {
+    transform: translate3d(2px, -2px, 0);
+  }
+
+  .chip input:not(:checked) + span:hover {
+    border-color: var(--stroke-strong);
+    background: var(--surface-3);
+    color: var(--text);
+  }
+}
+
+@media (min-width: 560px) {
+  .row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 980px) {
+  .layout {
+    grid-template-columns: 0.9fr 1.1fr;
+  }
+
+  .aside {
+    position: sticky;
+    top: calc(var(--header-h) + 32px);
+  }
+}

@@ -1,0 +1,54 @@
+<section class="section" id="modelos">
+  <div class="container">
+    <kx-section-header
+      align="center"
+      eyebrow="Modelos de trabajo"
+      lede="Tres formas de colaborar. Elegimos juntos la que se ajusta a tu momento; los precios son puntos de partida, no cajas cerradas."
+    >
+      <h2 class="h2">Cómo <span class="gradient-text">trabajamos juntos</span>.</h2>
+    </kx-section-header>
+
+    <ul class="grid">
+      @for (plan of plans; track plan.id) {
+        <li
+          class="plan card card--glass"
+          [class.is-highlighted]="plan.highlighted"
+          kxReveal="up"
+          [kxRevealDelay]="$index * 70"
+        >
+          @if (plan.highlighted) {
+            <span class="ribbon mono">Más elegido</span>
+          }
+
+          <header class="plan-head">
+            <h3 class="h3">{{ plan.name }}</h3>
+            <p class="desc">{{ plan.description }}</p>
+          </header>
+
+          <p class="price">
+            <span class="amount">{{ plan.price }}</span>
+            <span class="unit mono">{{ plan.unit }}</span>
+          </p>
+
+          <ul class="includes">
+            @for (item of plan.includes; track item) {
+              <li>
+                <kx-icon name="check" [size]="15" />
+                {{ item }}
+              </li>
+            }
+          </ul>
+
+          <a class="btn" [class.btn--primary]="plan.highlighted" [class.btn--secondary]="!plan.highlighted" href="#contacto">
+            {{ plan.cta }}
+            <kx-icon class="btn__arrow" name="arrowRight" [size]="16" />
+          </a>
+        </li>
+      }
+    </ul>
+
+    <p class="note" kxReveal="up">
+      Todos los modelos incluyen diseño UI/UX, código en tu repositorio y 30 días de garantía sobre lo entregado.
+    </p>
+  </div>
+</section>

@@ -1,0 +1,86 @@
+:host {
+  display: block;
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.85rem;
+  margin: clamp(2rem, 5vw, 3rem) 0 0;
+}
+
+.tech {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 1rem 1.1rem;
+  border-radius: var(--r-md);
+  transition:
+    transform var(--d-base) var(--ease-out),
+    border-color var(--d-base) ease,
+    background-color var(--d-base) ease;
+  /* Entrada escalonada al cambiar de categoría. `backwards` (y no `both`)
+     evita que el estado final quede fijado y bloquee el hover después. */
+  animation: tech-in 320ms var(--ease-out) backwards;
+}
+
+@keyframes tech-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+}
+
+.pip {
+  width: 8px;
+  height: 8px;
+  margin-bottom: 0.45rem;
+  background: var(--teal-500);
+  transition: background-color var(--d-base) ease;
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.note {
+  color: var(--text-dim);
+  font-size: 0.72rem;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tech:hover {
+    transform: translate3d(0, -3px, 0);
+    border-color: var(--stroke-strong);
+    background: var(--surface-2);
+  }
+
+  .tech:hover .pip {
+    background: var(--amber-500);
+  }
+}
+
+@media (min-width: 900px) {
+  .head {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 3rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tech {
+    animation-delay: 0ms !important;
+  }
+}

@@ -1,0 +1,132 @@
+:host {
+  display: block;
+}
+
+.grid {
+  display: grid;
+  gap: 1.1rem;
+  margin: clamp(2.5rem, 6vw, 4rem) 0 0;
+  align-items: stretch;
+}
+
+.plan {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  padding: clamp(1.5rem, 3vw, 2rem);
+  transition:
+    transform var(--d-base) var(--ease-out),
+    border-color var(--d-base) ease,
+    box-shadow var(--d-slow) ease;
+}
+
+.is-highlighted {
+  border-color: rgba(231, 168, 78, 0.4);
+  background: linear-gradient(170deg, rgba(231, 168, 78, 0.12), rgba(207, 240, 234, 0.03));
+  box-shadow: 0 26px 60px -40px rgba(231, 168, 78, 0.8);
+}
+
+.ribbon {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--r-pill);
+  background: var(--amber-500);
+  color: var(--accent-ink);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.plan-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding-right: 6rem;
+}
+
+.desc {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.price {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding-block: 0.9rem;
+  border-block: 1px solid var(--stroke);
+}
+
+.amount {
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 3vw, 2.1rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  color: var(--sand-200);
+}
+
+.is-highlighted .amount {
+  color: var(--amber-400);
+}
+
+.unit {
+  color: var(--text-dim);
+}
+
+.includes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin: 0 0 auto;
+}
+
+.includes li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+}
+
+.includes kx-icon {
+  flex: none;
+  margin-top: 0.2rem;
+  color: var(--teal-400);
+}
+
+.is-highlighted .includes kx-icon {
+  color: var(--amber-500);
+}
+
+.plan .btn {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.note {
+  margin-top: 1.75rem;
+  text-align: center;
+  font-size: 0.86rem;
+  color: var(--text-dim);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .plan:hover {
+    transform: translate3d(0, -4px, 0);
+    border-color: var(--stroke-strong);
+    box-shadow: var(--shadow-md);
+  }
+
+  .is-highlighted:hover {
+    border-color: rgba(231, 168, 78, 0.55);
+  }
+}
+
+@media (min-width: 760px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

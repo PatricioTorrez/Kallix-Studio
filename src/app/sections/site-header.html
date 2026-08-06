@@ -1,0 +1,73 @@
+<header class="header" [class.is-scrolled]="scrolled()" (keydown)="onKeydown($event)">
+  <div class="progress" #progress aria-hidden="true"></div>
+
+  <div class="container bar">
+    <a class="brand" href="#top" aria-label="Kallix Studio, ir al inicio">
+      <kx-logo />
+    </a>
+
+    <nav class="nav" aria-label="Navegación principal">
+      <ul>
+        @for (link of links; track link.href) {
+          <li>
+            <a
+              [href]="link.href"
+              [class.is-active]="active() === link.href"
+              [attr.aria-current]="active() === link.href ? 'true' : null"
+            >
+              {{ link.label }}
+            </a>
+          </li>
+        }
+      </ul>
+    </nav>
+
+    <div class="actions">
+      <a class="btn btn--primary btn--sm cta" href="#contacto">
+        Iniciar proyecto
+        <kx-icon class="btn__arrow" name="arrowRight" [size]="16" />
+      </a>
+
+      <button
+        type="button"
+        class="menu-btn"
+        [attr.aria-expanded]="menuOpen()"
+        aria-controls="menu-movil"
+        [attr.aria-label]="menuOpen() ? 'Cerrar menú' : 'Abrir menú'"
+        (click)="toggleMenu()"
+      >
+        <kx-icon [name]="menuOpen() ? 'close' : 'menu'" [size]="20" />
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="scrim" [class.is-open]="menuOpen()" (click)="closeMenu()" aria-hidden="true"></div>
+
+<div
+  class="drawer"
+  id="menu-movil"
+  [class.is-open]="menuOpen()"
+  [attr.inert]="menuOpen() ? null : ''"
+  (keydown)="onKeydown($event)"
+>
+  <nav aria-label="Navegación móvil">
+    <ul>
+      @for (link of links; track link.href; let i = $index) {
+        <!-- El escalonado solo aplica al abrir; al cerrar, salida limpia sin retraso. -->
+        <li [style.transition-delay]="menuOpen() ? i * 40 + 'ms' : '0ms'">
+          <a [href]="link.href" (click)="closeMenu()">
+            <span class="index">0{{ i + 1 }}</span>
+            {{ link.label }}
+            <kx-icon name="arrowUpRight" [size]="18" />
+          </a>
+        </li>
+      }
+    </ul>
+  </nav>
+
+  <a class="btn btn--primary btn--block" href="#contacto" (click)="closeMenu()">
+    Iniciar proyecto
+    <kx-icon class="btn__arrow" name="arrowRight" [size]="16" />
+  </a>
+</div>

@@ -1,0 +1,42 @@
+<section class="section" id="servicios">
+  <div class="container">
+    <kx-section-header
+      eyebrow="Servicios"
+      lede="Seis formas de trabajar juntos. Todas terminan en algo que funciona, se mide y se puede mantener."
+    >
+      <h2 class="h2">Lo que <span class="gradient-text">construimos</span>.</h2>
+    </kx-section-header>
+
+    <ul class="bento">
+      @for (service of services; track service.id) {
+        <li
+          class="service card card--glass"
+          [class.is-featured]="service.featured"
+          kxReveal="up"
+          [kxRevealDelay]="$index * 50"
+          [kxTilt]="4"
+        >
+          <span class="spot" aria-hidden="true"></span>
+
+          <span class="icon">
+            <kx-icon [name]="service.icon" [size]="22" />
+          </span>
+
+          <h3 class="h3">{{ service.title }}</h3>
+          <p class="summary">{{ service.summary }}</p>
+
+          <ul class="points">
+            @for (point of service.points; track point) {
+              <li>
+                <kx-icon name="check" [size]="14" />
+                {{ point }}
+              </li>
+            }
+          </ul>
+
+          <span class="corner" aria-hidden="true"></span>
+        </li>
+      }
+    </ul>
+  </div>
+</section>

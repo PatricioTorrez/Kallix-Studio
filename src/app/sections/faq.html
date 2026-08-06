@@ -1,0 +1,28 @@
+<section class="section" id="faq">
+  <div class="container layout">
+    <div class="aside">
+      <kx-section-header
+        eyebrow="Preguntas frecuentes"
+        lede="Las dudas que aparecen en casi toda primera llamada, respondidas antes de que tengas que preguntarlas."
+      >
+        <h2 class="h2">Lo que <span class="gradient-text">siempre nos preguntan</span>.</h2>
+      </kx-section-header>
+
+      <div class="helper card card--glass" kxReveal="up" [kxRevealDelay]="120">
+        <span class="sprite" aria-hidden="true">
+          <kx-pixel-sprite name="chip" tone="teal" />
+        </span>
+        <h3 class="h4">¿No está tu pregunta?</h3>
+        <p>Escríbenos y te respondemos en menos de 24 horas hábiles. Sin formularios eternos.</p>
+        <a class="btn btn--secondary btn--sm" [href]="'mailto:' + contact.email">
+          <kx-icon name="mail" [size]="16" />
+          {{ contact.email }}
+        </a>
+      </div>
+    </div>
+
+    <div class="panel" kxReveal="up">
+      <kx-accordion [items]="faqs" />
+    </div>
+  </div>
+</section>

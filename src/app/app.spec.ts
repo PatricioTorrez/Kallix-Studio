@@ -10,14 +10,35 @@ describe('App', () => {
 
   it('should create the app', () => {
     const fixture = TestBed.createComponent(App);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+    expect(fixture.componentInstance).toBeTruthy();
   });
 
-  it('should render title', async () => {
+  it('should render the hero headline', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, Vista');
+    expect(compiled.querySelector('h1')?.textContent).toContain('bien hecho');
+  });
+
+  it('should render every landing section', async () => {
+    const fixture = TestBed.createComponent(App);
+    await fixture.whenStable();
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    for (const id of [
+      'nosotros',
+      'servicios',
+      'tecnologias',
+      'productos',
+      'modelos',
+      'portafolio',
+      'proceso',
+      'equipo',
+      'testimonios',
+      'faq',
+      'contacto',
+    ]) {
+      expect(compiled.querySelector(`#${id}`)).toBeTruthy();
+    }
   });
 });

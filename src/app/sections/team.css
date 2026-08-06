@@ -1,0 +1,128 @@
+:host {
+  display: block;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin: clamp(2.5rem, 6vw, 4rem) 0 0;
+}
+
+.member {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: clamp(1.25rem, 2.5vw, 1.6rem);
+  text-align: center;
+  align-items: center;
+  transition:
+    border-color var(--d-base) ease,
+    box-shadow var(--d-slow) ease;
+}
+
+.spot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(231, 168, 78, 0.16), transparent 62%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--d-slow) ease;
+}
+
+.avatar {
+  position: relative;
+  width: 96px;
+  padding: 8px;
+  margin-bottom: 0.9rem;
+  border: 1px solid var(--stroke-strong);
+  border-radius: var(--r-lg);
+  background:
+    radial-gradient(circle at 50% 20%, rgba(231, 168, 78, 0.2), transparent 70%),
+    linear-gradient(180deg, rgba(4, 22, 28, 0.7), rgba(12, 59, 69, 0.5));
+  transition:
+    transform var(--d-slow) var(--ease-out),
+    border-color var(--d-base) ease;
+}
+
+.role {
+  color: var(--amber-500);
+  letter-spacing: 0.06em;
+}
+
+.specialty {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--teal-300);
+}
+
+.bio {
+  margin-top: 0.5rem;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.skills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem;
+  margin-top: auto;
+  padding-top: 1.1rem;
+}
+
+.skills li {
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--stroke);
+  border-radius: var(--r-xs);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-dim);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .member:hover {
+    border-color: var(--stroke-strong);
+    box-shadow: var(--shadow-md);
+  }
+
+  .member:hover .spot {
+    opacity: 1;
+  }
+
+  .member:hover .avatar {
+    transform: translate3d(0, -4px, 0) scale(1.04);
+    border-color: rgba(231, 168, 78, 0.4);
+  }
+}
+
+@media (min-width: 900px) {
+  /* Seis columnas para que las dos últimas tarjetas queden centradas. */
+  .grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .member {
+    grid-column: span 2;
+  }
+
+  .member:nth-child(4) {
+    grid-column: 2 / span 2;
+  }
+
+  .member:nth-child(5) {
+    grid-column: 4 / span 2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spot {
+    display: none;
+  }
+}

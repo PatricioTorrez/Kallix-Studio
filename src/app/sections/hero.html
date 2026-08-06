@@ -1,0 +1,100 @@
+<section class="hero" id="top" kxMouseParallax>
+  <div class="backdrop" aria-hidden="true">
+    <div class="grid-bg"></div>
+    <div class="sun" [kxParallax]="0.06"></div>
+    <div class="aurora aurora--teal"></div>
+    <div class="aurora aurora--amber"></div>
+    <div class="scanlines"></div>
+  </div>
+
+  <div class="container inner">
+    <div class="copy">
+      <span class="status">
+        <span class="pulse" aria-hidden="true"></span>
+        Disponibles para proyectos · Q4
+      </span>
+
+      <h1 class="display">
+        Construimos software que se siente
+        <span class="gradient-text">bien hecho</span>.
+      </h1>
+
+      <p class="lede">
+        Aplicaciones web y móviles, plataformas SaaS, chatbots con IA y automatización de procesos.
+        Cinco personas, producto propio en producción y un estándar de acabado que no negociamos.
+      </p>
+
+      <div class="actions">
+        <a class="btn btn--primary btn--lg" href="#contacto">
+          Iniciar proyecto
+          <kx-icon class="btn__arrow" name="arrowRight" [size]="18" />
+        </a>
+        <a class="btn btn--secondary btn--lg" href="#portafolio">
+          Ver nuestro trabajo
+          <kx-icon name="arrowUpRight" [size]="18" />
+        </a>
+      </div>
+
+      <dl class="trust">
+        @for (stat of stats; track stat.label) {
+          <div class="trust-item">
+            <dt>{{ stat.value }}</dt>
+            <dd>{{ stat.label }}</dd>
+          </div>
+        }
+      </dl>
+    </div>
+
+    <div class="stage">
+      <div class="window card card--glass card--lit">
+        <div class="window-bar">
+          <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="mono window-title">kallix · panel</span>
+          <span class="live"><span class="pulse" aria-hidden="true"></span>en vivo</span>
+        </div>
+
+        <div class="window-body">
+          <div class="metric">
+            <span class="metric-label mono">Entregas por sprint</span>
+            <span class="metric-value">+128%</span>
+          </div>
+
+          <div class="chart" aria-hidden="true">
+            @for (bar of bars; track $index) {
+              <span class="bar" [style.height.%]="bar" [style.animation-delay]="$index * 60 + 520 + 'ms'"></span>
+            }
+          </div>
+
+          <ul class="chips">
+            @for (chip of chips; track chip) {
+              <li class="chip">{{ chip }}</li>
+            }
+          </ul>
+
+          <div class="deploy mono">
+            <kx-icon name="check" [size]="14" />
+            Deploy #1284 · producción · hace 2 min
+          </div>
+        </div>
+      </div>
+
+      <span class="sprite sprite--1" data-depth="26" aria-hidden="true">
+        <span class="sprite-float"><kx-pixel-sprite name="cube" tone="amber" /></span>
+      </span>
+      <span class="sprite sprite--2" data-depth="44" aria-hidden="true">
+        <span class="sprite-float"><kx-pixel-sprite name="bot" tone="teal" /></span>
+      </span>
+      <span class="sprite sprite--3" data-depth="16" aria-hidden="true">
+        <span class="sprite-float"><kx-pixel-sprite name="star" tone="sand" /></span>
+      </span>
+      <span class="sprite sprite--4" data-depth="34" aria-hidden="true">
+        <span class="sprite-float"><kx-pixel-sprite name="bolt" tone="rust" /></span>
+      </span>
+    </div>
+  </div>
+
+  <div class="scroll-hint" aria-hidden="true">
+    <span class="mono">scroll</span>
+    <span class="line"></span>
+  </div>
+</section>

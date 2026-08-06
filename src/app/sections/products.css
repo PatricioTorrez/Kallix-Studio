@@ -1,0 +1,154 @@
+:host {
+  display: block;
+  position: relative;
+  overflow: clip;
+}
+
+.glow {
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  width: min(900px, 110vw);
+  height: 420px;
+  translate: -50% 0;
+  background: radial-gradient(ellipse at center, rgba(62, 155, 148, 0.16), transparent 68%);
+  pointer-events: none;
+}
+
+.grid {
+  display: grid;
+  gap: 1.1rem;
+  margin: clamp(2.5rem, 6vw, 4rem) 0 0;
+}
+
+.product {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  transition:
+    transform var(--d-base) var(--ease-out),
+    border-color var(--d-base) ease,
+    box-shadow var(--d-slow) ease;
+}
+
+.spot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent-glow), transparent 62%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--d-slow) ease;
+}
+
+.accent-amber {
+  --accent-glow: rgba(231, 168, 78, 0.18);
+  --accent-line: #e7a84e;
+}
+
+.accent-teal {
+  --accent-glow: rgba(62, 155, 148, 0.2);
+  --accent-line: #3e9b94;
+}
+
+.accent-rust {
+  --accent-glow: rgba(217, 108, 44, 0.18);
+  --accent-line: #d96c2c;
+}
+
+.preview {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  border-bottom: 1px solid var(--stroke);
+  background: #06212a;
+  overflow: hidden;
+}
+
+.preview kx-project-preview {
+  height: 100%;
+  transition: transform var(--d-slow) var(--ease-out);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 1.4rem;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.tagline {
+  color: var(--accent-line);
+  letter-spacing: 0.04em;
+}
+
+.desc {
+  font-size: 0.93rem;
+  color: var(--text-muted);
+}
+
+.features {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0.35rem 0 0.5rem;
+}
+
+.features li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.86rem;
+  color: var(--text-dim);
+}
+
+.features kx-icon {
+  color: var(--accent-line);
+}
+
+.body .link {
+  margin-top: auto;
+  align-self: flex-start;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .product:hover {
+    border-color: var(--stroke-strong);
+    box-shadow: var(--shadow-md);
+  }
+
+  .product:hover .spot {
+    opacity: 1;
+  }
+
+  .product:hover kx-project-preview {
+    transform: scale(1.04);
+  }
+}
+
+@media (min-width: 720px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1040px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spot {
+    display: none;
+  }
+}

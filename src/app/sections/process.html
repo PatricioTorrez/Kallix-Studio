@@ -1,0 +1,44 @@
+<section class="section" id="proceso">
+  <div class="container">
+    <kx-section-header
+      eyebrow="Proceso"
+      lede="Cinco etapas, sin sorpresas. Sabes en qué punto estamos, qué recibes al final de cada una y cuándo puedes tocarlo."
+    >
+      <h2 class="h2">Cómo llegamos <span class="gradient-text">del problema al software</span>.</h2>
+    </kx-section-header>
+
+    <ol class="timeline">
+      @for (step of steps; track step.id) {
+        <li class="step" kxReveal="up" [kxRevealDelay]="40">
+          <div class="marker" aria-hidden="true">
+            <span class="dot">
+              <kx-icon [name]="step.icon" [size]="18" />
+            </span>
+            @if (!$last) {
+              <span class="connector"></span>
+            }
+          </div>
+
+          <div class="content card">
+            <div class="head">
+              <span class="number pixel-text">{{ step.step }}</span>
+              <h3 class="h3">{{ step.title }}</h3>
+              <span class="duration mono">
+                <kx-icon name="clock" [size]="13" />
+                {{ step.duration }}
+              </span>
+            </div>
+
+            <p class="desc">{{ step.description }}</p>
+
+            <ul class="deliverables">
+              @for (item of step.deliverables; track item) {
+                <li>{{ item }}</li>
+              }
+            </ul>
+          </div>
+        </li>
+      }
+    </ol>
+  </div>
+</section>

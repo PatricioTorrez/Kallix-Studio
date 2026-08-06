@@ -1,0 +1,195 @@
+<section class="section" id="contacto">
+  <div class="glow" aria-hidden="true"></div>
+
+  <div class="container layout">
+    <div class="aside">
+      <kx-section-header
+        eyebrow="Contacto"
+        lede="Cuéntanos qué quieres construir. Respondemos en menos de 24 horas hábiles con preguntas concretas, no con un catálogo."
+      >
+        <h2 class="h2">Empecemos por <span class="gradient-text">entender el problema</span>.</h2>
+      </kx-section-header>
+
+      <ul class="channels" kxReveal="up" [kxRevealDelay]="120">
+        <li>
+          <a [href]="'mailto:' + contact.email">
+            <span class="ch-icon"><kx-icon name="mail" [size]="18" /></span>
+            <span class="ch-body">
+              <span class="ch-label mono">Correo</span>
+              <span class="ch-value">{{ contact.email }}</span>
+            </span>
+            <kx-icon class="ch-go" name="arrowUpRight" [size]="16" />
+          </a>
+        </li>
+        <li>
+          <a [href]="contact.whatsapp" target="_blank" rel="noopener">
+            <span class="ch-icon"><kx-icon name="whatsapp" [size]="18" /></span>
+            <span class="ch-body">
+              <span class="ch-label mono">WhatsApp</span>
+              <span class="ch-value">{{ contact.phone }}</span>
+            </span>
+            <kx-icon class="ch-go" name="arrowUpRight" [size]="16" />
+          </a>
+        </li>
+        <li>
+          <span class="static">
+            <span class="ch-icon"><kx-icon name="mapPin" [size]="18" /></span>
+            <span class="ch-body">
+              <span class="ch-label mono">Ubicación</span>
+              <span class="ch-value">{{ contact.location }}</span>
+            </span>
+          </span>
+        </li>
+        <li>
+          <span class="static">
+            <span class="ch-icon"><kx-icon name="clock" [size]="18" /></span>
+            <span class="ch-body">
+              <span class="ch-label mono">Horario</span>
+              <span class="ch-value">{{ contact.hours }}</span>
+            </span>
+          </span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="form-wrap card card--glass card--lit" kxReveal="scale">
+      @if (state() === 'success') {
+        <div class="success" role="status">
+          <span class="success-sprite" aria-hidden="true">
+            <kx-pixel-sprite name="heart" tone="teal" />
+          </span>
+          <h3 class="h3">Mensaje recibido</h3>
+          <p>
+            Gracias por escribir. Te respondemos en menos de 24 horas hábiles desde
+            <strong>{{ contact.email }}</strong>.
+          </p>
+          <button type="button" class="btn btn--secondary" (click)="reset()">
+            Enviar otro mensaje
+          </button>
+        </div>
+      } @else {
+        <form [formGroup]="form" (ngSubmit)="send()" novalidate>
+          <div class="row">
+            <div class="field">
+              <label for="c-name">Nombre</label>
+              <input
+                id="c-name"
+                type="text"
+                formControlName="name"
+                autocomplete="name"
+                placeholder="Cómo te llamas"
+                [attr.aria-invalid]="invalid('name')"
+                [attr.aria-describedby]="invalid('name') ? 'e-name' : null"
+              />
+              @if (invalid('name')) {
+                <p class="error" id="e-name" role="alert">Necesitamos tu nombre para responderte.</p>
+              }
+            </div>
+
+            <div class="field">
+              <label for="c-email">Correo</label>
+              <input
+                id="c-email"
+                type="email"
+                formControlName="email"
+                autocomplete="email"
+                placeholder="tu@empresa.com"
+                [attr.aria-invalid]="invalid('email')"
+                [attr.aria-describedby]="invalid('email') ? 'e-email' : null"
+              />
+              @if (invalid('email')) {
+                <p class="error" id="e-email" role="alert">Escribe un correo válido.</p>
+              }
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="c-company">Empresa <span class="optional">(opcional)</span></label>
+            <input
+              id="c-company"
+              type="text"
+              formControlName="company"
+              autocomplete="organization"
+              placeholder="Nombre de tu empresa"
+            />
+          </div>
+
+          <fieldset class="chips-group">
+            <legend>¿Qué necesitas construir?</legend>
+            <div class="chips">
+              @for (kind of kinds; track kind) {
+                <label class="chip">
+                  <input type="radio" formControlName="kind" [value]="kind" />
+                  <span>{{ kind }}</span>
+                </label>
+              }
+            </div>
+          </fieldset>
+
+          <fieldset class="chips-group">
+            <legend>Presupuesto estimado <span class="optional">(USD)</span></legend>
+            <div class="chips">
+              @for (budget of budgets; track budget) {
+                <label class="chip">
+                  <input type="radio" formControlName="budget" [value]="budget" />
+                  <span>{{ budget }}</span>
+                </label>
+              }
+            </div>
+          </fieldset>
+
+          <div class="field">
+            <label for="c-message">Cuéntanos del proyecto</label>
+            <textarea
+              id="c-message"
+              rows="5"
+              formControlName="message"
+              placeholder="Qué problema quieres resolver, para quién y en qué plazo lo necesitas."
+              [attr.aria-invalid]="invalid('message')"
+              [attr.aria-describedby]="invalid('message') ? 'e-message' : null"
+            ></textarea>
+            @if (invalid('message')) {
+              <p class="error" id="e-message" role="alert">
+                Cuéntanos un poco más: al menos 20 caracteres.
+              </p>
+            }
+          </div>
+
+          <label class="privacy">
+            <input
+              type="checkbox"
+              formControlName="privacy"
+              [attr.aria-invalid]="invalid('privacy')"
+              [attr.aria-describedby]="invalid('privacy') ? 'e-privacy' : null"
+            />
+            <span>Acepto que Kallix Studio use estos datos para responder mi solicitud.</span>
+          </label>
+          @if (invalid('privacy')) {
+            <p class="error" id="e-privacy" role="alert">Necesitamos tu autorización para responderte.</p>
+          }
+
+          <button
+            type="submit"
+            class="btn btn--primary btn--lg btn--block submit"
+            [disabled]="state() === 'sending'"
+          >
+            <span class="submit-label" [class.is-busy]="state() === 'sending'">
+              {{ state() === 'sending' ? 'Enviando…' : 'Enviar mensaje' }}
+              <kx-icon class="btn__arrow" name="arrowRight" [size]="18" />
+            </span>
+          </button>
+
+          @if (state() === 'error') {
+            <p class="error error--block" role="alert">
+              No pudimos enviar el mensaje. Escríbenos directo a {{ contact.email }}.
+            </p>
+          }
+
+          <p class="disclaimer">
+            Firmamos NDA antes de revisar cualquier información sensible.
+          </p>
+        </form>
+      }
+    </div>
+  </div>
+</section>

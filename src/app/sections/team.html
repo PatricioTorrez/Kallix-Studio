@@ -1,0 +1,34 @@
+<section class="section" id="equipo">
+  <div class="container">
+    <kx-section-header
+      align="center"
+      eyebrow="Equipo"
+      lede="Cinco personas con nombre y apellido. Ninguna capa de intermediarios entre tú y quien escribe el código."
+    >
+      <h2 class="h2">Quiénes <span class="gradient-text">construyen</span>.</h2>
+    </kx-section-header>
+
+    <ul class="grid">
+      @for (member of members; track member.id) {
+        <li class="member card card--glass" kxReveal="up" [kxRevealDelay]="$index * 60" [kxTilt]="5">
+          <span class="spot" aria-hidden="true"></span>
+
+          <div class="avatar">
+            <kx-pixel-avatar [pixels]="member.pixels" [palette]="member.palette" [name]="member.name" />
+          </div>
+
+          <h3 class="h3">{{ member.name }}</h3>
+          <p class="role mono">{{ member.role }}</p>
+          <p class="specialty">{{ member.specialty }}</p>
+          <p class="bio">{{ member.bio }}</p>
+
+          <ul class="skills">
+            @for (skill of member.skills; track skill) {
+              <li>{{ skill }}</li>
+            }
+          </ul>
+        </li>
+      }
+    </ul>
+  </div>
+</section>

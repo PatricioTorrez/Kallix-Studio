@@ -1,0 +1,26 @@
+<section class="section" id="tecnologias">
+  <div class="container">
+    <div class="head">
+      <kx-section-header
+        eyebrow="Stack"
+        lede="Herramientas elegidas por lo que aguantan en producción, no por lo que están de moda."
+      >
+        <h2 class="h2">Tecnologías que <span class="gradient-text">dominamos</span>.</h2>
+      </kx-section-header>
+
+      <div kxReveal="up" [kxRevealDelay]="120">
+        <kx-tabs [items]="tabs" [(selected)]="selected" label="Categorías de tecnología" />
+      </div>
+    </div>
+
+    <ul class="grid" [attr.aria-label]="current().label">
+      @for (item of current().items; track item.name) {
+        <li class="tech card" [style.animation-delay]="$index * 26 + 'ms'">
+          <span class="pip" aria-hidden="true"></span>
+          <span class="name">{{ item.name }}</span>
+          <span class="note mono">{{ item.note }}</span>
+        </li>
+      }
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,195 @@
+:host {
+  display: block;
+}
+
+.footer {
+  position: relative;
+  overflow: hidden;
+  padding-top: clamp(48px, 7vw, 80px);
+  border-top: 1px solid var(--stroke);
+  background: linear-gradient(180deg, transparent, rgba(6, 31, 38, 0.75));
+}
+
+.top {
+  display: grid;
+  gap: clamp(2rem, 5vw, 3.5rem);
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.1rem;
+  max-width: 38ch;
+}
+
+.blurb {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.4rem 0.9rem 0.4rem 0.75rem;
+  border: 1px solid var(--stroke-strong);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--teal-300);
+  transition:
+    transform var(--d-press) var(--ease-out),
+    background-color var(--d-base) ease;
+}
+
+.status:active {
+  transform: scale(0.97);
+}
+
+.pulse {
+  position: relative;
+  width: 7px;
+  height: 7px;
+  flex: none;
+  background: var(--teal-400);
+}
+
+.pulse::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  animation: pulse-ring 2.6s var(--ease-out) infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(2.8);
+  }
+}
+
+.socials {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.socials a {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--stroke);
+  border-radius: var(--r-sm);
+  color: var(--text-muted);
+  transition:
+    transform var(--d-press) var(--ease-out),
+    color var(--d-base) ease,
+    border-color var(--d-base) ease,
+    background-color var(--d-base) ease;
+}
+
+.socials a:active {
+  transform: scale(0.94);
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 2rem;
+}
+
+.column-title {
+  margin-bottom: 0.9rem;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.column ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.column a {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  transition: color var(--d-base) ease;
+}
+
+/* Marca de agua pixel: identidad sin robar protagonismo. */
+.watermark {
+  margin: clamp(2.5rem, 6vw, 4rem) 0 0;
+  font-size: clamp(2rem, 11vw, 7rem);
+  line-height: 0.9;
+  text-align: center;
+  letter-spacing: 0.02em;
+  color: transparent;
+  background: linear-gradient(180deg, rgba(207, 240, 234, 0.14), rgba(207, 240, 234, 0.01));
+  -webkit-background-clip: text;
+  background-clip: text;
+  user-select: none;
+}
+
+.bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: clamp(1.5rem, 3vw, 2rem);
+  padding-block: 1.5rem;
+  border-top: 1px solid var(--stroke);
+  font-size: 0.82rem;
+  color: var(--text-dim);
+}
+
+.legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.legal a {
+  transition: color var(--d-base) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .column a:hover,
+  .legal a:hover {
+    color: var(--teal-300);
+  }
+
+  .socials a:hover {
+    color: var(--text);
+    border-color: var(--stroke-strong);
+    background: var(--surface-2);
+  }
+
+  .status:hover {
+    background: var(--surface-2);
+  }
+}
+
+@media (min-width: 900px) {
+  .top {
+    grid-template-columns: 1fr 1.15fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse::after {
+    animation: none;
+  }
+}

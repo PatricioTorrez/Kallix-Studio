@@ -1,0 +1,63 @@
+<section class="section" id="nosotros">
+  <div class="container">
+    <kx-section-header
+      eyebrow="El estudio"
+      lede="Kallix Studio nació de una idea simple: el software hecho a la medida no tiene por qué sentirse a medio terminar."
+    >
+      <h2 class="h2">Un equipo pequeño con <span class="gradient-text">criterio de producto</span>.</h2>
+    </kx-section-header>
+
+    <div class="layout">
+      <div class="story">
+        <p kxReveal="up">
+          Somos cinco desarrolladores que diseñan, construyen y operan producto: el propio y el de
+          nuestros clientes. Trabajamos por igual en aplicaciones web y móviles, plataformas SaaS,
+          agentes de IA y automatización de procesos.
+        </p>
+        <p kxReveal="up" [kxRevealDelay]="60">
+          Esa doble condición —estudio y empresa de producto— cambia la forma de decidir. Sabemos lo
+          que cuesta mantener algo vivo en la nube, así que construimos pensando en quien lo va a
+          operar dentro de dos años.
+        </p>
+
+        <div class="crew card card--glass" kxReveal="up" [kxRevealDelay]="120">
+          <ul class="faces">
+            @for (member of team; track member.id) {
+              <li>
+                <kx-pixel-avatar [pixels]="member.pixels" [palette]="member.palette" [name]="member.name" />
+              </li>
+            }
+          </ul>
+          <div class="crew-copy">
+            <p class="crew-title">Cinco personas, cero intermediarios</p>
+            <p class="crew-note">Hablas con quien escribe el código, desde la primera llamada.</p>
+          </div>
+        </div>
+      </div>
+
+      <ul class="values">
+        @for (value of values; track value.title) {
+          <li class="value card" kxReveal="up" [kxRevealDelay]="$index * 60">
+            <span class="value-icon">
+              <kx-icon [name]="value.icon" [size]="20" />
+            </span>
+            <h3 class="h4">{{ value.title }}</h3>
+            <p>{{ value.text }}</p>
+          </li>
+        }
+      </ul>
+    </div>
+
+    <figure class="quote card card--glass card--lit" kxReveal="scale">
+      <div class="quote-mark" aria-hidden="true" [kxParallax]="0.08">“</div>
+      <blockquote>
+        No entregamos proyectos: entregamos software que alguien va a usar todos los días. Esa
+        diferencia se nota en cada decisión que tomamos.
+      </blockquote>
+      <figcaption>
+        <strong>Patricio</strong>
+        <span class="dim">CEO · Kallix Studio</span>
+      </figcaption>
+    </figure>
+  </div>
+</section>
