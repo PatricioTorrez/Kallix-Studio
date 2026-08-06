@@ -108,7 +108,7 @@ export interface AccordionItem {
 
     .is-open .sign {
       transform: rotate(135deg);
-      background: var(--amber-500);
+      background: var(--accent);
       color: var(--accent-ink);
       border-color: transparent;
     }

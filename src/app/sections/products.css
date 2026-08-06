@@ -46,17 +46,17 @@
 
 .accent-amber {
   --accent-glow: rgba(231, 168, 78, 0.18);
-  --accent-line: #e7a84e;
+  --accent-line: var(--badge-amber);
 }
 
 .accent-teal {
   --accent-glow: rgba(62, 155, 148, 0.2);
-  --accent-line: #3e9b94;
+  --accent-line: var(--badge-teal);
 }
 
 .accent-rust {
   --accent-glow: rgba(217, 108, 44, 0.18);
-  --accent-line: #d96c2c;
+  --accent-line: var(--badge-rust);
 }
 
 .preview {

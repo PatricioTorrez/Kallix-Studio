@@ -224,7 +224,7 @@ legend {
 }
 
 .chip input:checked + span {
-  background: var(--amber-500);
+  background: var(--accent);
   border-color: transparent;
   color: var(--accent-ink);
   font-weight: 500;

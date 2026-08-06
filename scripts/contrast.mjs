@@ -1,4 +1,11 @@
-/** Contraste WCAG 2.1 entre pares de colores. Uso: node scripts/contrast.mjs */
+/**
+ * Contraste WCAG 2.1 de los roles del tema claro. Uso: node scripts/contrast.mjs
+ *
+ * Mide cada color contra TODAS las superficies claras, no solo contra el fondo
+ * base. Un texto oscuro pierde contraste sobre las superficies tintadas y lo
+ * gana sobre las elevadas, así que el peor caso no siempre es el mismo — medir
+ * solo contra `--bg` dejó pasar varios fallos reales.
+ */
 
 const luminance = (hex) => {
   const [r, g, b] = hex
@@ -16,25 +23,54 @@ const ratio = (a, b) => {
   return (hi + 0.05) / (lo + 0.05);
 };
 
-/** [nombre, primer plano, fondo, mínimo exigido] */
-const PAIRS = [
-  ['text / bg', '#06202a', '#f4f1ec', 4.5],
-  ['text-muted / bg', '#3d5f63', '#f4f1ec', 4.5],
-  ['text-dim / bg', '#64807f', '#f4f1ec', 3.0],
-  ['accent / bg', '#945d11', '#f4f1ec', 4.5],
-  ['accent-ink / accent', '#fffdf7', '#945d11', 4.5],
-  ['badge-teal / bg', '#1f6b66', '#f4f1ec', 4.5],
-  ['badge-amber / bg', '#8a5a12', '#f4f1ec', 4.5],
-  ['badge-rust / bg', '#9c4a17', '#f4f1ec', 4.5],
+/** Superficies del tema claro, de la más elevada a la más tintada. */
+const SURFACES = {
+  'bg-raised': '#fbfaf8',
+  bg: '#f4f1ec',
+  tintada: '#efe7dc',
+  'surface-3': '#ece9e5',
+};
+
+/** [rol, color, mínimo exigido] — texto normal 4.5, elementos grandes 3.0 */
+const ON_SURFACE = [
+  ['text', '#06202a', 4.5],
+  ['text-muted', '#3d5f63', 4.5],
+  ['text-dim', '#4f6766', 4.5],
+  ['accent', '#8a560f', 4.5],
+  ['accent-cool', '#1f6b66', 4.5],
+  ['badge-teal', '#1f6b66', 4.5],
+  ['badge-amber', '#8a5a12', 4.5],
+  ['badge-rust', '#9c4a17', 4.5],
+  ['focus', '#2b7d77', 3.0],
 ];
 
+/** [nombre, primer plano, fondo, mínimo] — pares que no van sobre superficie */
+const PAIRS = [['accent-ink / accent', '#fffdf7', '#8a560f', 4.5]];
+
 let failed = false;
+
+for (const [role, color, min] of ON_SURFACE) {
+  let worst = Infinity;
+  let where = '';
+  for (const [name, surface] of Object.entries(SURFACES)) {
+    const value = ratio(color, surface);
+    if (value < worst) {
+      worst = value;
+      where = name;
+    }
+  }
+  const ok = worst >= min;
+  if (!ok) failed = true;
+  console.log(
+    `${ok ? 'OK  ' : 'FALLA'} ${role.padEnd(14)} ${worst.toFixed(2)}:1 (mín ${min}, peor sobre ${where})`,
+  );
+}
 
 for (const [name, fg, bg, min] of PAIRS) {
   const value = ratio(fg, bg);
   const ok = value >= min;
   if (!ok) failed = true;
-  console.log(`${ok ? 'OK  ' : 'FALLA'} ${name.padEnd(22)} ${value.toFixed(2)}:1 (mín ${min})`);
+  console.log(`${ok ? 'OK  ' : 'FALLA'} ${name.padEnd(14)} ${value.toFixed(2)}:1 (mín ${min})`);
 }
 
 process.exit(failed ? 1 : 0);

@@ -112,8 +112,8 @@
 /* ============================================================================
    Roles semánticos — claro
 
-   Los valores salen de `scripts/contrast.mjs`, que los mide contra el fondo
-   crema. Si se retocan, hay que volver a correrlo.
+   Los valores salen de `scripts/contrast.mjs`, que los mide contra todas las
+   superficies claras. Si se retocan, hay que volver a correrlo.
    ========================================================================= */
 
 [data-theme='light'] {
@@ -129,11 +129,11 @@
   --stroke-strong: rgba(var(--veil), 0.22);
   --text: #06202a;
   --text-muted: #3d5f63;
-  --text-dim: #64807f;
+  --text-dim: #4f6766;
   /* El ámbar #e7a84e sobre crema no llega a 3:1; oscurecido llega a 4.86 y
      sirve también como texto de tamaño normal, no solo grande. */
-  --accent: #945d11;
-  --accent-soft: rgba(148, 93, 17, 0.12);
+  --accent: #8a560f;
+  --accent-soft: rgba(138, 86, 15, 0.12);
   --accent-ink: #fffdf7;
   --accent-cool: #1f6b66;
   --figure: var(--text);
@@ -152,7 +152,7 @@
   --shadow-sm: 0 1px 2px rgba(var(--veil), 0.08);
   --shadow-md: 0 12px 32px -18px rgba(var(--veil), 0.35);
   --shadow-lg: 0 30px 70px -40px rgba(var(--veil), 0.45);
-  --glow-accent: 0 14px 40px -18px rgba(148, 93, 17, 0.4);
+  --glow-accent: 0 14px 40px -18px rgba(138, 86, 15, 0.4);
   --glow-teal: 0 14px 40px -18px rgba(43, 125, 119, 0.32);
 }
 
@@ -279,7 +279,7 @@ p {
   z-index: 200;
   padding: 0.7rem 1.1rem;
   border-radius: var(--r-pill);
-  background: var(--amber-500);
+  background: var(--accent);
   color: var(--accent-ink);
   font-family: var(--font-display);
   font-weight: 600;
@@ -351,14 +351,14 @@ p {
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--teal-300);
+  color: var(--accent-cool);
 }
 
 .eyebrow::before {
   content: '';
   width: 6px;
   height: 6px;
-  background: var(--amber-500);
+  background: var(--accent);
   box-shadow: 0 0 12px 2px rgba(231, 168, 78, 0.55);
 }
 
@@ -369,12 +369,19 @@ p {
 }
 
 .accent-text {
-  color: var(--amber-500);
+  color: var(--accent);
 }
 
 /* Degradado de marca sobre texto — se usa en una sola palabra por titular */
 .gradient-text {
-  background: linear-gradient(96deg, var(--teal-300) 0%, var(--sand-200) 42%, var(--amber-500) 100%);
+  /* Tokens, no paleta cruda: los tres tonos son pálidos y sobre crema el
+     titular quedaba ilegible. En oscuro resuelven a los mismos valores. */
+  background: linear-gradient(
+    96deg,
+    var(--accent-cool) 0%,
+    var(--figure) 42%,
+    var(--accent) 100%
+  );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -466,7 +473,7 @@ p {
 }
 
 .btn--primary {
-  background: var(--amber-500);
+  background: var(--accent);
   color: var(--accent-ink);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.4),
@@ -512,7 +519,7 @@ p {
 
   .btn--secondary:hover {
     background: var(--surface-3);
-    border-color: var(--teal-500);
+    border-color: var(--accent-cool);
   }
 
   .btn--ghost:hover {
@@ -538,7 +545,7 @@ p {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  color: var(--teal-300);
+  color: var(--accent-cool);
   font-weight: 500;
 }
 
@@ -684,11 +691,21 @@ p {
 }
 
 @media (prefers-contrast: more) {
-  :root {
-    --stroke: rgba(207, 240, 234, 0.34);
-    --stroke-strong: rgba(207, 240, 234, 0.5);
+  :root,
+  [data-theme='light'] .on-dark {
+    --stroke: rgba(var(--veil), 0.34);
+    --stroke-strong: rgba(var(--veil), 0.5);
     --text-muted: #cbdedd;
     --text-dim: #a8c2c2;
+  }
+
+  /* Sin esta rama, pedir más contraste en claro devolvía texto casi blanco
+     sobre crema: peor que no haberla pedido. */
+  [data-theme='light'] {
+    --stroke: rgba(var(--veil), 0.34);
+    --stroke-strong: rgba(var(--veil), 0.5);
+    --text-muted: #1d3a3d;
+    --text-dim: #27403f;
   }
 }
 

@@ -116,7 +116,7 @@ export interface TabItem {
     }
 
     .layer--active .tab {
-      background: var(--amber-500);
+      background: var(--accent);
       color: var(--accent-ink);
       cursor: default;
     }

@@ -128,7 +128,7 @@ import { Icon } from './icon';
     }
 
     .dot.is-active {
-      background: var(--amber-500);
+      background: var(--accent);
       transform: scaleX(1.5);
       transform-origin: left;
     }
