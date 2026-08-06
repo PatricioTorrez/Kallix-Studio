@@ -122,7 +122,7 @@
   font-family: var(--font-mono);
   font-size: 0.75rem;
   letter-spacing: 0.06em;
-  color: var(--teal-300);
+  color: var(--accent-cool);
 }
 
 .pulse {
@@ -245,7 +245,7 @@
   font-size: 0.7rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--teal-300);
+  color: var(--accent-cool);
 }
 
 .window-body {
@@ -271,7 +271,7 @@
   font-size: 1.7rem;
   font-weight: 700;
   letter-spacing: -0.03em;
-  color: var(--amber-500);
+  color: var(--accent);
 }
 
 .chart {

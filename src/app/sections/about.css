@@ -83,7 +83,7 @@
   border: 1px solid var(--stroke-strong);
   border-radius: var(--r-sm);
   background: var(--surface-2);
-  color: var(--teal-300);
+  color: var(--accent-cool);
   transition: color var(--d-base) ease;
 }
 
@@ -149,7 +149,7 @@ figcaption strong {
   }
 
   .value:hover .value-icon {
-    color: var(--amber-500);
+    color: var(--accent);
   }
 
   .crew:hover .faces li {

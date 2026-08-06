@@ -42,7 +42,7 @@
   border: 1px solid var(--stroke-strong);
   border-radius: var(--r-md);
   background: linear-gradient(160deg, rgba(62, 155, 148, 0.22), rgba(231, 168, 78, 0.08));
-  color: var(--teal-300);
+  color: var(--accent-cool);
   transition:
     color var(--d-base) ease,
     transform var(--d-base) var(--ease-out);
@@ -71,7 +71,7 @@
 }
 
 .points kx-icon {
-  color: var(--teal-500);
+  color: var(--accent-cool);
 }
 
 /* Esquina pixelada: el acento gráfico de la marca, no un adorno de relleno. */
@@ -90,7 +90,7 @@
 }
 
 .is-featured {
-  background: linear-gradient(155deg, rgba(62, 155, 148, 0.14), rgba(207, 240, 234, 0.03));
+  background: linear-gradient(155deg, rgba(62, 155, 148, 0.14), rgba(var(--veil), 0.03));
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -104,7 +104,7 @@
   }
 
   .service:hover .icon {
-    color: var(--amber-500);
+    color: var(--accent);
     transform: translate3d(0, -2px, 0);
   }
 

@@ -106,7 +106,7 @@
   background: var(--accent-soft);
   font-family: var(--font-mono);
   font-size: 0.76rem;
-  color: var(--amber-400);
+  color: var(--accent);
 }
 
 .stack {

@@ -82,6 +82,13 @@
   --accent: var(--amber-500);
   --accent-soft: rgba(231, 168, 78, 0.14);
   --accent-ink: #14252c;
+  /* Contraparte fría de `--accent`, para antetítulos, iconos y metadatos. La
+     paleta cruda no cambia con el tema: usarla como color de texto deja el
+     elemento ilegible en claro. */
+  --accent-cool: var(--teal-300);
+  /* Cifras grandes: precios y estadísticas. El arena es un blanco cálido que
+     solo funciona sobre oscuro. */
+  --figure: var(--sand-200);
   --focus: var(--teal-300);
 
   /* `.grid-bg` sale en el hero (oscuro) y en estadísticas (claro). */
@@ -128,6 +135,8 @@
   --accent: #945d11;
   --accent-soft: rgba(148, 93, 17, 0.12);
   --accent-ink: #fffdf7;
+  --accent-cool: #1f6b66;
+  --figure: var(--text);
   /* El teal-300 es prácticamente invisible sobre crema. */
   --focus: #2b7d77;
 

@@ -38,7 +38,7 @@
   background: var(--surface);
   font-family: var(--font-mono);
   font-size: 0.74rem;
-  color: var(--teal-300);
+  color: var(--accent-cool);
   transition:
     transform var(--d-press) var(--ease-out),
     background-color var(--d-base) ease;
@@ -168,7 +168,7 @@
 @media (hover: hover) and (pointer: fine) {
   .column a:hover,
   .legal a:hover {
-    color: var(--teal-300);
+    color: var(--accent-cool);
   }
 
   .socials a:hover {
