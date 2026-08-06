@@ -16,7 +16,7 @@
 
 /* Capa translúcida sobre la que corre el contenido, no una franja opaca. */
 .header.is-scrolled {
-  background: rgba(4, 22, 28, 0.72);
+  background: rgba(var(--substrate), 0.72);
   border-bottom-color: var(--stroke);
   backdrop-filter: blur(18px) saturate(160%);
   -webkit-backdrop-filter: blur(18px) saturate(160%);
@@ -90,7 +90,7 @@
   bottom: 1px;
   width: 4px;
   height: 4px;
-  background: var(--amber-500);
+  background: var(--accent);
   transform: translateX(-50%);
 }
 
@@ -121,6 +121,84 @@
 
 .menu-btn:active {
   transform: scale(0.94);
+}
+
+/* --- Control de tema ------------------------------------------------------ */
+
+.theme-btn {
+  /* En móvil vive en el drawer: la barra ya lleva marca y botón de menú. */
+  display: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--stroke);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    transform var(--d-press) var(--ease-out),
+    color var(--d-base) ease,
+    background-color var(--d-base) ease;
+}
+
+.theme-btn:active {
+  transform: scale(0.94);
+}
+
+/* El icono entrante y el saliente son el mismo nodo: Angular lo reemplaza, y la
+   animación de entrada basta para leer el cambio. */
+.theme-btn kx-icon,
+.theme-row kx-icon {
+  animation: theme-icon-in var(--d-fast) var(--ease-out) backwards;
+}
+
+@keyframes theme-icon-in {
+  from {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.7);
+  }
+}
+
+.theme-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--stroke);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.theme-row button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--stroke-strong);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+  transition: transform var(--d-press) var(--ease-out);
+}
+
+.theme-row button:active {
+  transform: scale(0.96);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-btn kx-icon,
+  .theme-row kx-icon {
+    animation: none;
+  }
 }
 
 /* --- Menú móvil ---------------------------------------------------------- */
@@ -154,7 +232,7 @@
   max-height: calc(100dvh - var(--header-h));
   overflow-y: auto;
   padding: 1.5rem var(--gutter) 2rem;
-  background: rgba(6, 31, 38, 0.92);
+  background: rgba(var(--substrate), 0.92);
   border-bottom: 1px solid var(--stroke);
   backdrop-filter: blur(22px) saturate(160%);
   -webkit-backdrop-filter: blur(22px) saturate(160%);
@@ -207,19 +285,24 @@
 
 .drawer a kx-icon {
   margin-left: auto;
-  color: var(--teal-300);
+  color: var(--accent-cool);
 }
 
 .index {
   font-family: var(--font-mono);
   font-size: 0.72rem;
-  color: var(--amber-500);
+  color: var(--accent);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .nav a:hover {
     color: var(--text);
     background: var(--surface-2);
+  }
+
+  .theme-btn:hover {
+    background: var(--surface-2);
+    color: var(--text);
   }
 
   .menu-btn:hover {
@@ -235,6 +318,10 @@
 
   .cta {
     display: inline-flex;
+  }
+
+  .theme-btn {
+    display: grid;
   }
 
   .menu-btn {

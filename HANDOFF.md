@@ -11,11 +11,13 @@ Landing page completa y funcional. Build de producción sin warnings, 3 pruebas 
 
 | Métrica | Valor |
 | --- | --- |
-| Bundle inicial | 428 kB crudos · **105 kB transferidos** (JS 103 + CSS 2.6) |
+| Bundle inicial | 434 kB crudos · **107 kB transferidos** (JS 103 + CSS 3.2) |
 | Dependencias añadidas | **ninguna** |
 | Imágenes externas | **ninguna** (todo SVG inline) |
 | Secciones | 16 |
-| Pruebas | 3/3 pasando |
+| Temas | oscuro (default) y claro, con hero/clientes/CTA/footer siempre oscuros |
+| Pruebas | 19/19 pasando |
+| Contraste | 0 fallos WCAG AA en ambos temas, auditado sobre el DOM real |
 
 ### Comandos
 
@@ -34,7 +36,7 @@ npx ng test --watch=false
 
 | Decisión | Elección | Razón |
 | --- | --- | --- |
-| Tema | Dark-first retro-futurista | El pixel art y el glassmorphism se leen premium sobre base oscura; mejor contraste para los acentos ámbar |
+| Tema | Dark-first retro-futurista, con tema claro de anclas oscuras | El pixel art y el glassmorphism se leen premium sobre base oscura. El claro se añadió después sin tocar el hero: ver §4 |
 | Paleta | Turquesa profunda + ámbar | Combinación de las paletas turquesa y cálida del brief, la de mejor contraste y armonía |
 | Stack de motion | CSS + `IntersectionObserver` propio | Máximo Lighthouse, bundle mínimo, control total del easing. No hay springs ni gestos que CSS no cubra |
 | Librerías UI | Ninguna | `pick-ui-library` recomienda `motion`, Sonner y base-ui, pero esa lista es **React-first**. El único viable en Angular (`motion` vanilla) no aportaba nada aquí |
@@ -68,6 +70,9 @@ src/
     ├── data/
     │   └── kallix.data.ts      ⭐ TODO el contenido de la página. Ningún componente tiene texto
     ├── core/                   Primitivas de motion
+    │   ├── theme.service.ts    ⭐ Único dueño del tema. Escribe `data-theme` en <html>
+    │   │                       de forma SÍNCRONA: `startViewTransition` fotografía el
+    │   │                       DOM al retornar el callback, y un `effect` correría después
     │   ├── motion.ts           prefersReducedMotion, hasFinePointer, damp, easeOutExpo
     │   ├── reveal.service.ts   IntersectionObserver único para toda la página
     │   ├── reveal.directive.ts [kxReveal]="up|down|left|right|scale|clip" [kxRevealDelay]
@@ -120,7 +125,35 @@ Clases globales reutilizables: `.container` `.section` `.card` `.card--glass`
 `.display` `.h2` `.h3` `.h4` `.lede` `.mono` `.gradient-text` `.link` `.grid-bg`
 `.aurora` `.pixel-text` `.sr-only` `.skip-link`.
 
-**Para cambiar el tema completo basta con editar el bloque `:root` de `styles.css`.**
+### Temas: zonas, no un interruptor global
+
+Ya **no** basta con editar `:root`. Los roles semánticos viven en dos bloques:
+
+```css
+:root,
+[data-theme='light'] .on-dark { /* roles oscuros */ }
+
+[data-theme='light']          { /* roles claros  */ }
+```
+
+`[data-theme='light'] .on-dark` (0,2,0) gana a `[data-theme='light']` (0,1,0), y
+las custom properties se heredan: por eso **cualquier subárbol con `.on-dark`
+conserva el lienzo oscuro** aunque la página esté en claro. En `app.html` la
+llevan `kx-hero`, `kx-clients`, `kx-cta` y `kx-site-footer`.
+
+`.on-dark` además **pinta** `background` y `color`: redefinir tokens no basta si
+la sección era transparente y heredaba el fondo del body. Ojo: los estilos de
+componente llegan después que los globales, así que un `:host { background }`
+propio le gana — tiene que componer sobre `var(--bg)`, como hace `clients.ts`.
+
+Tokens añadidos: `--veil` y `--substrate` (tripletes RGB para tintes y sustratos),
+`--accent-cool` (contraparte fría de `--accent`), `--figure` (cifras grandes),
+`--grid-line`, `--badge-teal/-amber/-rust`, `--scrollbar-thumb`.
+
+`scripts/contrast.mjs` mide los roles claros contra **todas** las superficies.
+Si retocas un color, vuelve a correrlo: medir solo contra `--bg` dejaba pasar
+fallos reales, porque un texto oscuro pierde contraste sobre las superficies
+tintadas, no sobre las elevadas.
 
 ---
 
@@ -139,6 +172,13 @@ Se siguió la filosofía de Emil Kowalski. Quien continúe debe respetar:
    — nunca `both`, que congelaría el estado final y bloquearía el hover.
 7. Los transform de los hijos se escriben directamente sobre cada hijo, jamás
    propagados por una variable CSS del padre (recalcularía el estilo de todos).
+8. **Ningún color que varíe por tema se resuelve con `:host-context()`.** Ese
+   selector solo ve el atributo del `<html>` y **no ve la frontera `.on-dark`**:
+   pondría en claro un badge dentro del hero. Va siempre por token global.
+9. **Nunca uses la paleta cruda (`--teal-*`, `--amber-*`, `--sand-*`) como color
+   de texto.** No cambia con el tema. Usa `--text`, `--text-muted`, `--text-dim`,
+   `--accent`, `--accent-cool` o `--figure`. Este fue el error más repetido:
+   34 elementos quedaban ilegibles en claro por esto.
 
 ---
 
@@ -198,20 +238,43 @@ Cada proyecto y producto referencia una maqueta SVG por nombre (`PreviewName`):
 
 ---
 
-## 8. No verificado
+## 8. Verificado en navegador (2026-08-06)
 
-**La página nunca se abrió en un navegador.** La verificación fue por build,
-pruebas unitarias y revisión de código; las herramientas de navegador no estaban
-disponibles en la sesión. Falta comprobar a ojo:
+La página **sí** se abrió en un navegador, en ambos temas. Comprobado:
 
-- Cómo se ve el sol de bandas y las scanlines del hero en pantallas reales
-- El recorte del indicador de tabs en móvil (se corrigió a ciegas)
-- El tilt y el foco de luz de las tarjetas
-- Los avatares pixel a tamaño real (96 px)
-- Comportamiento en tablet y móvil de verdad, no solo por media queries
+- El sol de bandas, las scanlines y los sprites del hero: intactos en claro,
+  porque el hero es zona `.on-dark`.
+- Las fronteras oscuro↔claro (hero→clientes→nosotros, portafolio→CTA→proceso,
+  contacto→footer): sin bordes sucios ni dobles separadores.
+- El cristal del header cruzando de zona oscura a clara al hacer scroll.
+- El drawer móvil en claro: cristal crema, texto oscuro, scrim oscuro (correcto
+  en ambos temas), y la fila "Tema" con su `aria-pressed`.
+- Precios y estadísticas en claro (el token `--figure`).
 
-Ejecuta también un Lighthouse: la meta era >90 y el diseño lo favorece (sin imágenes,
-sin dependencias), pero no está medido.
+### Auditoría de contraste sobre el DOM real
+
+Se recorrió cada elemento con texto calculando el fondo efectivo (componiendo
+las capas translúcidas) y su ratio WCAG. **Resultado: 0 fallos en ambos temas**,
+partiendo de 162 en claro.
+
+Dos trampas de método que conviene recordar si se repite la auditoría:
+
+1. **El dev server sirve CSS obsoleto tras varios cambios.** Un audit reportó 35
+   fallos que eran puro artefacto; recargar con `?cachebust=1` los borró. Verifica
+   el artefacto antes de "arreglar" nada.
+2. **Medir justo después de cambiar el tema da valores en tránsito.** Los
+   elementos con `transition: color` devuelven el valor interpolado. Hay que
+   dejar asentar, o medir tras una carga limpia en cada tema.
+
+### Sigue pendiente
+
+- **Lighthouse**: no se llegó a medir. Meta >90; el diseño lo favorece (sin
+  imágenes, sin dependencias).
+- El recorte del indicador de tabs en móvil real (se corrigió a ciegas y el
+  viewport móvil no se pudo reproducir en esta sesión).
+- Los avatares pixel del equipo a tamaño real (96 px) sobre tarjeta clara.
+- `prefers-reduced-motion`: la rama existe y está cubierta por código, pero no se
+  probó activando la preferencia en el sistema.
 
 ---
 

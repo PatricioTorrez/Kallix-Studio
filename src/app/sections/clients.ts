@@ -18,7 +18,10 @@ import { Marquee } from '../ui/marquee';
       display: block;
       padding-block: clamp(28px, 4vw, 44px);
       border-block: 1px solid var(--stroke);
-      background: linear-gradient(180deg, rgba(207, 240, 234, 0.02), transparent);
+      /* El color va antes del degradado: los estilos de componente llegan
+         después que los globales, así que este background gana al de .on-dark
+         y sin la base la franja quedaría transparente sobre el body. */
+      background: var(--bg) linear-gradient(180deg, rgba(var(--veil), 0.02), transparent);
     }
 
     .strip {

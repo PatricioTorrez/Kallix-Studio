@@ -23,7 +23,7 @@
 
 .is-highlighted {
   border-color: rgba(231, 168, 78, 0.4);
-  background: linear-gradient(170deg, rgba(231, 168, 78, 0.12), rgba(207, 240, 234, 0.03));
+  background: linear-gradient(170deg, rgba(231, 168, 78, 0.12), rgba(var(--veil), 0.03));
   box-shadow: 0 26px 60px -40px rgba(231, 168, 78, 0.8);
 }
 
@@ -33,7 +33,7 @@
   right: 1.25rem;
   padding: 0.25rem 0.6rem;
   border-radius: var(--r-pill);
-  background: var(--amber-500);
+  background: var(--accent);
   color: var(--accent-ink);
   font-size: 0.66rem;
   letter-spacing: 0.1em;
@@ -65,11 +65,11 @@
   font-size: clamp(1.7rem, 3vw, 2.1rem);
   font-weight: 700;
   letter-spacing: -0.035em;
-  color: var(--sand-200);
+  color: var(--figure);
 }
 
 .is-highlighted .amount {
-  color: var(--amber-400);
+  color: var(--accent);
 }
 
 .unit {
@@ -94,11 +94,11 @@
 .includes kx-icon {
   flex: none;
   margin-top: 0.2rem;
-  color: var(--teal-400);
+  color: var(--accent-cool);
 }
 
 .is-highlighted .includes kx-icon {
-  color: var(--amber-500);
+  color: var(--accent);
 }
 
 .plan .btn {

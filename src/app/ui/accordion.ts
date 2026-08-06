@@ -99,7 +99,7 @@ export interface AccordionItem {
       height: 34px;
       border: 1px solid var(--stroke-strong);
       border-radius: var(--r-pill);
-      color: var(--teal-300);
+      color: var(--accent-cool);
       transition:
         transform var(--d-slow) var(--ease-out),
         background-color var(--d-base) ease,
@@ -108,7 +108,7 @@ export interface AccordionItem {
 
     .is-open .sign {
       transform: rotate(135deg);
-      background: var(--amber-500);
+      background: var(--accent);
       color: var(--accent-ink);
       border-color: transparent;
     }
@@ -140,7 +140,7 @@ export interface AccordionItem {
 
     @media (hover: hover) and (pointer: fine) {
       .trigger:hover .question {
-        color: var(--teal-300);
+        color: var(--accent-cool);
       }
 
       .trigger:hover .sign {

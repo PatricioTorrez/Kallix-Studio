@@ -29,8 +29,8 @@
   flex: none;
   border: 1px solid var(--stroke-strong);
   border-radius: var(--r-md);
-  background: linear-gradient(160deg, rgba(62, 155, 148, 0.24), rgba(4, 22, 28, 0.6));
-  color: var(--teal-300);
+  background: linear-gradient(160deg, rgba(62, 155, 148, 0.24), rgba(var(--substrate), 0.6));
+  color: var(--accent-cool);
   transform: scale(0.85);
   opacity: 0.6;
   transition:
@@ -54,7 +54,7 @@
 .step[data-visible] .dot {
   transform: scale(1);
   opacity: 1;
-  color: var(--amber-500);
+  color: var(--accent);
   border-color: rgba(231, 168, 78, 0.35);
 }
 
@@ -80,7 +80,7 @@
 
 .number {
   font-size: 0.72rem;
-  color: var(--amber-500);
+  color: var(--accent);
 }
 
 .head h3 {

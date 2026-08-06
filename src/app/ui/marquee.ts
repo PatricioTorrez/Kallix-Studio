@@ -61,7 +61,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
       }
 
       li:hover {
-        color: var(--teal-300);
+        color: var(--accent-cool);
       }
     }
 

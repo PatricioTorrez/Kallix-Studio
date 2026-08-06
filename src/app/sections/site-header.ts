@@ -4,11 +4,13 @@ import {
   ElementRef,
   OnDestroy,
   afterNextRender,
+  computed,
   effect,
   inject,
   signal,
   viewChild,
 } from '@angular/core';
+import { ThemeService } from '../core/theme.service';
 import { NAV_LINKS } from '../data/kallix.data';
 import { Icon } from '../ui/icon';
 import { Logo } from '../ui/logo';
@@ -25,6 +27,13 @@ export class SiteHeader implements OnDestroy {
   protected readonly scrolled = signal(false);
   protected readonly menuOpen = signal(false);
   protected readonly active = signal<string>('');
+
+  private readonly themeService = inject(ThemeService);
+
+  protected readonly isLight = computed(() => this.themeService.theme() === 'light');
+  protected readonly themeLabel = computed(() =>
+    this.isLight() ? 'Cambiar a tema oscuro' : 'Cambiar a tema claro',
+  );
 
   private readonly progressBar = viewChild.required<ElementRef<HTMLElement>>('progress');
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
@@ -72,6 +81,10 @@ export class SiteHeader implements OnDestroy {
       if (inert) element.setAttribute('inert', '');
       else element.removeAttribute('inert');
     }
+  }
+
+  protected toggleTheme(): void {
+    this.themeService.toggle();
   }
 
   protected toggleMenu(): void {

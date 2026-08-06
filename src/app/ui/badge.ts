@@ -36,19 +36,19 @@ export type BadgeTone = 'teal' | 'amber' | 'neutral' | 'rust';
     :host(.tone-teal) {
       --badge-bg: rgba(62, 155, 148, 0.14);
       --badge-border: rgba(136, 201, 196, 0.32);
-      --badge-fg: #a8ddd7;
+      --badge-fg: var(--badge-teal);
     }
 
     :host(.tone-amber) {
       --badge-bg: rgba(231, 168, 78, 0.14);
       --badge-border: rgba(231, 168, 78, 0.34);
-      --badge-fg: #f0c075;
+      --badge-fg: var(--badge-amber);
     }
 
     :host(.tone-rust) {
       --badge-bg: rgba(217, 108, 44, 0.16);
       --badge-border: rgba(217, 108, 44, 0.38);
-      --badge-fg: #eda274;
+      --badge-fg: var(--badge-rust);
     }
 
     :host(.tone-neutral) {

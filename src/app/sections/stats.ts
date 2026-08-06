@@ -44,7 +44,7 @@ import { STATS } from '../data/kallix.data';
       border-block: 1px solid var(--stroke);
       background:
         radial-gradient(80% 140% at 50% 0%, rgba(62, 155, 148, 0.14), transparent 60%),
-        linear-gradient(180deg, rgba(207, 240, 234, 0.03), transparent);
+        linear-gradient(180deg, rgba(var(--veil), 0.03), transparent);
     }
 
     .grid {
@@ -69,7 +69,7 @@ import { STATS } from '../data/kallix.data';
       font-weight: 700;
       line-height: 1;
       letter-spacing: -0.04em;
-      color: var(--sand-200);
+      color: var(--figure);
       font-variant-numeric: tabular-nums;
     }
 
