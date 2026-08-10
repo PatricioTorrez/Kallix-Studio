@@ -26,7 +26,7 @@ export class About {
     {
       icon: 'target',
       title: 'Criterio de producto',
-      text: 'Mantenemos SaaS propios en producción. Eso nos obliga a decidir pensando en el mes 18, no en la fecha de entrega.',
+      text: 'Operamos lo que construimos. Eso nos obliga a decidir pensando en el mes 18, no en la fecha de entrega.',
     },
     {
       icon: 'sparkle',

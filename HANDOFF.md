@@ -1,23 +1,27 @@
 # Kallix Studio — Landing Page
 
 Documento de continuidad. Todo lo necesario para retomar el proyecto sin volver a
-deducir decisiones. Última actualización: **2026-08-05**.
+deducir decisiones. Última actualización: **2026-08-07**.
 
 ---
 
 ## 1. Estado actual
 
-Landing page completa y funcional. Build de producción sin warnings, 3 pruebas en verde.
+Landing page completa y funcional. Build de producción sin warnings, pruebas en verde.
+
+**La página ofrece tres cosas y solo tres:** sistemas SaaS, apps móviles Android y
+chatbots para negocios. Todo el contenido inventado (portafolio, testimonios,
+clientes, productos propios, estadísticas) se eliminó el 2026-08-07; ver §7.
 
 | Métrica | Valor |
 | --- | --- |
-| Bundle inicial | 434 kB crudos · **107 kB transferidos** (JS 103 + CSS 3.2) |
+| Bundle inicial | 401 kB crudos · **100 kB transferidos** (JS 97.3 + CSS 2.9) |
 | Dependencias añadidas | **ninguna** |
 | Imágenes externas | **ninguna** (todo SVG inline) |
-| Secciones | 16 |
-| Temas | oscuro (default) y claro, con hero/clientes/CTA/footer siempre oscuros |
+| Secciones | 11 |
+| Temas | oscuro (default) y claro, con hero/CTA/footer siempre oscuros |
 | Pruebas | 19/19 pasando |
-| Contraste | 0 fallos WCAG AA en ambos temas, auditado sobre el DOM real |
+| Contraste | 0 fallos WCAG AA en ambos temas, auditado sobre el DOM real (antes del recorte) |
 
 ### Comandos
 
@@ -40,7 +44,9 @@ npx ng test --watch=false
 | Paleta | Turquesa profunda + ámbar | Combinación de las paletas turquesa y cálida del brief, la de mejor contraste y armonía |
 | Stack de motion | CSS + `IntersectionObserver` propio | Máximo Lighthouse, bundle mínimo, control total del easing. No hay springs ni gestos que CSS no cubra |
 | Librerías UI | Ninguna | `pick-ui-library` recomienda `motion`, Sonner y base-ui, pero esa lista es **React-first**. El único viable en Angular (`motion` vanilla) no aportaba nada aquí |
-| Contenido | Datos realistas en un archivo único | La página se puede mostrar hoy; reemplazar es cambiar un archivo |
+| Contenido | Solo lo verificable, en un archivo único | Nada de clientes, casos ni cifras que no podamos sostener. Cambiar el discurso es editar un archivo |
+| Oferta | Tres servicios, no seis | SaaS, Android y chatbots. Decir menos y decirlo completo vende mejor que un catálogo |
+| Precios | Fuera de la página | Se definen en la propuesta, después de entender el alcance. Los modelos de trabajo se quedan, sin cifras |
 | Formulario | Endpoint configurable, simula por defecto | Sin backend todavía; conectar es una línea |
 | Tailwind | Descartado | Con un design system propio de tokens aportaba poco y sumaba configuración |
 
@@ -66,7 +72,7 @@ src/
 ├── index.html                  SEO, OG, JSON-LD Organization, fuentes, theme-color
 ├── styles.css                  ⭐ Design system global (tokens, reset, botones, reveal, a11y)
 └── app/
-    ├── app.ts / app.html       Shell: compone las 16 secciones en orden
+    ├── app.ts / app.html       Shell: compone las 11 secciones en orden
     ├── data/
     │   └── kallix.data.ts      ⭐ TODO el contenido de la página. Ningún componente tiene texto
     ├── core/                   Primitivas de motion
@@ -85,24 +91,29 @@ src/
     │   ├── pixel-art.ts        gridToRuns(): rejilla de texto → rectángulos SVG fusionados
     │   ├── pixel-avatar.ts     retratos 14×14 del equipo
     │   ├── pixel-sprite.ts     7 sprites 8×8 · 4 tonos (amber/teal/sand/rust)
-    │   ├── project-preview.ts  8 maquetas SVG de producto. Tipo PreviewName
+    │   ├── project-preview.ts  8 maquetas SVG de producto. Tipo PreviewName.
+    │   │                       Hoy solo se usan 3 (dashboard/mobile/chat), una por servicio
     │   ├── logo.ts             marca pixel "K" + wordmark
     │   ├── badge.ts            4 tonos, con o sin punto
     │   ├── section-header.ts   antetítulo + título proyectado + entradilla
     │   ├── tabs.ts             indicador por clip-path (técnica de la lista duplicada)
     │   ├── accordion.ts        grid-template-rows 0fr→1fr, sin medir alturas en JS
-    │   ├── carousel.ts         scroll nativo con snap + controles
-    │   └── marquee.ts          cinta continua, pausa al hover
-    └── sections/               16 secciones (ts + html + css cuando crecen)
-        site-header, hero, clients, about, services, tech, products, pricing,
-        portfolio, cta, process, stats, team, testimonials, faq, contact, site-footer
+    │   ├── carousel.ts         scroll nativo con snap + controles ⚠️ sin uso
+    │   └── marquee.ts          cinta continua, pausa al hover ⚠️ sin uso
+    └── sections/               11 secciones (ts + html + css cuando crecen)
+        site-header, hero, about, services, tech, pricing, cta, process,
+        team, faq, contact, site-footer
 ```
 
-**Orden en `app.html`:** hero → clientes → nosotros → servicios → tecnologías →
-productos → modelos → portafolio → **CTA** → proceso → estadísticas → equipo →
-testimonios → FAQ → contacto → footer.
+**Orden en `app.html`:** hero → nosotros → servicios → tecnologías → modelos →
+**CTA** → proceso → equipo → FAQ → contacto → footer.
 
 El CTA va a media página (punto natural de conversión), no pegado al formulario.
+
+`carousel.ts`, `marquee.ts` y `count-up.directive.ts` quedaron sin consumidor al
+retirar testimonios, clientes y estadísticas. Se conservan a propósito: son
+primitivas genéricas, no están importadas en ningún sitio y por tanto no pesan
+en el bundle. Si vuelve la prueba social, están listas.
 
 ---
 
@@ -208,30 +219,37 @@ violaciones duras. Seis hallazgos, todos corregidos:
 | 2 | **Teléfono y WhatsApp reales** — son placeholders | `src/app/data/kallix.data.ts` → `CONTACT` |
 | 3 | **Dominio real** — `https://kallix.studio/` está hardcodeado en canonical, OG y JSON-LD | `src/index.html` |
 
-### Contenido inventado que hay que reemplazar
+### Recorte de contenido ficticio (2026-08-07)
 
-Todo está en `src/app/data/kallix.data.ts`, marcado con `⚠️ PLACEHOLDER` en la
-cabecera del archivo. **Es real:** el equipo (5 personas, roles, especialidades) y
-los servicios. **Es inventado y plausible:**
+Se eliminaron las cinco secciones que sostenían negocios, clientes y cifras
+inventadas, junto con sus datos y componentes:
 
-- `PROJECTS` — 6 proyectos de portafolio con cliente, año, resultado y stack
-- `TESTIMONIALS` — 4 testimonios con autor y empresa
-- `PRODUCTS` — 3 SaaS propios (Botaro, Kanttia, Flujo)
-- `STATS` / `HERO_STATS` — 38 proyectos, 99.9% uptime, 4.9/5, etc.
-- `PLANS` — precios de los tres modelos de trabajo
-- `CLIENT_LOGOS` — nombres de la marquesina
-- `FAQS` — respuestas con cifras concretas (precios, plazos) que hay que confirmar
+| Fuera | Qué contenía |
+| --- | --- |
+| `portfolio` | 6 proyectos con cliente, año y resultado inventados |
+| `testimonials` | 4 testimonios con autor y empresa inventados |
+| `clients` | marquesina de logos de clientes inventados |
+| `products` | 3 SaaS propios inventados (Botaro, Kanttia, Flujo) |
+| `stats` | 38 proyectos, 99.9% uptime, 4.9/5, 26 reseñas |
 
-Cada proyecto y producto referencia una maqueta SVG por nombre (`PreviewName`):
-`dashboard · mobile · chat · store · calendar · map · pos · flow`.
+También se quitaron `Plan.price` y `Plan.unit` (los modelos siguen, sin cifras) y
+la respuesta del FAQ que prometía «desde 4,900 USD».
+
+**Lo que queda es verificable:** el equipo, los servicios, el proceso, el stack y
+los compromisos (plazos por tipo de proyecto, 30 días de garantía, código en tu
+repositorio, respuesta en menos de 24 h). Si algún compromiso no se puede
+sostener, se edita en `kallix.data.ts` y desaparece de toda la página.
+
+**Consecuencia:** el sitio ya no tiene prueba social. Cuando haya trabajo real
+que enseñar, `portfolio` y `testimonials` se pueden recuperar del historial
+(`git show a60bfee:src/app/sections/portfolio.ts`) junto con `carousel.ts` y
+`marquee.ts`, que se dejaron en su sitio para eso.
 
 ### Mejoras opcionales
 
 - **Avatares del equipo**: son rejillas 14×14 de texto en `TEAM[].pixels` con su
   paleta. Editables a mano; cada carácter es un color (`1` pelo, `3` piel, `5` ojos,
   `6` ropa, `8` accesorio, `.` transparente).
-- Animación de **salida** al filtrar el portafolio (hoy los elementos que salen
-  desaparecen de golpe; la entrada sí está animada).
 - Página de aviso de privacidad y términos — los enlaces del footer apuntan a `#nosotros`.
 - Router: `app.routes.ts` está vacío y `provideRouter` sigue configurado, listo para
   añadir rutas sin tocar nada más.
@@ -239,6 +257,14 @@ Cada proyecto y producto referencia una maqueta SVG por nombre (`PreviewName`):
 ---
 
 ## 8. Verificado en navegador (2026-08-06)
+
+> ⚠️ **Esta verificación es anterior al recorte del 2026-08-07** y no cubre lo que
+> cambió ese día. Sin comprobar en navegador: la nueva sección de servicios (3
+> filas alternadas con maqueta SVG), las etiquetas del hero que sustituyeron a las
+> cifras, la maqueta del panel con su contenido nuevo, las tarjetas de modelos sin
+> el bloque de precio y **la frontera hero→nosotros**, que ahora es el corte
+> oscuro→claro directo (antes mediaba la franja de clientes, también oscura).
+> Es lo primero que hay que mirar al retomar; el build y las 19 pruebas sí pasan.
 
 La página **sí** se abrió en un navegador, en ambos temas. Comprobado:
 
@@ -249,7 +275,8 @@ La página **sí** se abrió en un navegador, en ambos temas. Comprobado:
 - El cristal del header cruzando de zona oscura a clara al hacer scroll.
 - El drawer móvil en claro: cristal crema, texto oscuro, scrim oscuro (correcto
   en ambos temas), y la fila "Tema" con su `aria-pressed`.
-- Precios y estadísticas en claro (el token `--figure`).
+- Precios y estadísticas en claro (el token `--figure`). Ambos bloques ya no
+  existen; `--figure` sigue vivo dentro de `.gradient-text`.
 
 ### Auditoría de contraste sobre el DOM real
 

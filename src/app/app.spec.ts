@@ -29,12 +29,9 @@ describe('App', () => {
       'nosotros',
       'servicios',
       'tecnologias',
-      'productos',
       'modelos',
-      'portafolio',
       'proceso',
       'equipo',
-      'testimonios',
       'faq',
       'contacto',
     ]) {
@@ -47,7 +44,7 @@ describe('App', () => {
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
 
-    for (const selector of ['kx-hero', 'kx-clients', 'kx-cta', 'kx-site-footer']) {
+    for (const selector of ['kx-hero', 'kx-cta', 'kx-site-footer']) {
       expect(compiled.querySelector(`${selector}.on-dark`)).toBeTruthy();
     }
   });

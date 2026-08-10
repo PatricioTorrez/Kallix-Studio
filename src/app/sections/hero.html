@@ -20,8 +20,8 @@
       </h1>
 
       <p class="lede">
-        Aplicaciones web y móviles, plataformas SaaS, chatbots con IA y automatización de procesos.
-        Cinco personas, producto propio en producción y un estándar de acabado que no negociamos.
+        Sistemas SaaS, aplicaciones móviles para Android y chatbots que atienden a tus clientes en
+        WhatsApp. Tres cosas, hechas con el acabado que no negociamos.
       </p>
 
       <div class="actions">
@@ -29,34 +29,31 @@
           Iniciar proyecto
           <kx-icon class="btn__arrow" name="arrowRight" [size]="18" />
         </a>
-        <a class="btn btn--secondary btn--lg" href="#portafolio">
-          Ver nuestro trabajo
+        <a class="btn btn--secondary btn--lg" href="#servicios">
+          Ver qué construimos
           <kx-icon name="arrowUpRight" [size]="18" />
         </a>
       </div>
 
-      <dl class="trust">
-        @for (stat of stats; track stat.label) {
-          <div class="trust-item">
-            <dt>{{ stat.value }}</dt>
-            <dd>{{ stat.label }}</dd>
-          </div>
+      <ul class="tags">
+        @for (tag of tags; track tag) {
+          <li class="tag mono">{{ tag }}</li>
         }
-      </dl>
+      </ul>
     </div>
 
     <div class="stage">
       <div class="window card card--glass card--lit">
         <div class="window-bar">
           <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
-          <span class="mono window-title">kallix · panel</span>
-          <span class="live"><span class="pulse" aria-hidden="true"></span>en vivo</span>
+          <span class="mono window-title">{{ panel.title }}</span>
+          <span class="live"><span class="pulse" aria-hidden="true"></span>{{ panel.badge }}</span>
         </div>
 
         <div class="window-body">
           <div class="metric">
-            <span class="metric-label mono">Entregas por sprint</span>
-            <span class="metric-value">+128%</span>
+            <span class="metric-label mono">{{ panel.metricLabel }}</span>
+            <span class="metric-value">{{ panel.metricValue }}</span>
           </div>
 
           <div class="chart" aria-hidden="true">
@@ -66,14 +63,14 @@
           </div>
 
           <ul class="chips">
-            @for (chip of chips; track chip) {
+            @for (chip of panel.chips; track chip) {
               <li class="chip">{{ chip }}</li>
             }
           </ul>
 
           <div class="deploy mono">
             <kx-icon name="check" [size]="14" />
-            Deploy #1284 · producción · hace 2 min
+            {{ panel.footnote }}
           </div>
         </div>
       </div>

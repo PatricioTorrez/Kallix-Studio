@@ -1,9 +1,11 @@
 /**
  * Contenido de la landing de Kallix Studio.
  *
- * ⚠️ PLACEHOLDER: el equipo, los servicios y los datos de contacto son reales;
- * el portafolio, los testimonios, las métricas y los productos SaaS son
- * ejemplos plausibles. Reemplázalos aquí — ningún componente contiene texto.
+ * La página se enfoca en tres ofertas: sistemas SaaS, apps móviles Android y
+ * chatbots para negocios. Ningún componente contiene texto: todo se edita aquí.
+ *
+ * ⚠️ Pendientes de reemplazar por datos reales: `CONTACT.phone` y
+ * `CONTACT.whatsapp` siguen siendo placeholders.
  */
 
 import { IconName } from '../ui/icon';
@@ -18,8 +20,8 @@ export interface NavLink {
 
 export const NAV_LINKS: readonly NavLink[] = [
   { label: 'Servicios', href: '#servicios' },
-  { label: 'Productos', href: '#productos' },
-  { label: 'Trabajo', href: '#portafolio' },
+  { label: 'Tecnologías', href: '#tecnologias' },
+  { label: 'Modelos', href: '#modelos' },
   { label: 'Proceso', href: '#proceso' },
   { label: 'Equipo', href: '#equipo' },
   { label: 'FAQ', href: '#faq' },
@@ -37,11 +39,21 @@ export const CONTACT = {
 
 /* ── Hero ───────────────────────────────────────────────────────────────── */
 
-export const HERO_STATS: readonly { value: string; label: string }[] = [
-  { value: '38+', label: 'Proyectos entregados' },
-  { value: '5', label: 'Productos propios' },
-  { value: '4.9', label: 'Satisfacción · 5' },
-];
+/** Las tres ofertas, resumidas bajo el titular. */
+export const HERO_TAGS: readonly string[] = ['Sistemas SaaS', 'Apps Android', 'ChatBots'];
+
+/**
+ * Contenido de la maqueta de panel del hero. Es una ventana ilustrativa: no
+ * presume métricas nuestras, enseña la oferta y el compromiso de respuesta.
+ */
+export const HERO_PANEL = {
+  title: 'kallix · panel',
+  badge: 'disponibles',
+  metricLabel: 'Respondemos tu mensaje en',
+  metricValue: '< 24 h',
+  chips: ['Sistemas SaaS', 'Apps Android', 'ChatBots'],
+  footnote: 'Diseño, código y operación con el mismo equipo',
+} as const;
 
 /* ── Servicios ──────────────────────────────────────────────────────────── */
 
@@ -49,59 +61,58 @@ export interface Service {
   readonly id: string;
   readonly icon: IconName;
   readonly title: string;
+  readonly tagline: string;
   readonly summary: string;
   readonly points: readonly string[];
-  /** Marca la tarjeta ancha dentro del bento. */
-  readonly featured?: boolean;
+  /** Maqueta SVG que acompaña a la fila. */
+  readonly preview: PreviewName;
 }
 
 export const SERVICES: readonly Service[] = [
   {
-    id: 'web',
-    icon: 'browser',
-    title: 'Aplicaciones web',
-    summary:
-      'Plataformas que cargan rápido, escalan sin sobresaltos y se sienten nativas del navegador.',
-    points: ['Angular · TypeScript', 'Diseño de sistemas', 'Tiempo real y offline'],
-    featured: true,
-  },
-  {
-    id: 'mobile',
-    icon: 'mobile',
-    title: 'Aplicaciones móviles',
-    summary: 'Apps para iOS y Android con arquitectura pensada para durar años, no una demo.',
-    points: ['Flutter y nativo', 'Publicación en tiendas', 'Push, pagos y offline'],
-  },
-  {
     id: 'saas',
     icon: 'layers',
     title: 'Sistemas SaaS',
+    tagline: 'Tu producto en la nube',
     summary:
-      'Multi-tenant, suscripciones, roles y facturación: el andamiaje aburrido, resuelto bien.',
-    points: ['Multi-tenant', 'Cobros recurrentes', 'Paneles de administración'],
+      'Plataformas multi-tenant con suscripciones, roles y panel de administración. El andamiaje aburrido resuelto bien, para que tu equipo solo piense en el negocio.',
+    points: [
+      'Multi-tenant y control de accesos por rol',
+      'Cobros recurrentes y facturación',
+      'Panel de administración y reportes',
+      'Infraestructura, respaldos y monitoreo',
+    ],
+    preview: 'dashboard',
   },
   {
-    id: 'ai',
+    id: 'android',
+    icon: 'mobile',
+    title: 'Apps móviles Android',
+    tagline: 'Publicadas en Google Play',
+    summary:
+      'Aplicaciones nativas y en Flutter pensadas para durar años en producción, no para una demo. Funcionan aunque se caiga la señal y se actualizan sin fricción.',
+    points: [
+      'Kotlin nativo o Flutter, según el caso',
+      'Publicación y actualizaciones en Google Play',
+      'Modo sin conexión y sincronización',
+      'Notificaciones push y pagos en la app',
+    ],
+    preview: 'mobile',
+  },
+  {
+    id: 'chatbots',
     icon: 'bot',
-    title: 'ChatBots e IA',
+    title: 'ChatBots para tu negocio',
+    tagline: 'En WhatsApp y en tu sitio',
     summary:
-      'Asistentes que conocen tu negocio, contestan en WhatsApp y escalan a un humano cuando toca.',
-    points: ['RAG sobre tus datos', 'WhatsApp y web', 'Agentes con herramientas'],
-    featured: true,
-  },
-  {
-    id: 'automation',
-    icon: 'bolt',
-    title: 'Automatización',
-    summary: 'Conectamos lo que ya usas y borramos el trabajo manual que nadie quiere hacer.',
-    points: ['Integraciones y APIs', 'Reportes automáticos', 'Flujos programados'],
-  },
-  {
-    id: 'custom',
-    icon: 'blocks',
-    title: 'Software a medida',
-    summary: 'ERP, CRM y herramientas internas hechas a la forma exacta de tu operación.',
-    points: ['Levantamiento de procesos', 'Migraciones', 'Soporte y evolución'],
+      'Asistentes que conocen tu catálogo y tus procesos: contestan, cotizan, agendan y pasan la conversación a una persona en cuanto hace falta.',
+    points: [
+      'Entrenado con tu propia información',
+      'WhatsApp, web y redes sociales',
+      'Traspaso a un agente humano',
+      'Historial y métricas de cada conversación',
+    ],
+    preview: 'chat',
   },
 ];
 
@@ -115,51 +126,39 @@ export interface TechGroup {
 
 export const TECH_GROUPS: readonly TechGroup[] = [
   {
-    id: 'frontend',
-    label: 'Frontend',
-    items: [
-      { name: 'Angular', note: 'Signals · SSR' },
-      { name: 'TypeScript', note: 'Estricto' },
-      { name: 'RxJS', note: 'Reactivo' },
-      { name: 'Tailwind', note: 'Design tokens' },
-      { name: 'Vite', note: 'Build' },
-      { name: 'Figma', note: 'Diseño' },
-    ],
-  },
-  {
-    id: 'backend',
-    label: 'Backend',
+    id: 'saas',
+    label: 'SaaS',
     items: [
       { name: 'Laravel', note: 'APIs · Filament' },
-      { name: 'PHP 8', note: 'Tipado' },
-      { name: 'Node.js', note: 'Servicios' },
+      { name: 'Angular', note: 'Signals · SSR' },
+      { name: 'TypeScript', note: 'Estricto' },
       { name: 'PostgreSQL', note: 'Datos' },
-      { name: 'MySQL', note: 'Datos' },
       { name: 'Redis', note: 'Colas · caché' },
+      { name: 'Stripe', note: 'Suscripciones' },
     ],
   },
   {
-    id: 'mobile',
-    label: 'Móvil',
+    id: 'android',
+    label: 'Android',
     items: [
-      { name: 'Flutter', note: 'iOS · Android' },
-      { name: 'Dart', note: 'Tipado' },
       { name: 'Kotlin', note: 'Nativo' },
-      { name: 'Swift', note: 'Nativo' },
+      { name: 'Jetpack Compose', note: 'UI' },
+      { name: 'Flutter', note: 'Multiplataforma' },
       { name: 'Firebase', note: 'Push · Auth' },
-      { name: 'Fastlane', note: 'Publicación' },
+      { name: 'Play Console', note: 'Publicación' },
+      { name: 'Fastlane', note: 'Entregas' },
     ],
   },
   {
-    id: 'ai',
-    label: 'IA & Datos',
+    id: 'chatbots',
+    label: 'ChatBots e IA',
     items: [
       { name: 'Claude', note: 'Agentes' },
       { name: 'OpenAI', note: 'LLM' },
       { name: 'LangChain', note: 'Orquestación' },
       { name: 'pgvector', note: 'Embeddings' },
+      { name: 'WhatsApp API', note: 'Canal' },
       { name: 'Python', note: 'Pipelines' },
-      { name: 'n8n', note: 'Automatización' },
     ],
   },
   {
@@ -168,70 +167,19 @@ export const TECH_GROUPS: readonly TechGroup[] = [
     items: [
       { name: 'Docker', note: 'Contenedores' },
       { name: 'AWS', note: 'Nube' },
-      { name: 'Vercel', note: 'Edge' },
       { name: 'GitHub Actions', note: 'CI/CD' },
       { name: 'Cloudflare', note: 'CDN · WAF' },
       { name: 'Sentry', note: 'Observabilidad' },
+      { name: 'Grafana', note: 'Métricas' },
     ],
   },
 ];
 
-/* ── Productos SaaS propios ─────────────────────────────────────────────── */
-
-export interface Product {
-  readonly id: string;
-  readonly name: string;
-  readonly tagline: string;
-  readonly description: string;
-  readonly status: 'Producción' | 'Beta' | 'En desarrollo';
-  readonly features: readonly string[];
-  readonly preview: PreviewName;
-  readonly accent: 'amber' | 'teal' | 'rust';
-}
-
-export const PRODUCTS: readonly Product[] = [
-  {
-    id: 'botaro',
-    name: 'Botaro',
-    tagline: 'Chatbots de WhatsApp con IA',
-    description:
-      'Conecta tu catálogo y tus procesos: Botaro contesta, cotiza, agenda y escala a un humano cuando la conversación lo pide.',
-    status: 'Producción',
-    features: ['Base de conocimiento propia', 'Handoff a agente humano', 'Métricas de conversación'],
-    preview: 'chat',
-    accent: 'teal',
-  },
-  {
-    id: 'kanttia',
-    name: 'Kanttia',
-    tagline: 'Inventario y punto de venta',
-    description:
-      'Control de stock multi-sucursal, ventas en mostrador y reportes que se entienden sin ser contador.',
-    status: 'Producción',
-    features: ['Multi-sucursal', 'Corte de caja', 'Facturación electrónica'],
-    preview: 'pos',
-    accent: 'amber',
-  },
-  {
-    id: 'flujo',
-    name: 'Flujo',
-    tagline: 'Automatización de procesos internos',
-    description:
-      'Diseña un proceso una vez y deja que corra solo: aprobaciones, recordatorios e integraciones con lo que ya usas.',
-    status: 'Beta',
-    features: ['Editor visual de flujos', 'Integraciones vía API', 'Bitácora auditable'],
-    preview: 'flow',
-    accent: 'rust',
-  },
-];
-
-/* ── Modelos de trabajo (pricing) ───────────────────────────────────────── */
+/* ── Modelos de trabajo ─────────────────────────────────────────────────── */
 
 export interface Plan {
   readonly id: string;
   readonly name: string;
-  readonly price: string;
-  readonly unit: string;
   readonly description: string;
   readonly includes: readonly string[];
   readonly cta: string;
@@ -242,9 +190,7 @@ export const PLANS: readonly Plan[] = [
   {
     id: 'proyecto',
     name: 'Proyecto cerrado',
-    price: 'Desde $4,900',
-    unit: 'USD · alcance fijo',
-    description: 'Sabes qué necesitas y quieres una fecha y un precio en firme.',
+    description: 'Sabes qué necesitas y quieres una fecha y un alcance en firme.',
     includes: [
       'Alcance y entregables definidos',
       'Diseño UI/UX incluido',
@@ -256,13 +202,11 @@ export const PLANS: readonly Plan[] = [
   {
     id: 'equipo',
     name: 'Equipo dedicado',
-    price: 'Desde $3,200',
-    unit: 'USD · por mes',
     description: 'Necesitas capacidad continua y prioridades que cambian cada sprint.',
     includes: [
       'Squad de 2 a 5 personas',
       'Sprints de 2 semanas',
-      'Canal directo en Slack',
+      'Canal directo de comunicación',
       'Reporte de avance semanal',
       'Sin permanencia mínima',
     ],
@@ -272,8 +216,6 @@ export const PLANS: readonly Plan[] = [
   {
     id: 'producto',
     name: 'Producto conjunto',
-    price: 'A convenir',
-    unit: 'inversión + equity',
     description: 'Tienes la idea y el mercado; nosotros ponemos el producto en la nube.',
     includes: [
       'Descubrimiento y validación',
@@ -282,92 +224,6 @@ export const PLANS: readonly Plan[] = [
       'Modelo de participación',
     ],
     cta: 'Platicar la idea',
-  },
-];
-
-/* ── Portafolio ─────────────────────────────────────────────────────────── */
-
-export interface Project {
-  readonly id: string;
-  readonly name: string;
-  readonly client: string;
-  readonly category: 'Web' | 'Móvil' | 'SaaS' | 'IA';
-  readonly year: string;
-  readonly summary: string;
-  readonly result: string;
-  readonly stack: readonly string[];
-  readonly preview: PreviewName;
-}
-
-export const PROJECT_CATEGORIES = ['Todo', 'Web', 'Móvil', 'SaaS', 'IA'] as const;
-export type ProjectCategory = (typeof PROJECT_CATEGORIES)[number];
-
-export const PROJECTS: readonly Project[] = [
-  {
-    id: 'nauta',
-    name: 'Nauta ERP',
-    client: 'Distribuidora Nauta',
-    category: 'SaaS',
-    year: '2025',
-    summary: 'Sustituimos cinco hojas de cálculo por un ERP con inventario, compras y facturación.',
-    result: '−42% en tiempo de facturación',
-    stack: ['Laravel', 'Angular', 'PostgreSQL'],
-    preview: 'dashboard',
-  },
-  {
-    id: 'meridian',
-    name: 'Meridian',
-    client: 'Grupo Meridian',
-    category: 'Móvil',
-    year: '2025',
-    summary: 'App de campo para técnicos: órdenes, evidencias y firma del cliente, aun sin señal.',
-    result: '3,400 órdenes al mes',
-    stack: ['Flutter', 'Firebase', 'Node.js'],
-    preview: 'mobile',
-  },
-  {
-    id: 'atlas',
-    name: 'Atlas Assist',
-    client: 'Aseguradora Atlas',
-    category: 'IA',
-    year: '2024',
-    summary: 'Asistente que responde pólizas y coberturas leyendo la documentación real del cliente.',
-    result: '68% de tickets resueltos solo',
-    stack: ['Claude', 'pgvector', 'Laravel'],
-    preview: 'chat',
-  },
-  {
-    id: 'verde',
-    name: 'Verde Market',
-    client: 'Cooperativa Verde',
-    category: 'Web',
-    year: '2024',
-    summary: 'Marketplace de productores locales con logística de última milla integrada.',
-    result: '×2.1 conversión móvil',
-    stack: ['Angular', 'Laravel', 'Stripe'],
-    preview: 'store',
-  },
-  {
-    id: 'pulso',
-    name: 'Pulso',
-    client: 'Clínica Pulso',
-    category: 'SaaS',
-    year: '2024',
-    summary: 'Agenda médica multi-sede con recordatorios automáticos y expediente digital.',
-    result: '−31% de citas perdidas',
-    stack: ['Laravel', 'Angular', 'Redis'],
-    preview: 'calendar',
-  },
-  {
-    id: 'ruta',
-    name: 'Ruta Norte',
-    client: 'Transportes Ruta Norte',
-    category: 'Web',
-    year: '2023',
-    summary: 'Panel de telemetría y planeación de rutas con seguimiento en vivo de la flotilla.',
-    result: '−18% de combustible',
-    stack: ['Angular', 'Node.js', 'MapLibre'],
-    preview: 'map',
   },
 ];
 
@@ -436,37 +292,6 @@ export const PROCESS: readonly ProcessStep[] = [
   },
 ];
 
-/* ── Estadísticas ───────────────────────────────────────────────────────── */
-
-export interface Stat {
-  readonly value: number;
-  readonly suffix: string;
-  readonly prefix: string;
-  readonly decimals: number;
-  readonly label: string;
-  readonly detail: string;
-}
-
-export const STATS: readonly Stat[] = [
-  { value: 38, suffix: '+', prefix: '', decimals: 0, label: 'Proyectos entregados', detail: 'Desde 2019' },
-  { value: 5, suffix: '', prefix: '', decimals: 0, label: 'Productos SaaS propios', detail: 'En la nube' },
-  { value: 99.9, suffix: '%', prefix: '', decimals: 1, label: 'Uptime promedio', detail: 'Últimos 12 meses' },
-  { value: 4.9, suffix: '/5', prefix: '', decimals: 1, label: 'Satisfacción de clientes', detail: '26 reseñas' },
-];
-
-/* ── Clientes (marquesina) ──────────────────────────────────────────────── */
-
-export const CLIENT_LOGOS: readonly string[] = [
-  'Nauta',
-  'Meridian',
-  'Atlas',
-  'Verde',
-  'Pulso',
-  'Ruta Norte',
-  'Kanttia',
-  'Botaro',
-];
-
 /* ── Equipo ─────────────────────────────────────────────────────────────── */
 
 export interface TeamMember {
@@ -488,9 +313,9 @@ export const TEAM: readonly TeamMember[] = [
     id: 'patricio',
     name: 'Patricio',
     role: 'CEO · Arquitectura',
-    specialty: 'Aplicaciones móviles',
+    specialty: 'Apps Android',
     bio: 'Dirige los proyectos y define la arquitectura. Su terreno es el móvil: apps que aguantan años en producción.',
-    skills: ['Flutter', 'Arquitectura', 'Producto'],
+    skills: ['Kotlin', 'Flutter', 'Producto'],
     pixels: [
       '..............',
       '....111111....',
@@ -514,7 +339,7 @@ export const TEAM: readonly TeamMember[] = [
     name: 'Pancho',
     role: 'IA & ChatBots',
     specialty: 'Agentes inteligentes',
-    bio: 'Construye asistentes, agentes y automatizaciones. Si una tarea es repetitiva, la convierte en un bot.',
+    bio: 'Construye los asistentes conversacionales: los entrena con la información del cliente y los conecta a WhatsApp.',
     skills: ['Claude', 'LangChain', 'Python'],
     pixels: [
       '..............',
@@ -539,7 +364,7 @@ export const TEAM: readonly TeamMember[] = [
     name: 'Chui',
     role: 'Backend',
     specialty: 'Laravel',
-    bio: 'Construye las APIs, los sistemas SaaS y las plataformas empresariales que sostienen todo lo demás.',
+    bio: 'Construye las APIs y los sistemas SaaS multi-tenant que sostienen todo lo demás.',
     skills: ['Laravel', 'PostgreSQL', 'APIs'],
     pixels: [
       '..............',
@@ -564,7 +389,7 @@ export const TEAM: readonly TeamMember[] = [
     name: 'Culadio',
     role: 'Frontend',
     specialty: 'Angular',
-    bio: 'Traduce el diseño a interfaces que responden al instante y no se rompen cuando la app crece.',
+    bio: 'Traduce el diseño a interfaces que responden al instante y no se rompen cuando el sistema crece.',
     skills: ['Angular', 'TypeScript', 'CSS'],
     pixels: [
       '..............',
@@ -611,56 +436,6 @@ export const TEAM: readonly TeamMember[] = [
   },
 ];
 
-/* ── Testimonios ────────────────────────────────────────────────────────── */
-
-export interface Testimonial {
-  readonly id: string;
-  readonly quote: string;
-  readonly author: string;
-  readonly role: string;
-  readonly company: string;
-  readonly initials: string;
-}
-
-export const TESTIMONIALS: readonly Testimonial[] = [
-  {
-    id: 't1',
-    quote:
-      'Llegamos con una hoja de cálculo de doce pestañas y salimos con un sistema que el equipo entiende sin capacitación. La diferencia se notó el primer mes.',
-    author: 'Daniela Ortiz',
-    role: 'Directora de Operaciones',
-    company: 'Distribuidora Nauta',
-    initials: 'DO',
-  },
-  {
-    id: 't2',
-    quote:
-      'La app de campo funciona sin señal, que era justo lo que ningún proveedor anterior había resuelto. Nuestros técnicos dejaron de cargar papel.',
-    author: 'Rubén Salas',
-    role: 'Gerente de Servicio',
-    company: 'Grupo Meridian',
-    initials: 'RS',
-  },
-  {
-    id: 't3',
-    quote:
-      'El asistente contesta con nuestras pólizas reales, no con inventos. Bajamos la carga del call center sin perder el trato humano cuando hace falta.',
-    author: 'Marcela Ruiz',
-    role: 'Head de Experiencia',
-    company: 'Aseguradora Atlas',
-    initials: 'MR',
-  },
-  {
-    id: 't4',
-    quote:
-      'Trabajan como si el producto fuera suyo. Cada quince días había algo funcionando que podíamos tocar, no una presentación.',
-    author: 'Iván Peña',
-    role: 'Fundador',
-    company: 'Cooperativa Verde',
-    initials: 'IP',
-  },
-];
-
 /* ── Preguntas frecuentes ───────────────────────────────────────────────── */
 
 export interface Faq {
@@ -672,22 +447,27 @@ export const FAQS: readonly Faq[] = [
   {
     question: '¿Cuánto cuesta desarrollar mi proyecto?',
     answer:
-      'Depende del alcance, pero no te dejamos con esa respuesta: en la primera llamada acotamos el problema y en menos de una semana recibes una estimación por rangos con supuestos explícitos. Un MVP suele arrancar en 4,900 USD y un producto SaaS completo se planea por fases.',
+      'Depende del alcance, y preferimos no inventarte una cifra antes de entenderlo. En la primera llamada acotamos el problema y en menos de una semana recibes una estimación por rangos, con los supuestos escritos para que sepas qué la mueve hacia arriba o hacia abajo.',
   },
   {
     question: '¿Cuánto tarda un proyecto típico?',
     answer:
-      'Un MVP funcional toma entre 8 y 12 semanas. Una app móvil publicada en tiendas, entre 10 y 16. Trabajamos en sprints de dos semanas con demo al final de cada uno, así que ves avance real desde la semana dos.',
+      'Un chatbot conectado a WhatsApp puede estar operando en 3 o 4 semanas. Un MVP de SaaS toma entre 8 y 12 semanas. Una app Android publicada en Google Play, entre 10 y 16. Trabajamos en sprints de dos semanas con demo al final de cada uno, así que ves avance real desde la semana dos.',
+  },
+  {
+    question: '¿Hacen apps para iOS también?',
+    answer:
+      'Nuestro foco es Android, que es donde está la mayor parte del mercado en LATAM. Cuando el proyecto lo pide, construimos en Flutter y publicamos también en App Store desde la misma base de código; lo decidimos contigo en el descubrimiento.',
+  },
+  {
+    question: '¿Con qué información se entrena el chatbot?',
+    answer:
+      'Con la tuya: catálogo, precios, políticas, preguntas frecuentes y los documentos que nos compartas. El bot responde sobre esa base, no inventa, y cuando no sabe algo pasa la conversación a una persona de tu equipo.',
   },
   {
     question: '¿El código es mío?',
     answer:
       'Sí. Todo el código vive en tu repositorio desde el primer commit y la propiedad intelectual es tuya al cierre del contrato. También te entregamos la documentación técnica y los accesos de infraestructura.',
-  },
-  {
-    question: '¿Trabajan con equipos internos?',
-    answer:
-      'Con frecuencia. Podemos integrarnos a tu equipo como squad, tomar un módulo completo o acompañar a tus desarrolladores en arquitectura y revisión de código.',
   },
   {
     question: '¿Qué pasa después del lanzamiento?',
@@ -722,12 +502,10 @@ export const FOOTER_COLUMNS: readonly FooterColumn[] = [
   {
     title: 'Servicios',
     links: [
-      { label: 'Aplicaciones web', href: '#servicios' },
-      { label: 'Aplicaciones móviles', href: '#servicios' },
       { label: 'Sistemas SaaS', href: '#servicios' },
-      { label: 'ChatBots e IA', href: '#servicios' },
-      { label: 'Automatización', href: '#servicios' },
-      { label: 'Software a medida', href: '#servicios' },
+      { label: 'Apps móviles Android', href: '#servicios' },
+      { label: 'ChatBots para tu negocio', href: '#servicios' },
+      { label: 'Tecnologías', href: '#tecnologias' },
     ],
   },
   {
@@ -736,16 +514,14 @@ export const FOOTER_COLUMNS: readonly FooterColumn[] = [
       { label: 'Nosotros', href: '#nosotros' },
       { label: 'Equipo', href: '#equipo' },
       { label: 'Proceso', href: '#proceso' },
-      { label: 'Portafolio', href: '#portafolio' },
     ],
   },
   {
-    title: 'Productos',
+    title: 'Contacto',
     links: [
-      { label: 'Botaro', href: '#productos' },
-      { label: 'Kanttia', href: '#productos' },
-      { label: 'Flujo', href: '#productos' },
       { label: 'Modelos de trabajo', href: '#modelos' },
+      { label: 'Preguntas frecuentes', href: '#faq' },
+      { label: 'Escríbenos', href: '#contacto' },
     ],
   },
 ];

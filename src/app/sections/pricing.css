@@ -52,35 +52,14 @@
   color: var(--text-muted);
 }
 
-.price {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  padding-block: 0.9rem;
-  border-block: 1px solid var(--stroke);
-}
-
-.amount {
-  font-family: var(--font-display);
-  font-size: clamp(1.7rem, 3vw, 2.1rem);
-  font-weight: 700;
-  letter-spacing: -0.035em;
-  color: var(--figure);
-}
-
-.is-highlighted .amount {
-  color: var(--accent);
-}
-
-.unit {
-  color: var(--text-dim);
-}
-
+/* Sin cifra que separe la cabecera de la lista, el filo lo pone el borde. */
 .includes {
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
   margin: 0 0 auto;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--stroke);
 }
 
 .includes li {

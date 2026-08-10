@@ -3,7 +3,7 @@
     <kx-section-header
       align="center"
       eyebrow="Modelos de trabajo"
-      lede="Tres formas de colaborar. Elegimos juntos la que se ajusta a tu momento; los precios son puntos de partida, no cajas cerradas."
+      lede="Tres formas de colaborar. Elegimos juntos la que se ajusta a tu momento y de ahí sale la propuesta, con el alcance y la inversión por escrito."
     >
       <h2 class="h2">Cómo <span class="gradient-text">trabajamos juntos</span>.</h2>
     </kx-section-header>
@@ -24,11 +24,6 @@
             <h3 class="h3">{{ plan.name }}</h3>
             <p class="desc">{{ plan.description }}</p>
           </header>
-
-          <p class="price">
-            <span class="amount">{{ plan.price }}</span>
-            <span class="unit mono">{{ plan.unit }}</span>
-          </p>
 
           <ul class="includes">
             @for (item of plan.includes; track item) {

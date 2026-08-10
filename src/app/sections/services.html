@@ -2,37 +2,44 @@
   <div class="container">
     <kx-section-header
       eyebrow="Servicios"
-      lede="Seis formas de trabajar juntos. Todas terminan en algo que funciona, se mide y se puede mantener."
+      lede="No hacemos de todo. Hacemos estas tres cosas, y las hacemos completas: diseño, código, publicación y operación."
     >
       <h2 class="h2">Lo que <span class="gradient-text">construimos</span>.</h2>
     </kx-section-header>
 
-    <ul class="bento">
+    <ul class="rows">
       @for (service of services; track service.id) {
-        <li
-          class="service card card--glass"
-          [class.is-featured]="service.featured"
-          kxReveal="up"
-          [kxRevealDelay]="$index * 50"
-          [kxTilt]="4"
-        >
-          <span class="spot" aria-hidden="true"></span>
+        <li class="service card card--glass" kxReveal="up" [kxRevealDelay]="$index * 60">
+          <div class="body">
+            <div class="head">
+              <span class="icon">
+                <kx-icon [name]="service.icon" [size]="22" />
+              </span>
+              <span class="tagline mono">{{ service.tagline }}</span>
+            </div>
 
-          <span class="icon">
-            <kx-icon [name]="service.icon" [size]="22" />
-          </span>
+            <h3 class="h3">{{ service.title }}</h3>
+            <p class="summary">{{ service.summary }}</p>
 
-          <h3 class="h3">{{ service.title }}</h3>
-          <p class="summary">{{ service.summary }}</p>
+            <ul class="points">
+              @for (point of service.points; track point) {
+                <li>
+                  <kx-icon name="check" [size]="14" />
+                  {{ point }}
+                </li>
+              }
+            </ul>
 
-          <ul class="points">
-            @for (point of service.points; track point) {
-              <li>
-                <kx-icon name="check" [size]="14" />
-                {{ point }}
-              </li>
-            }
-          </ul>
+            <a class="link" href="#contacto">
+              Hablemos de tu proyecto
+              <kx-icon name="arrowRight" [size]="15" />
+            </a>
+          </div>
+
+          <div class="visual" [kxTilt]="5">
+            <span class="spot" aria-hidden="true"></span>
+            <kx-project-preview [name]="service.preview" [label]="'Maqueta de ' + service.title" />
+          </div>
 
           <span class="corner" aria-hidden="true"></span>
         </li>

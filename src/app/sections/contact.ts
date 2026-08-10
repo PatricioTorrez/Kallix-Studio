@@ -26,7 +26,7 @@ export class Contact {
   protected readonly state = signal<SubmitState>('idle');
   protected readonly submitted = signal(false);
 
-  protected readonly kinds = ['Web', 'Móvil', 'SaaS', 'IA / ChatBot', 'Automatización', 'Otro'];
+  protected readonly kinds = ['Sistema SaaS', 'App Android', 'ChatBot', 'Otro'];
   protected readonly budgets = ['< 5k', '5k – 15k', '15k – 40k', '40k +', 'Por definir'];
 
   private readonly fb = inject(FormBuilder);
@@ -35,7 +35,7 @@ export class Contact {
     name: ['', [Validators.required, Validators.minLength(2)]],
     email: ['', [Validators.required, Validators.email]],
     company: [''],
-    kind: ['Web', Validators.required],
+    kind: ['Sistema SaaS', Validators.required],
     budget: ['Por definir'],
     message: ['', [Validators.required, Validators.minLength(20)]],
     privacy: [false, Validators.requiredTrue],

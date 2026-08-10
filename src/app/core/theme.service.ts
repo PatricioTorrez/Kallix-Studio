@@ -29,9 +29,8 @@ const storedTheme = (): Theme => {
 };
 
 /**
- * Único dueño del tema de la página. El hero, la franja de clientes, el CTA y el
- * footer se quedan oscuros siempre: lo resuelve la clase `.on-dark` en CSS, no
- * este servicio.
+ * Único dueño del tema de la página. El hero, el CTA y el footer se quedan
+ * oscuros siempre: lo resuelve la clase `.on-dark` en CSS, no este servicio.
  */
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
