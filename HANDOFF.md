@@ -1,7 +1,12 @@
-# Kallix Studio — Landing Page
+# KALLIX — Landing Page
 
 Documento de continuidad. Todo lo necesario para retomar el proyecto sin volver a
-deducir decisiones. Última actualización: **2026-08-07**.
+deducir decisiones. Última actualización: **2026-08-11**.
+
+> **La marca pasó de «Kallix Studio» a «KALLIX»** el 2026-08-11, en versalitas en
+> todas partes. El logotipo ya no es pixel art: `logo.ts` lleva el isotipo oficial
+> calcado de `public/imagenes/logo_solo.svg`. El dominio `kallix.studio` y el correo
+> `hola@kallix.studio` **no** cambiaron: siguen siendo los placeholders de §7.
 
 ---
 
@@ -13,15 +18,15 @@ Landing page completa y funcional. Build de producción sin warnings, pruebas en
 chatbots para negocios. Todo el contenido inventado (portafolio, testimonios,
 clientes, productos propios, estadísticas) se eliminó el 2026-08-07; ver §7.
 
-| Métrica | Valor |
-| --- | --- |
-| Bundle inicial | 401 kB crudos · **100 kB transferidos** (JS 97.3 + CSS 2.9) |
-| Dependencias añadidas | **ninguna** |
-| Imágenes externas | **ninguna** (todo SVG inline) |
-| Secciones | 11 |
-| Temas | oscuro (default) y claro, con hero/CTA/footer siempre oscuros |
-| Pruebas | 19/19 pasando |
-| Contraste | 0 fallos WCAG AA en ambos temas, auditado sobre el DOM real (antes del recorte) |
+| Métrica               | Valor                                                                           |
+| --------------------- | ------------------------------------------------------------------------------- |
+| Bundle inicial        | 401 kB crudos · **100 kB transferidos** (JS 97.3 + CSS 2.9)                     |
+| Dependencias añadidas | **ninguna**                                                                     |
+| Imágenes externas     | **ninguna** (todo SVG inline)                                                   |
+| Secciones             | 11                                                                              |
+| Temas                 | oscuro (default) y claro, con hero/CTA/footer siempre oscuros                   |
+| Pruebas               | 19/19 pasando                                                                   |
+| Contraste             | 0 fallos WCAG AA en ambos temas, auditado sobre el DOM real (antes del recorte) |
 
 ### Comandos
 
@@ -38,17 +43,17 @@ npx ng test --watch=false
 
 ## 2. Decisiones tomadas (y por qué)
 
-| Decisión | Elección | Razón |
-| --- | --- | --- |
-| Tema | Dark-first retro-futurista, con tema claro de anclas oscuras | El pixel art y el glassmorphism se leen premium sobre base oscura. El claro se añadió después sin tocar el hero: ver §4 |
-| Paleta | Turquesa profunda + ámbar | Combinación de las paletas turquesa y cálida del brief, la de mejor contraste y armonía |
-| Stack de motion | CSS + `IntersectionObserver` propio | Máximo Lighthouse, bundle mínimo, control total del easing. No hay springs ni gestos que CSS no cubra |
-| Librerías UI | Ninguna | `pick-ui-library` recomienda `motion`, Sonner y base-ui, pero esa lista es **React-first**. El único viable en Angular (`motion` vanilla) no aportaba nada aquí |
-| Contenido | Solo lo verificable, en un archivo único | Nada de clientes, casos ni cifras que no podamos sostener. Cambiar el discurso es editar un archivo |
-| Oferta | Tres servicios, no seis | SaaS, Android y chatbots. Decir menos y decirlo completo vende mejor que un catálogo |
-| Precios | Fuera de la página | Se definen en la propuesta, después de entender el alcance. Los modelos de trabajo se quedan, sin cifras |
-| Formulario | Endpoint configurable, simula por defecto | Sin backend todavía; conectar es una línea |
-| Tailwind | Descartado | Con un design system propio de tokens aportaba poco y sumaba configuración |
+| Decisión        | Elección                                                     | Razón                                                                                                                                                           |
+| --------------- | ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tema            | Dark-first retro-futurista, con tema claro de anclas oscuras | El pixel art y el glassmorphism se leen premium sobre base oscura. El claro se añadió después sin tocar el hero: ver §4                                         |
+| Paleta          | Turquesa profunda + ámbar                                    | Combinación de las paletas turquesa y cálida del brief, la de mejor contraste y armonía                                                                         |
+| Stack de motion | CSS + `IntersectionObserver` propio                          | Máximo Lighthouse, bundle mínimo, control total del easing. No hay springs ni gestos que CSS no cubra                                                           |
+| Librerías UI    | Ninguna                                                      | `pick-ui-library` recomienda `motion`, Sonner y base-ui, pero esa lista es **React-first**. El único viable en Angular (`motion` vanilla) no aportaba nada aquí |
+| Contenido       | Solo lo verificable, en un archivo único                     | Nada de clientes, casos ni cifras que no podamos sostener. Cambiar el discurso es editar un archivo                                                             |
+| Oferta          | Tres servicios, no seis                                      | SaaS, Android y chatbots. Decir menos y decirlo completo vende mejor que un catálogo                                                                            |
+| Precios         | Fuera de la página                                           | Se definen en la propuesta, después de entender el alcance. Los modelos de trabajo se quedan, sin cifras                                                        |
+| Formulario      | Endpoint configurable, simula por defecto                    | Sin backend todavía; conectar es una línea                                                                                                                      |
+| Tailwind        | Descartado                                                   | Con un design system propio de tokens aportaba poco y sumaba configuración                                                                                      |
 
 ### Identidad gráfica
 
@@ -93,7 +98,7 @@ src/
     │   ├── pixel-sprite.ts     7 sprites 8×8 · 4 tonos (amber/teal/sand/rust)
     │   ├── project-preview.ts  8 maquetas SVG de producto. Tipo PreviewName.
     │   │                       Hoy solo se usan 3 (dashboard/mobile/chat), una por servicio
-    │   ├── logo.ts             marca pixel "K" + wordmark
+    │   ├── logo.ts             isotipo oficial inline · variant navbar|wordmark|mark
     │   ├── badge.ts            4 tonos, con o sin punto
     │   ├── section-header.ts   antetítulo + título proyectado + entradilla
     │   ├── tabs.ts             indicador por clip-path (técnica de la lista duplicada)
@@ -142,15 +147,20 @@ Ya **no** basta con editar `:root`. Los roles semánticos viven en dos bloques:
 
 ```css
 :root,
-[data-theme='light'] .on-dark { /* roles oscuros */ }
+[data-theme='light'] .on-dark {
+  /* roles oscuros */
+}
 
-[data-theme='light']          { /* roles claros  */ }
+[data-theme='light'] {
+  /* roles claros  */
+}
 ```
 
 `[data-theme='light'] .on-dark` (0,2,0) gana a `[data-theme='light']` (0,1,0), y
 las custom properties se heredan: por eso **cualquier subárbol con `.on-dark`
 conserva el lienzo oscuro** aunque la página esté en claro. En `app.html` la
-llevan `kx-hero`, `kx-clients`, `kx-cta` y `kx-site-footer`.
+llevan `kx-hero`, `kx-cta` y `kx-site-footer` (`kx-clients` desapareció en el
+recorte del 2026-08-07).
 
 `.on-dark` además **pinta** `background` y `color`: redefinir tokens no basta si
 la sección era transparente y heredaba el fondo del body. Ojo: los estilos de
@@ -159,7 +169,26 @@ propio le gana — tiene que componer sobre `var(--bg)`, como hace `clients.ts`.
 
 Tokens añadidos: `--veil` y `--substrate` (tripletes RGB para tintes y sustratos),
 `--accent-cool` (contraparte fría de `--accent`), `--figure` (cifras grandes),
-`--grid-line`, `--badge-teal/-amber/-rust`, `--scrollbar-thumb`.
+`--grid-line`, `--badge-teal/-amber/-rust`, `--scrollbar-thumb`,
+`--logo-teal/-amber`.
+
+### El logotipo y el tema claro
+
+Los colores de marca son `#3c918a` y `#e79e38`, y resultan ser los mismos tokens
+turquesa/ámbar que ya usaba la página. Pero **el ámbar de marca no aguanta el tema
+claro**: 1.83:1 contra el mínimo de 3.0, y la mitad derecha de la «K» se
+desvanecía. En claro se sirve oscurecido (`--logo-amber: #ad762a`, 3.17:1)
+conservando el tono; dentro de `.on-dark` vuelve el ámbar exacto de marca.
+Borrar esa línea de `styles.css` restaura el color original en todas partes.
+
+Los dos lockups con la palabra (`logo_completo.svg` vertical y `logo_navbar.svg`
+horizontal) **traen la palabra en crema `#eee7dd`**, que sobre el tema claro da
+1.09:1. Como `<img>` solo servirían en zonas `.on-dark`; por eso el header lleva
+`logo_navbar.svg` calcado inline en `logo.ts` (`variant="navbar"`), con la palabra
+en `var(--text)` y la barra en `var(--text-dim)`. Ver `public/imagenes/README.md`.
+
+El 2026-08-11 se borraron los PNG del logotipo: `public/imagenes/` es solo SVG
+(`logo_solo`, `logo_completo`, `logo_navbar`).
 
 `scripts/contrast.mjs` mide los roles claros contra **todas** las superficies.
 Si retocas un color, vuelve a correrlo: medir solo contra `--bg` dejaba pasar
@@ -198,14 +227,14 @@ Se siguió la filosofía de Emil Kowalski. Quien continúe debe respetar:
 Se corrió el playbook de `improve-animations` sobre el código propio. Cero
 violaciones duras. Seis hallazgos, todos corregidos:
 
-| Hallazgo | Corrección |
-| --- | --- |
-| `will-change` en decenas de elementos con reveal | Eliminado: promovía capas de composición de más |
-| `backdrop-filter` en la transición del header | Quitado: parte de `none`, no interpola |
-| Titular del hero (elemento LCP) oculto tras el observer | Pasó a animación de carga escalonada |
-| Capa activa de tabs desalineada al desbordar en móvil | Contenedor `.stack` con ancho del contenido real |
-| Menú móvil sin trampa de foco | Fondo `inert` + foco al primer enlace |
-| `viewChild` leído en `ngOnInit` (header) | Movido a `afterNextRender` |
+| Hallazgo                                                | Corrección                                       |
+| ------------------------------------------------------- | ------------------------------------------------ |
+| `will-change` en decenas de elementos con reveal        | Eliminado: promovía capas de composición de más  |
+| `backdrop-filter` en la transición del header           | Quitado: parte de `none`, no interpola           |
+| Titular del hero (elemento LCP) oculto tras el observer | Pasó a animación de carga escalonada             |
+| Capa activa de tabs desalineada al desbordar en móvil   | Contenedor `.stack` con ancho del contenido real |
+| Menú móvil sin trampa de foco                           | Fondo `inert` + foco al primer enlace            |
+| `viewChild` leído en `ngOnInit` (header)                | Movido a `afterNextRender`                       |
 
 ---
 
@@ -213,24 +242,24 @@ violaciones duras. Seis hallazgos, todos corregidos:
 
 ### Bloqueantes para publicar
 
-| # | Qué | Dónde |
-| --- | --- | --- |
-| 1 | **Endpoint del formulario** — hoy simula el envío con 900 ms de latencia | `src/app/sections/contact.ts:15` → `CONTACT_ENDPOINT` |
-| 2 | **Teléfono y WhatsApp reales** — son placeholders | `src/app/data/kallix.data.ts` → `CONTACT` |
-| 3 | **Dominio real** — `https://kallix.studio/` está hardcodeado en canonical, OG y JSON-LD | `src/index.html` |
+| #   | Qué                                                                                     | Dónde                                                 |
+| --- | --------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| 1   | **Endpoint del formulario** — hoy simula el envío con 900 ms de latencia                | `src/app/sections/contact.ts:15` → `CONTACT_ENDPOINT` |
+| 2   | **Teléfono y WhatsApp reales** — son placeholders                                       | `src/app/data/kallix.data.ts` → `CONTACT`             |
+| 3   | **Dominio real** — `https://kallix.studio/` está hardcodeado en canonical, OG y JSON-LD | `src/index.html`                                      |
 
 ### Recorte de contenido ficticio (2026-08-07)
 
 Se eliminaron las cinco secciones que sostenían negocios, clientes y cifras
 inventadas, junto con sus datos y componentes:
 
-| Fuera | Qué contenía |
-| --- | --- |
-| `portfolio` | 6 proyectos con cliente, año y resultado inventados |
-| `testimonials` | 4 testimonios con autor y empresa inventados |
-| `clients` | marquesina de logos de clientes inventados |
-| `products` | 3 SaaS propios inventados (Botaro, Kanttia, Flujo) |
-| `stats` | 38 proyectos, 99.9% uptime, 4.9/5, 26 reseñas |
+| Fuera          | Qué contenía                                        |
+| -------------- | --------------------------------------------------- |
+| `portfolio`    | 6 proyectos con cliente, año y resultado inventados |
+| `testimonials` | 4 testimonios con autor y empresa inventados        |
+| `clients`      | marquesina de logos de clientes inventados          |
+| `products`     | 3 SaaS propios inventados (Botaro, Kanttia, Flujo)  |
+| `stats`        | 38 proyectos, 99.9% uptime, 4.9/5, 26 reseñas       |
 
 También se quitaron `Plan.price` y `Plan.unit` (los modelos siguen, sin cifras) y
 la respuesta del FAQ que prometía «desde 4,900 USD».
@@ -297,15 +326,55 @@ Dos trampas de método que conviene recordar si se repite la auditoría:
 
 - **Lighthouse**: no se llegó a medir. Meta >90; el diseño lo favorece (sin
   imágenes, sin dependencias).
-- El recorte del indicador de tabs en móvil real (se corrigió a ciegas y el
-  viewport móvil no se pudo reproducir en esta sesión).
 - Los avatares pixel del equipo a tamaño real (96 px) sobre tarjeta clara.
 - `prefers-reduced-motion`: la rama existe y está cubierta por código, pero no se
   probó activando la preferencia en el sistema.
 
 ---
 
-## 9. Skills usadas
+## 9. Móvil (2026-08-11)
+
+`ng serve` no permitía reducir el viewport en esta máquina (el `resize` de la
+ventana no llegaba a la página, el mismo problema de la sesión anterior). Se
+rodeó **cargando la página en iframes de 390, 360 y 320 px**: las media queries
+se evalúan contra el viewport del iframe, así que a efectos de CSS es un móvil
+real y además permite ver los tres anchos a la vez.
+
+**Se encontró y corrigió un desbordamiento horizontal de 81 px** (`scrollWidth`
+460 sobre un viewport de 379).
+
+El síntoma no era scroll lateral: `body` tiene `overflow-x: clip`, así que la
+página no se movía. Era peor. El pill de categorías se salía de la pantalla y
+quedaba **recortado**, y como `.tabs` nunca llegaba a verse constreñido, su
+`overflow-x: auto` no tenía nada que desplazar: **las últimas categorías
+(«Infraestructura») eran inalcanzables en móvil**, sin ninguna pista visual de
+que estuvieran ahí. Es el modo de fallo típico de `overflow-x: clip` en el body:
+esconde el scrollbar delator y deja el contenido mudo.
+
+La causa estaba en `tech.css`, y es sutil: `.head` es un flex en columna con
+`align-items: flex-start`, lo que dimensiona a los hijos por su contenido. El
+envoltorio de las pestañas crecía hasta el `max-content` de la lista (441 px) y
+entonces el `max-width: 100%` de `.tabs` se resolvía **contra esos 441 px, no
+contra el viewport** — la contención nunca llegaba a aplicarse. La corrección es
+`max-width: 100%` en `.tabs-wrap`, que le da al hijo un tope con referencia
+definida: el pill se ciñe al contenido cuando cabe y `kx-tabs` recupera su scroll
+interno cuando no.
+
+Verificado: 0 px de desbordamiento en 390, 360 y 320. Al medir, ojo con
+descartar los falsos positivos — `.spot`, `.aurora` y `.glow` sobresalen de la
+pantalla por diseño, pero van recortados por un ancestro y no generan scroll. El
+criterio bueno es `documentElement.scrollWidth > clientWidth`, no el rectángulo
+de cada elemento.
+
+### Sigue sin comprobarse en móvil
+
+- El menú drawer abierto y su trampa de foco a 320 px.
+- Los avatares pixel del equipo (96 px) sobre tarjeta clara.
+- `prefers-reduced-motion` activado de verdad en el sistema.
+
+---
+
+## 10. Skills usadas
 
 `prototype` · `apple-design` · `pick-ui-library` · `find-animation-opportunities` ·
 `animate` · `improve-animations` · `animation-vocabulary` · `emil-design-eng`

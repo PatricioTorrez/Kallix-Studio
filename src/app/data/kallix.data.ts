@@ -1,5 +1,5 @@
 /**
- * Contenido de la landing de Kallix Studio.
+ * Contenido de la landing de KALLIX.
  *
  * La página se enfoca en tres ofertas: sistemas SaaS, apps móviles Android y
  * chatbots para negocios. Ningún componente contiene texto: todo se edita aquí.
@@ -47,7 +47,7 @@ export const HERO_TAGS: readonly string[] = ['Sistemas SaaS', 'Apps Android', 'C
  * presume métricas nuestras, enseña la oferta y el compromiso de respuesta.
  */
 export const HERO_PANEL = {
-  title: 'kallix · panel',
+  title: 'KALLIX · panel',
   badge: 'disponibles',
   metricLabel: 'Respondemos tu mensaje en',
   metricValue: '< 24 h',

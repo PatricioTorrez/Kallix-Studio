@@ -42,6 +42,11 @@ const ON_SURFACE = [
   ['badge-amber', '#8a5a12', 4.5],
   ['badge-rust', '#9c4a17', 4.5],
   ['focus', '#2b7d77', 3.0],
+  // El isotipo es un elemento gráfico: le basta 3.0. Un logotipo está exento de
+  // WCAG, pero la «K» es de dos tonos y con el ámbar de marca (#e79e38, 1.83)
+  // la mitad derecha se desvanecía sobre crema y el dibujo quedaba cojo.
+  ['logo-teal', '#3c918a', 3.0],
+  ['logo-amber', '#ad762a', 3.0],
 ];
 
 /** [nombre, primer plano, fondo, mínimo] — pares que no van sobre superficie */

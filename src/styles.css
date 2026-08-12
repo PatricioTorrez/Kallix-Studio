@@ -1,5 +1,5 @@
 /* ============================================================================
-   Kallix Studio — sistema de diseño global
+   KALLIX — sistema de diseño global
    Tokens, reset, tipografía, primitivas de superficie, botones y motion base.
    Todo lo específico de una sección vive en el CSS de su componente.
    ========================================================================= */
@@ -100,6 +100,13 @@
   --badge-amber: #f0c075;
   --badge-rust: #eda274;
 
+  /* Colores de marca del isotipo (`logo.ts`), tal cual vienen del archivo
+     original en `public/imagenes/logo_solo.svg`. Van por token y no por
+     `:host-context` por lo mismo que los badges: el logotipo del footer vive en
+     `.on-dark` y debe conservar el ámbar de marca aunque la página esté clara. */
+  --logo-teal: #3c918a;
+  --logo-amber: #e79e38;
+
   --scrollbar-thumb: var(--ink-700);
 
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
@@ -145,6 +152,13 @@
   --badge-teal: #1f6b66;
   --badge-amber: #8a5a12;
   --badge-rust: #9c4a17;
+
+  /* El turquesa de marca aguanta sobre crema (3.05 en la peor superficie), pero
+     el ámbar se queda en 1.83 y la mitad derecha de la «K» se desvanece. Se
+     oscurece solo lo justo para llegar a 3.17 conservando el tono.
+     Para volver al ámbar de marca exacto, borra esta línea. */
+  --logo-teal: #3c918a;
+  --logo-amber: #ad762a;
 
   --scrollbar-thumb: rgba(var(--veil), 0.25);
 
@@ -376,12 +390,7 @@ p {
 .gradient-text {
   /* Tokens, no paleta cruda: los tres tonos son pálidos y sobre crema el
      titular quedaba ilegible. En oscuro resuelven a los mismos valores. */
-  background: linear-gradient(
-    96deg,
-    var(--accent-cool) 0%,
-    var(--figure) 42%,
-    var(--accent) 100%
-  );
+  background: linear-gradient(96deg, var(--accent-cool) 0%, var(--figure) 42%, var(--accent) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -486,7 +495,12 @@ p {
   position: absolute;
   inset: -1px;
   z-index: -1;
-  background: linear-gradient(100deg, transparent 32%, rgba(255, 255, 255, 0.5) 50%, transparent 68%);
+  background: linear-gradient(
+    100deg,
+    transparent 32%,
+    rgba(255, 255, 255, 0.5) 50%,
+    transparent 68%
+  );
   transform: translate3d(-130%, 0, 0);
   transition: transform 620ms var(--ease-out);
 }

@@ -9,6 +9,17 @@
   align-items: flex-start;
 }
 
+/* `align-items: flex-start` dimensiona a los hijos por su contenido, así que sin
+   este tope el envoltorio crecía hasta el `max-content` de las pestañas (441 px)
+   y el `max-width: 100%` de `.tabs` se resolvía contra ese ancho, no contra el
+   del viewport: la página desbordaba 81 px en horizontal a 390 px.
+   Con el tope, el pill sigue ciñéndose al contenido cuando cabe, y cuando no,
+   `kx-tabs` recupera su scroll interno. */
+.tabs-wrap {
+  max-width: 100%;
+  min-width: 0;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
