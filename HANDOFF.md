@@ -1,7 +1,7 @@
 # KALLIX — Landing Page
 
 Documento de continuidad. Todo lo necesario para retomar el proyecto sin volver a
-deducir decisiones. Última actualización: **2026-08-11**.
+deducir decisiones. Última actualización: **2026-08-12**.
 
 > **La marca pasó de «Kallix Studio» a «KALLIX»** el 2026-08-11, en versalitas en
 > todas partes. El logotipo ya no es pixel art: `logo.ts` lleva el isotipo oficial
@@ -18,12 +18,119 @@ Landing page completa y funcional. Build de producción sin warnings, pruebas en
 chatbots para negocios. Todo el contenido inventado (portafolio, testimonios,
 clientes, productos propios, estadísticas) se eliminó el 2026-08-07; ver §7.
 
+### Cambios del 2026-08-12
+
+- **La ventana del hero se fue; ahora hay tres maquetas apiladas.** Anunciaba
+  «Respondemos tu mensaje en < 24 h» con los tres servicios repetidos (ya estaban
+  en `HERO_TAGS`, dos pulgadas más arriba) y un pie sobre cómo trabajamos. Se probó
+  una versión intermedia que enumeraba entregables —demo en la semana 2, código en
+  tu repositorio, 30 días de garantía— y **también se descartó**: en el hero el
+  cliente no viene a leer promesas, viene a ver qué construimos.
+
+  Lo que hay es una cascada de tres tarjetas con las maquetas SVG que ya existían
+  en `project-preview.ts`: panel de operación (`dashboard`), ChatBots en Telegram
+  (`chat`) y app Android (`mobile`, recortada en vertical). El contenido está en
+  `HERO_MOCKS` (`kallix.data.ts`), con `label`, `depth` de parallax y `alt`.
+
+  Dos detalles que conviene no deshacer: las tarjetas **no van rotadas** —el
+  parallax escribe `transform` sobre `.mock` y la entrada anima `.mock-card`, así
+  que una inclinación estática se pisaría con una de las dos—, y las etiquetas
+  nombran la pieza («Panel de operación»), no el servicio, porque el servicio ya
+  lo dicen las píldoras de `HERO_TAGS` justo al lado.
+
+  Con la ventana desaparecieron `HERO_PANEL`, las barras decorativas de `hero.ts` y
+  todo el CSS de `.window*`, `.metric*`, `.chart`, `.bar`, `.chips` y `.deploy`.
+
+- **El equipo describe qué hace cada uno, no jerarquías.** Fuera el «CEO ·
+  Arquitectura» de Patricio y el «CEO · KALLIX» que firmaba la cita de `about.html`.
+  Los cinco perfiles se reescribieron sobre experiencia real (móvil offline y Oracle,
+  plataformas web con Laravel, chatbots en producción, Angular y cloud, IA con
+  Python) y el orden del array pasó a Patricio, Jesús, Francisco, Claudio, Miguel.
+  Los avatares pixel no se tocaron.
+- **`equipo` desapareció como sección: ahora vive dentro de `nosotros`.** Eran dos
+  bloques contando lo mismo con distinto formato —una rejilla de cinco fichas por
+  un lado, una cita suelta de Patricio por otro—. Se fusionaron en un carrusel de
+  fichas: por diapositiva, un integrante con su retrato, su rol, su especialidad,
+  su frase, su descripción y sus etiquetas.
+
+  `sections/team.{ts,html,css}` se borraron y `<kx-team />` salió de `app.html`.
+  **El ancla `#equipo` sigue viva** sobre el bloque nuevo, porque la usan el menú
+  (`NAV_LINKS`) y el footer (`FOOTER_COLUMNS`). Las secciones pasan de 11 a 10.
+
+  Las frases están en `TeamMember.quote` (`kallix.data.ts`), junto al avatar y al
+  rol, para que no se puedan desincronizar. La de Patricio es la que ya estaba
+  firmando la cita de `about`.
+
+  ⚠️ **Las otras cuatro frases están redactadas por mí, no dichas por ellos.**
+  Cada quien debería aprobar la suya antes de publicar.
+
+- **`carousel.ts` se estrenó y creció.** Llevaba sin consumidor desde el recorte del
+  2026-08-07. Tres capacidades nuevas, todas opcionales y apagadas por defecto, así
+  que el uso genérico no cambia:
+
+  | Entrada      | Para qué                                                          |
+  | ------------ | ----------------------------------------------------------------- |
+  | `full`       | La diapositiva ocupa el 100%: una por movimiento, sin asomo       |
+  | `autoplayMs` | Avance automático; 0 lo desactiva                                 |
+  | `itemLabels` | Nombres accesibles del indicador, en vez de «Elemento 3»          |
+  | `#thumb`     | Plantilla opcional: convierte los puntos en miniaturas (retratos) |
+
+  El avance automático (8 s en `about`) **se detiene** con el puntero encima, con
+  el foco dentro y con la pestaña en segundo plano, y no arranca siquiera bajo
+  `prefers-reduced-motion`. Mover un texto mientras alguien lo lee es hostil; estas
+  tres pausas son lo que lo hace tolerable, no un adorno. El temporizador se
+  reinicia cuando alguien pulsa una flecha o un retrato, para no encadenar un salto
+  automático justo después del manual.
+
+  Comprobado en iframes de 390 y 320 px: **los controles envuelven**. Cinco
+  miniaturas (232 px) más las dos flechas (92 px) no caben en los 256 px útiles de
+  un móvil de 320, y sin `flex-wrap` desbordaban la página 45 px. Es el mismo modo
+  de fallo del pill de categorías de §9: `overflow-x: clip` en el `body` esconde el
+  scrollbar delator y el desbordamiento pasa desapercibido.
+
+- **Volvió `productos`, ahora con producto de verdad.** La sección se había retirado
+  el 2026-08-07 porque los tres SaaS que enseñaba (Botaro, Kanttia, Flujo) eran
+  inventados; ver §7. Vuelve con **Tonalli** —gestión para hoteles y restaurantes—
+  que está en línea y se puede abrir: el botón lleva a `tonalli-stay-flow.base44.app`
+  en pestaña nueva.
+
+  Los datos están en `PRODUCTS` (`kallix.data.ts`). Las tres capacidades listadas
+  (reservaciones, ocupación, administración) salen literalmente de la descripción
+  del producto: **no añadir funciones que no se puedan comprobar abriendo el
+  enlace**, que es justo lo que hundió a la versión anterior de la sección.
+
+  La ficha se despliega a lo ancho —maqueta a un lado, texto al otro— porque hay un
+  solo producto. Cuando entre el segundo, la clase `is-single` se apaga sola y la
+  rejilla los reparte en dos columnas; no hay que tocar CSS. Va entre `servicios` y
+  `tecnologias`, con entrada nueva en el menú y en el footer.
+
+- **El resaltado del menú se calcula, ya no se observa.** «Equipo» se quedaba
+  encendido para siempre. La causa no era el ancla: el `IntersectionObserver` del
+  header **solo asignaba** la sección activa cuando algo entraba en la banda central
+  y nunca la quitaba, así que la última sección visitada seguía marcada sobre el
+  hero, sobre el CTA y sobre contacto. Al mudarse el equipo dentro de `nosotros`,
+  `#equipo` pasó a ser el **primer** objetivo del documento, y bastaba con pasar por
+  ahí una vez para que se quedara encendido el resto de la visita.
+
+  Ahora `sectionAtReadingLine()` recorre las secciones en el `requestAnimationFrame`
+  que ya llevaba la barra de progreso y devuelve la que cruza la línea de lectura
+  (45% de la ventana), o cadena vacía si no hay ninguna. Sin observador, sin estado
+  pegado, y los tramos sin entrada en el menú (hero, CTA, contacto) quedan
+  correctamente sin resaltar. Poner una señal al mismo valor no notifica, así que no
+  dispara detección de cambios por frame.
+
+  Nota de orden: `#equipo` está ahora en la posición 2 del documento pero sexta en
+  el menú, así que el resaltado salta al sexto elemento y vuelve al primero. Es
+  fiel a la página; si molesta, se mueve la entrada en `NAV_LINKS`.
+
+- **Favicon**: ver §4.
+
 | Métrica               | Valor                                                                           |
 | --------------------- | ------------------------------------------------------------------------------- |
-| Bundle inicial        | 401 kB crudos · **100 kB transferidos** (JS 97.3 + CSS 2.9)                     |
+| Bundle inicial        | 418 kB crudos · **105 kB transferidos** (JS 101.6 + CSS 2.9)                    |
 | Dependencias añadidas | **ninguna**                                                                     |
 | Imágenes externas     | **ninguna** (todo SVG inline)                                                   |
-| Secciones             | 11                                                                              |
+| Secciones             | 11 (`equipo` se fusionó con `nosotros`; volvió `productos`)                     |
 | Temas                 | oscuro (default) y claro, con hero/CTA/footer siempre oscuros                   |
 | Pruebas               | 19/19 pasando                                                                   |
 | Contraste             | 0 fallos WCAG AA en ambos temas, auditado sobre el DOM real (antes del recorte) |
@@ -77,7 +184,7 @@ src/
 ├── index.html                  SEO, OG, JSON-LD Organization, fuentes, theme-color
 ├── styles.css                  ⭐ Design system global (tokens, reset, botones, reveal, a11y)
 └── app/
-    ├── app.ts / app.html       Shell: compone las 11 secciones en orden
+    ├── app.ts / app.html       Shell: compone las 10 secciones en orden
     ├── data/
     │   └── kallix.data.ts      ⭐ TODO el contenido de la página. Ningún componente tiene texto
     ├── core/                   Primitivas de motion
@@ -103,22 +210,23 @@ src/
     │   ├── section-header.ts   antetítulo + título proyectado + entradilla
     │   ├── tabs.ts             indicador por clip-path (técnica de la lista duplicada)
     │   ├── accordion.ts        grid-template-rows 0fr→1fr, sin medir alturas en JS
-    │   ├── carousel.ts         scroll nativo con snap + controles ⚠️ sin uso
+    │   ├── carousel.ts         snap nativo + autoplay + miniaturas · equipo de `about`
     │   └── marquee.ts          cinta continua, pausa al hover ⚠️ sin uso
     └── sections/               11 secciones (ts + html + css cuando crecen)
-        site-header, hero, about, services, tech, pricing, cta, process,
-        team, faq, contact, site-footer
+        site-header, hero, about, services, products, tech, pricing, cta,
+        process, faq, contact, site-footer
 ```
 
-**Orden en `app.html`:** hero → nosotros → servicios → tecnologías → modelos →
-**CTA** → proceso → equipo → FAQ → contacto → footer.
+**Orden en `app.html`:** hero → nosotros (**incluye el equipo**) → servicios →
+**productos** → tecnologías → modelos → **CTA** → proceso → FAQ → contacto → footer.
 
 El CTA va a media página (punto natural de conversión), no pegado al formulario.
 
 `carousel.ts`, `marquee.ts` y `count-up.directive.ts` quedaron sin consumidor al
-retirar testimonios, clientes y estadísticas. Se conservan a propósito: son
-primitivas genéricas, no están importadas en ningún sitio y por tanto no pesan
-en el bundle. Si vuelve la prueba social, están listas.
+retirar testimonios, clientes y estadísticas. **`carousel.ts` volvió a entrar el
+2026-08-12** con el equipo dentro de `about`. `marquee.ts` y `count-up.directive.ts`
+siguen fuera del bundle: son primitivas genéricas y nadie las importa. Si vuelve la
+prueba social, están listas.
 
 ---
 
@@ -190,6 +298,28 @@ en `var(--text)` y la barra en `var(--text-dim)`. Ver `public/imagenes/README.md
 El 2026-08-11 se borraron los PNG del logotipo: `public/imagenes/` es solo SVG
 (`logo_solo`, `logo_completo`, `logo_navbar`).
 
+### El favicon (2026-08-12)
+
+El `favicon.ico` que había era **256×222 px, una sola entrada, 234 kB** de BMP sin
+comprimir. Decodifica —no estaba corrupto—, pero el navegador dibuja el favicon
+dentro de un cuadrado: un icono no cuadrado se deforma o se encaja, y sin entradas
+de 16/32 px cada pestaña reescalaba 256 px a 16.
+
+Ahora hay dos, generados del mismo trazado que `imagenes/logo_solo.svg`:
+
+- `public/favicon.svg` — isotipo centrado en un lienzo de 128×128 con un 8% de aire.
+  Es el que usan los navegadores modernos y el único que hay que editar a mano.
+- `public/favicon.ico` — 16, 32, 48, 64, 128 y 256 px cuadrados, entradas PNG
+  (16 kB en total, contra los 234 kB de antes).
+
+Ambos se declaran en `src/index.html`, el SVG primero. Si hay que regenerar el
+`.ico`, el arte son cuatro polígonos de segmentos rectos: se rellenan directo con
+`System.Drawing` sin rasterizar SVG (el script de un solo uso quedó fuera del repo).
+
+> Al comprobarlo: **el favicon se cachea con saña**. Si no cambia, no es el archivo:
+> abre `/favicon.svg` en una pestaña nueva o recarga con el inspector abierto y la
+> caché desactivada.
+
 `scripts/contrast.mjs` mide los roles claros contra **todas** las superficies.
 Si retocas un color, vuelve a correrlo: medir solo contra `--bg` dejaba pasar
 fallos reales, porque un texto oscuro pierde contraste sobre las superficies
@@ -253,13 +383,13 @@ violaciones duras. Seis hallazgos, todos corregidos:
 Se eliminaron las cinco secciones que sostenían negocios, clientes y cifras
 inventadas, junto con sus datos y componentes:
 
-| Fuera          | Qué contenía                                        |
-| -------------- | --------------------------------------------------- |
-| `portfolio`    | 6 proyectos con cliente, año y resultado inventados |
-| `testimonials` | 4 testimonios con autor y empresa inventados        |
-| `clients`      | marquesina de logos de clientes inventados          |
-| `products`     | 3 SaaS propios inventados (Botaro, Kanttia, Flujo)  |
-| `stats`        | 38 proyectos, 99.9% uptime, 4.9/5, 26 reseñas       |
+| Fuera          | Qué contenía                                                                                                        |
+| -------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `portfolio`    | 6 proyectos con cliente, año y resultado inventados                                                                 |
+| `testimonials` | 4 testimonios con autor y empresa inventados                                                                        |
+| `clients`      | marquesina de logos de clientes inventados                                                                          |
+| `products`     | 3 SaaS propios inventados (Botaro, Kanttia, Flujo) — **la sección volvió el 2026-08-12 con Tonalli, que sí existe** |
+| `stats`        | 38 proyectos, 99.9% uptime, 4.9/5, 26 reseñas                                                                       |
 
 También se quitaron `Plan.price` y `Plan.unit` (los modelos siguen, sin cifras) y
 la respuesta del FAQ que prometía «desde 4,900 USD».
@@ -277,8 +407,14 @@ que enseñar, `portfolio` y `testimonials` se pueden recuperar del historial
 ### Mejoras opcionales
 
 - **Avatares del equipo**: son rejillas 14×14 de texto en `TEAM[].pixels` con su
-  paleta. Editables a mano; cada carácter es un color (`1` pelo, `3` piel, `5` ojos,
-  `6` ropa, `8` accesorio, `.` transparente).
+  paleta. Editables a mano; cada carácter es un color (`1` pelo, `2` detalle del
+  pelo o la ropa —barba, raya, puño, visera—, `3` piel, `4` sombra de la piel,
+  `5` ojos, `6` ropa, `7`/`8` accesorio, `.` transparente). La piel sale de
+  `PIEL_MORENA` o `PIEL_CLARA`, no de literales sueltos.
+  Para no editarlos a ciegas, `scripts/retratos.html` es un editor visual: se abre
+  con doble clic (sin servidor ni dependencias), trae los cinco retratos cargados
+  y devuelve el bloque `pixels` + `palette` ya formateado como lo dejaría prettier,
+  spread de la piel incluido. Pegar y listo.
 - Página de aviso de privacidad y términos — los enlaces del footer apuntan a `#nosotros`.
 - Router: `app.routes.ts` está vacío y `provideRouter` sigue configurado, listo para
   añadir rutas sin tocar nada más.

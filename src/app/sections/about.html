@@ -4,7 +4,9 @@
       eyebrow="El estudio"
       lede="KALLIX nació de una idea simple: el software hecho a la medida no tiene por qué sentirse a medio terminar."
     >
-      <h2 class="h2">Un equipo pequeño con <span class="gradient-text">criterio de producto</span>.</h2>
+      <h2 class="h2">
+        Un equipo pequeño con <span class="gradient-text">criterio de producto</span>.
+      </h2>
     </kx-section-header>
 
     <div class="layout">
@@ -19,20 +21,6 @@
           cuesta mantener algo vivo en la nube, así que decidimos pensando en quien lo va a usar
           dentro de dos años.
         </p>
-
-        <div class="crew card card--glass" kxReveal="up" [kxRevealDelay]="120">
-          <ul class="faces">
-            @for (member of team; track member.id) {
-              <li>
-                <kx-pixel-avatar [pixels]="member.pixels" [palette]="member.palette" [name]="member.name" />
-              </li>
-            }
-          </ul>
-          <div class="crew-copy">
-            <p class="crew-title">Cinco personas, cero intermediarios</p>
-            <p class="crew-note">Hablas con quien escribe el código, desde la primera llamada.</p>
-          </div>
-        </div>
       </div>
 
       <ul class="values">
@@ -48,16 +36,62 @@
       </ul>
     </div>
 
-    <figure class="quote card card--glass card--lit" kxReveal="scale">
-      <div class="quote-mark" aria-hidden="true" [kxParallax]="0.08">“</div>
-      <blockquote>
-        No entregamos proyectos: entregamos software que alguien va a usar todos los días. Esa
-        diferencia se nota en cada decisión que tomamos.
-      </blockquote>
-      <figcaption>
-        <strong>Patricio</strong>
-        <span class="dim">CEO · KALLIX</span>
-      </figcaption>
-    </figure>
+    <!-- El equipo vive dentro de «El estudio»: mismo relato, una sola sección.
+         El ancla `#equipo` se conserva porque la usan el menú y el footer. -->
+    <div class="team" id="equipo">
+      <kx-section-header
+        align="center"
+        eyebrow="Equipo"
+        lede="Desarrolladores con experiencia en móvil, sistemas web, backend, inteligencia artificial, automatización e infraestructura cloud. Cada proyecto lo arma la combinación que necesita."
+      >
+        <h3 class="h2">Quiénes <span class="gradient-text">construyen</span>.</h3>
+      </kx-section-header>
+
+      <kx-carousel
+        class="roster"
+        label="el equipo"
+        [items]="team"
+        [itemLabels]="teamNames"
+        [full]="true"
+        [autoplayMs]="8000"
+        kxReveal="scale"
+      >
+        <ng-template #slide let-member>
+          <article class="member card card--glass card--lit">
+            <div class="member-id">
+              <div class="avatar">
+                <kx-pixel-avatar
+                  [pixels]="member.pixels"
+                  [palette]="member.palette"
+                  [name]="member.name"
+                />
+              </div>
+              <h4 class="h3">{{ member.name }}</h4>
+              <p class="role mono">{{ member.role }}</p>
+              <p class="specialty">{{ member.specialty }}</p>
+            </div>
+
+            <div class="member-say">
+              <span class="quote-mark" aria-hidden="true">“</span>
+              <blockquote>{{ member.quote }}</blockquote>
+              <p class="bio">{{ member.bio }}</p>
+              <ul class="skills">
+                @for (skill of member.skills; track skill) {
+                  <li>{{ skill }}</li>
+                }
+              </ul>
+            </div>
+          </article>
+        </ng-template>
+
+        <ng-template #thumb let-member>
+          <kx-pixel-avatar
+            [pixels]="member.pixels"
+            [palette]="member.palette"
+            [name]="member.name"
+          />
+        </ng-template>
+      </kx-carousel>
+    </div>
   </div>
 </section>

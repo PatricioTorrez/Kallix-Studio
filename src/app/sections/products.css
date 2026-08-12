@@ -1,0 +1,145 @@
+:host {
+  display: block;
+  position: relative;
+  overflow: clip;
+}
+
+.glow {
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  width: min(900px, 110vw);
+  height: 420px;
+  translate: -50% 0;
+  background: radial-gradient(ellipse at center, rgba(62, 155, 148, 0.16), transparent 68%);
+  pointer-events: none;
+}
+
+.grid {
+  display: grid;
+  gap: 1.1rem;
+  margin: clamp(2.5rem, 6vw, 4rem) 0 0;
+}
+
+.product {
+  position: relative;
+  display: grid;
+  transition:
+    border-color var(--d-base) ease,
+    box-shadow var(--d-slow) ease;
+}
+
+.spot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(62, 155, 148, 0.2), transparent 62%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--d-slow) ease;
+}
+
+.preview {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  border-bottom: 1px solid var(--stroke);
+  background: #06212a;
+  overflow: hidden;
+}
+
+.preview kx-project-preview {
+  display: block;
+  height: 100%;
+  transition: transform var(--d-slow) var(--ease-out);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: clamp(1.4rem, 3vw, 2.2rem);
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.tagline {
+  color: var(--accent-cool);
+  letter-spacing: 0.04em;
+}
+
+.desc {
+  max-width: 52ch;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.1rem;
+  margin: 0.35rem 0 0.5rem;
+}
+
+.features li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.86rem;
+  color: var(--text-dim);
+}
+
+.features kx-icon {
+  color: var(--accent-cool);
+}
+
+.body .btn {
+  margin-top: auto;
+  align-self: flex-start;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .product:hover {
+    border-color: var(--stroke-strong);
+    box-shadow: var(--shadow-md);
+  }
+
+  .product:hover .spot {
+    opacity: 1;
+  }
+
+  .product:hover kx-project-preview {
+    transform: scale(1.04);
+  }
+}
+
+@media (min-width: 900px) {
+  /* Producto único: maqueta a un lado, texto al otro. El borde que separaba
+     ambas mitades pasa de horizontal a vertical. */
+  .is-single .product {
+    grid-template-columns: 1.05fr 0.95fr;
+  }
+
+  .is-single .preview {
+    aspect-ratio: auto;
+    border-right: 1px solid var(--stroke);
+    border-bottom: 0;
+  }
+
+  .grid:not(.is-single) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spot {
+    display: none;
+  }
+}

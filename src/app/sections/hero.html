@@ -43,36 +43,23 @@
     </div>
 
     <div class="stage">
-      <div class="window card card--glass card--lit">
-        <div class="window-bar">
-          <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
-          <span class="mono window-title">{{ panel.title }}</span>
-          <span class="live"><span class="pulse" aria-hidden="true"></span>{{ panel.badge }}</span>
-        </div>
-
-        <div class="window-body">
-          <div class="metric">
-            <span class="metric-label mono">{{ panel.metricLabel }}</span>
-            <span class="metric-value">{{ panel.metricValue }}</span>
+      <div class="stack">
+        @for (mock of mocks; track mock.id) {
+          <div class="mock" [attr.data-kind]="mock.id" [attr.data-depth]="mock.depth">
+            <div
+              class="mock-card card card--glass"
+              [style.animation-delay]="$index * 90 + 220 + 'ms'"
+            >
+              <span class="mock-label mono">
+                <span class="mock-dot" aria-hidden="true"></span>
+                <span class="mock-name">{{ mock.label }}</span>
+              </span>
+              <div class="mock-shot">
+                <kx-project-preview [name]="mock.preview" [label]="mock.alt" />
+              </div>
+            </div>
           </div>
-
-          <div class="chart" aria-hidden="true">
-            @for (bar of bars; track $index) {
-              <span class="bar" [style.height.%]="bar" [style.animation-delay]="$index * 60 + 520 + 'ms'"></span>
-            }
-          </div>
-
-          <ul class="chips">
-            @for (chip of panel.chips; track chip) {
-              <li class="chip">{{ chip }}</li>
-            }
-          </ul>
-
-          <div class="deploy mono">
-            <kx-icon name="check" [size]="14" />
-            {{ panel.footnote }}
-          </div>
-        </div>
+        }
       </div>
 
       <span class="sprite sprite--1" data-depth="26" aria-hidden="true">

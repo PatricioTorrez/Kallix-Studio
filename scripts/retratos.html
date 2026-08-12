@@ -1,0 +1,1190 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!--
+  Editor de los retratos pixel art del equipo. Ábrelo directo en el navegador
+  (doble clic): no necesita servidor, dependencias ni conexión.
+
+  Dibuja la rejilla de 14x14 y copia el bloque pixels + palette ya formateado
+  para pegarlo en TEAM, dentro de src/app/data/kallix.data.ts.
+-->
+<title>Retratos KALLIX</title>
+<style>
+  :root {
+    /* Tema claro. Los tokens del lienzo son fijos a propósito: en el sitio los
+       retratos viven siempre sobre el sustrato oscuro. */
+    --ground: #e9e6dc;
+    --surface: #fbfaf6;
+    --surface-2: #f2efe6;
+    --line: #d5cfbe;
+    --line-soft: #e3ddcd;
+    --ink: #14282e;
+    --ink-2: #3d5257;
+    --muted: #5d6d6c;
+    --accent: #8f5a12;
+    --accent-ink: #fffaf0;
+    --cool: #1d6b68;
+    --danger: #a33a22;
+
+    --canvas-ground: #0c1e23;
+    --canvas-grid: #17343c;
+    --canvas-void: #132a31;
+
+    --mono: ui-monospace, 'Cascadia Mono', 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+    --sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+    --r: 3px;
+    --pad: clamp(1rem, 2.5vw, 1.75rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --ground: #08161a;
+      --surface: #0e2429;
+      --surface-2: #123037;
+      --line: #1d434c;
+      --line-soft: #16353d;
+      --ink: #e3efec;
+      --ink-2: #b3ccc9;
+      --muted: #7f9d9b;
+      --accent: #e7a84e;
+      --accent-ink: #0c1e23;
+      --cool: #88c9c4;
+      --danger: #e08163;
+    }
+  }
+
+  :root[data-theme='dark'] {
+    --ground: #08161a;
+    --surface: #0e2429;
+    --surface-2: #123037;
+    --line: #1d434c;
+    --line-soft: #16353d;
+    --ink: #e3efec;
+    --ink-2: #b3ccc9;
+    --muted: #7f9d9b;
+    --accent: #e7a84e;
+    --accent-ink: #0c1e23;
+    --cool: #88c9c4;
+    --danger: #e08163;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Estructura ──────────────────────────────────────────────────────── */
+
+  .wrap {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: var(--pad);
+    display: flex;
+    flex-direction: column;
+    gap: var(--pad);
+  }
+
+  header.top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  h1 .dim { color: var(--muted); font-weight: 400; }
+
+  .lede {
+    margin: 0;
+    max-width: 62ch;
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    color: var(--ink-2);
+  }
+
+  .lede code {
+    font-family: var(--mono);
+    font-size: 0.95em;
+    color: var(--accent);
+  }
+
+  .cols {
+    display: grid;
+    grid-template-columns: 200px minmax(0, 1fr) 320px;
+    gap: var(--pad);
+    align-items: start;
+  }
+
+  @media (max-width: 1080px) {
+    .cols { grid-template-columns: minmax(0, 1fr) 300px; }
+    .col-tools { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; }
+    .col-tools > .panel { flex: 1 1 260px; }
+  }
+
+  @media (max-width: 780px) {
+    .cols { grid-template-columns: minmax(0, 1fr); }
+    .col-tools { flex-direction: column; }
+  }
+
+  .col { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r);
+    padding: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+
+  .panel > h2 {
+    margin: 0;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .hint {
+    margin: 0;
+    font-size: 0.7rem;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+
+  /* ── Controles ───────────────────────────────────────────────────────── */
+
+  button, input, textarea, select {
+    font: inherit;
+    color: inherit;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.6rem;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: var(--r);
+    color: var(--ink);
+    cursor: pointer;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: center;
+    transition: border-color 0.12s ease, color 0.12s ease;
+  }
+
+  .btn kbd {
+    font: inherit;
+    font-size: 0.9em;
+    color: var(--muted);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover { border-color: var(--accent); color: var(--accent); }
+    .btn:hover kbd { color: var(--accent); }
+  }
+
+  .btn[aria-pressed='true'] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .btn[aria-pressed='true'] kbd { color: var(--accent-ink); opacity: 0.7; }
+
+  .btn-row { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  .btn-row .btn { flex: 1 1 auto; }
+
+  .stack { display: flex; flex-direction: column; gap: 0.3rem; }
+
+  :where(button, input, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* ── Integrantes ─────────────────────────────────────────────────────── */
+
+  .member {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.3rem 0.45rem;
+    background: none;
+    border: 1px solid transparent;
+    border-radius: var(--r);
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    font-size: 0.78rem;
+    transition: border-color 0.12s ease, background 0.12s ease;
+  }
+
+  .member svg { width: 26px; height: 26px; flex: none; background: var(--canvas-ground); border-radius: 2px; }
+
+  @media (hover: hover) and (pointer: fine) {
+    .member:hover { border-color: var(--line); background: var(--surface-2); }
+  }
+
+  .member[aria-pressed='true'] { border-color: var(--accent); background: var(--surface-2); }
+
+  /* ── Lienzo ──────────────────────────────────────────────────────────── */
+
+  .canvas-shell {
+    background: var(--canvas-ground);
+    border: 1px solid var(--line);
+    border-radius: var(--r);
+    padding: clamp(0.75rem, 2vw, 1.25rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(14, 1fr);
+    gap: 1px;
+    background: var(--canvas-grid);
+    border: 1px solid var(--canvas-grid);
+    width: 100%;
+    max-width: 480px;
+    aspect-ratio: 1;
+    touch-action: none;
+    cursor: crosshair;
+  }
+
+  .grid .cell {
+    background: var(--canvas-void);
+    position: relative;
+  }
+
+  .grid .cell[data-empty='0'] { background: var(--cellcolor); }
+
+  @media (hover: hover) and (pointer: fine) {
+    .grid .cell:hover::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      box-shadow: inset 0 0 0 2px var(--accent);
+    }
+  }
+
+  .grid .cell[data-cursor='1']::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    box-shadow: inset 0 0 0 2px var(--accent);
+  }
+
+  .ruler {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 480px;
+    font-size: 0.65rem;
+    color: #6d9199;
+    letter-spacing: 0.1em;
+  }
+
+  /* ── Vistas previas ──────────────────────────────────────────────────── */
+
+  .previews {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-end;
+  }
+
+  .preview-card {
+    background: var(--canvas-ground);
+    border: 1px solid var(--canvas-grid);
+    border-radius: 6px;
+    padding: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+    min-width: 120px;
+  }
+
+  .preview-card svg { display: block; }
+
+  .preview-card .nm {
+    font-size: 0.72rem;
+    color: #dce9e6;
+    letter-spacing: 0.04em;
+  }
+
+  .preview-card .rl { font-size: 0.62rem; color: #7fa8a4; }
+
+  .preview-sizes { display: flex; gap: 0.9rem; align-items: flex-end; }
+
+  .preview-sizes figure { margin: 0; display: flex; flex-direction: column; gap: 0.3rem; align-items: center; }
+  .preview-sizes figcaption { font-size: 0.6rem; color: var(--muted); letter-spacing: 0.08em; }
+  .preview-sizes svg { background: var(--canvas-ground); border-radius: 2px; display: block; }
+
+  /* ── Paleta ──────────────────────────────────────────────────────────── */
+
+  .slots { display: flex; flex-direction: column; gap: 0.3rem; }
+
+  .slot {
+    display: grid;
+    grid-template-columns: auto auto 1fr auto auto;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.25rem 0.35rem;
+    border: 1px solid transparent;
+    border-radius: var(--r);
+    cursor: pointer;
+    background: none;
+  }
+
+  .slot[data-active='1'] { border-color: var(--accent); background: var(--surface-2); }
+
+  @media (hover: hover) and (pointer: fine) {
+    .slot:hover { background: var(--surface-2); }
+  }
+
+  .slot .key {
+    width: 1.5rem;
+    text-align: center;
+    font-weight: 700;
+    color: var(--ink);
+    background: var(--surface-2);
+    border: 1px solid var(--line-soft);
+    border-radius: 2px;
+    font-size: 0.78rem;
+  }
+
+  .slot input[type='color'] {
+    width: 26px;
+    height: 22px;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    background: none;
+    cursor: pointer;
+  }
+
+  .slot input[type='text'] {
+    width: 100%;
+    min-width: 0;
+    padding: 0.2rem 0.3rem;
+    background: var(--surface-2);
+    border: 1px solid var(--line-soft);
+    border-radius: 2px;
+    font-size: 0.75rem;
+    text-transform: lowercase;
+  }
+
+  .slot .uses {
+    font-size: 0.65rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    min-width: 2.2rem;
+    text-align: right;
+  }
+
+  .slot .kill {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 0 0.2rem;
+    font-size: 0.85rem;
+    line-height: 1;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .slot .kill:hover { color: var(--danger); }
+  }
+
+  .slot.eraser .key { color: var(--muted); }
+
+  /* ── Código ──────────────────────────────────────────────────────────── */
+
+  .code-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  pre.out {
+    margin: 0;
+    padding: 0.7rem;
+    background: var(--surface-2);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--r);
+    font-size: 0.72rem;
+    line-height: 1.55;
+    overflow-x: auto;
+    max-height: 340px;
+    overflow-y: auto;
+    white-space: pre;
+    tab-size: 2;
+  }
+
+  textarea.paste {
+    width: 100%;
+    min-height: 90px;
+    padding: 0.5rem;
+    background: var(--surface-2);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--r);
+    font-size: 0.7rem;
+    resize: vertical;
+  }
+
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 1.25rem;
+    transform: translateX(-50%) translateY(0.5rem);
+    background: var(--accent);
+    color: var(--accent-ink);
+    padding: 0.45rem 0.9rem;
+    border-radius: var(--r);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.16s ease, transform 0.16s ease;
+    z-index: 10;
+  }
+
+  .toast[data-on='1'] { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition-duration: 0.01ms !important; }
+  }
+
+  footer.foot {
+    border-top: 1px solid var(--line);
+    padding-top: 1rem;
+    font-family: var(--sans);
+    font-size: 0.75rem;
+    color: var(--muted);
+    max-width: 70ch;
+  }
+
+  footer.foot code { font-family: var(--mono); color: var(--ink-2); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <h1>Retratos <span class="dim">/ kallix</span></h1>
+    <p class="lede">
+      Dibuja la rejilla de 14×14 y copia el bloque <code>pixels</code> + <code>palette</code>
+      tal como lo espera <code>TEAM</code> en <code>kallix.data.ts</code>. El lienzo se queda
+      en oscuro en los dos temas porque ahí es donde viven los retratos en el sitio.
+    </p>
+  </header>
+
+  <div class="cols">
+    <!-- Columna 1: integrantes y herramientas -->
+    <div class="col col-tools">
+      <section class="panel">
+        <h2>Integrantes</h2>
+        <div class="stack" id="members"></div>
+        <button class="btn" id="blank">Rejilla en blanco</button>
+      </section>
+
+      <section class="panel">
+        <h2>Herramienta</h2>
+        <div class="stack">
+          <button class="btn" data-tool="brush" aria-pressed="true">Pincel <kbd>B</kbd></button>
+          <button class="btn" data-tool="fill" aria-pressed="false">Relleno <kbd>F</kbd></button>
+          <button class="btn" data-tool="pick" aria-pressed="false">Cuentagotas <kbd>I</kbd></button>
+          <button class="btn" data-tool="erase" aria-pressed="false">Goma <kbd>E</kbd></button>
+        </div>
+        <button class="btn" id="sym" aria-pressed="false">Simetría <kbd>S</kbd></button>
+        <p class="hint">
+          Con simetría, cada trazo se copia en la columna espejo. Las caras son simétricas;
+          el pelo y la ropa casi nunca.
+        </p>
+        <div class="btn-row">
+          <button class="btn" id="undo">Deshacer <kbd>⌃Z</kbd></button>
+          <button class="btn" id="clear">Vaciar</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- Columna 2: lienzo y vistas previas -->
+    <div class="col">
+      <div class="canvas-shell">
+        <div class="grid" id="grid" tabindex="0" role="application"
+             aria-label="Rejilla de 14 por 14. Flechas para moverse, espacio para pintar."></div>
+        <div class="ruler"><span id="coord">col 00 · fila 00</span><span>14 × 14</span></div>
+      </div>
+
+      <section class="panel">
+        <h2>Vista previa</h2>
+        <div class="previews">
+          <div class="preview-card">
+            <span id="pv-card"></span>
+            <span class="nm" id="pv-name">Patricio</span>
+            <span class="rl" id="pv-role">CEO · Arquitectura</span>
+          </div>
+          <div class="preview-sizes">
+            <figure><span id="pv-md"></span><figcaption>64 px</figcaption></figure>
+            <figure><span id="pv-sm"></span><figcaption>32 px</figcaption></figure>
+            <figure><span id="pv-xs"></span><figcaption>14 px</figcaption></figure>
+          </div>
+        </div>
+        <p class="hint">
+          La tarjeta usa el mismo SVG que <code>PixelAvatar</code>: rectángulos fusionados por
+          fila, sin suavizado. Si a 32 px no se distingue la cara, a la tarjeta real tampoco.
+        </p>
+      </section>
+    </div>
+
+    <!-- Columna 3: paleta y código -->
+    <div class="col">
+      <section class="panel">
+        <h2>Paleta</h2>
+        <div class="slots" id="slots"></div>
+        <button class="btn" id="add">Añadir color</button>
+        <p class="hint">
+          Convención del proyecto: <b>1</b> pelo · <b>2</b> detalle · <b>3</b> piel ·
+          <b>4</b> sombra · <b>5</b> ojos · <b>6</b> ropa · <b>7</b>/<b>8</b> accesorio.
+        </p>
+        <div class="btn-row">
+          <button class="btn" data-skin="PIEL_MORENA">Piel morena</button>
+          <button class="btn" data-skin="PIEL_CLARA">Piel clara</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="code-head">
+          <h2>Para pegar</h2>
+          <button class="btn" id="copy">Copiar</button>
+        </div>
+        <pre class="out" id="out"></pre>
+        <p class="hint" id="warn"></p>
+      </section>
+
+      <section class="panel">
+        <h2>Importar</h2>
+        <textarea class="paste" id="paste" spellcheck="false"
+                  placeholder="Pega aquí un bloque pixels/palette de kallix.data.ts"></textarea>
+        <button class="btn" id="load">Cargar</button>
+      </section>
+    </div>
+  </div>
+
+  <footer class="foot">
+    Las rejillas viven en <code>src/app/data/kallix.data.ts</code>, dentro del array
+    <code>TEAM</code>. Pega el bloque sobre el <code>pixels</code> y el <code>palette</code> del
+    integrante que estés editando; el nombre, el rol y la bio se editan aparte en el mismo objeto.
+  </footer>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+  const W = 14, H = 14;
+
+  const SKINS = {
+    PIEL_MORENA: { '3': '#a9713f', '4': '#87552d' },
+    PIEL_CLARA: { '3': '#e8bd93', '4': '#c4915f' },
+  };
+
+  const MEMBERS = [
+    {
+      name: 'Patricio', role: 'CEO · Arquitectura',
+      pixels: [
+        '..............',
+        '..............',
+        '....111111....',
+        '...111111111..',
+        '...113333311..',
+        '...133333331..',
+        '...335333533..',
+        '...333344333..',
+        '...332222233..',
+        '....333333....',
+        '....773377....',
+        '..6677777766..',
+        '.666677776666.',
+        '66666677666666',
+      ],
+      palette: {
+        '1': '#1a232a',
+        '2': '#ffffff',
+        '3': '#e09f67',
+        '4': '#c47d46',
+        '5': '#121e24',
+        '6': '#1b4066',
+        '7': '#f0f4f8',
+        '8': '#d0eee9',
+      },
+    },
+    {
+      name: 'Francisco', role: 'IA & ChatBots',
+      pixels: [
+        '..............',
+        '....1..1.1....',
+        '...11111111...',
+        '..1111111111..',
+        '..13131313111.',
+        '..1333333331..',
+        '..3355335533..',
+        '..3333433333..',
+        '..3322222233..',
+        '...33222233...',
+        '.....3333.....',
+        '..6666336666..',
+        '.666666666666.',
+        '66666666666666',
+      ],
+      palette: {
+        '1': '#1c1b20',
+        '2': '#ffffff',
+        '3': '#ebb288',
+        '4': '#ca8f67',
+        '5': '#121217',
+        '6': '#1a1a24',
+        '8': '#d2f1eb',
+      },
+    },
+    {
+      name: 'Jesús', role: 'Backend',
+      pixels: [
+        '..............', '...11111111...', '..1111111111..', '..1111111111..',
+        '..1133333311..', '..1333333331..', '..1355335531..', '..1333333331..',
+        '..1233333321..', '..1223443221..', '...22222222...', '...66666666...',
+        '..6666666666..', '.666666776666.',
+      ],
+      palette: { '1': '#4b3a2a', '2': '#5c4632', '3': '#e8bd93', '4': '#c4915f', '5': '#0c3b45', '6': '#20666b', '7': '#cff0ea' },
+    },
+    {
+      name: 'Claudio', role: 'Frontend',
+      pixels: [
+        '..............',
+        '..............',
+        '....111111....',
+        '...11111111...',
+        '..1133333311..',
+        '..1333333331..',
+        '..3355335533..',
+        '..3333433333..',
+        '..3322222233..',
+        '...33222233...',
+        '.....3333.....',
+        '..6677997766..',
+        '.666679976666.',
+        '66666699666666',
+      ],
+      palette: {
+        '1': '#211714',
+        '2': '#ffffff',
+        '3': '#e3a876',
+        '4': '#c48555',
+        '5': '#121e24',
+        '6': '#2b475e',
+        '7': '#d6ebf7',
+        '8': '#d2f1eb',
+        '9': '#1e52a4',
+      },
+    },
+    {
+      name: 'Miguel', role: 'Desarrollo',
+      pixels: [
+        '..............', '...88888888...', '..8888888888..', '..8888888888..',
+        '.222222222222.', '..1133333311..', '...35533553...', '...33333333...',
+        '...33344333...', '...33333333...', '....333333....', '...66666666...',
+        '..6666666666..', '.666666776666.',
+      ],
+      palette: { '1': '#241a12', '2': '#0a2a32', '3': '#a9713f', '4': '#87552d', '5': '#0c3b45', '6': '#88c9c4', '7': '#0c3b45', '8': '#2b7f7a' },
+    },
+  ];
+
+  /* ── Estado ───────────────────────────────────────────────────────────── */
+
+  let grid = [];
+  let palette = {};
+  let current = '1';
+  let tool = 'brush';
+  let symmetry = false;
+  let name = 'Patricio';
+  let role = 'CEO · Arquitectura';
+  let undoStack = [];
+  let cursor = { x: 0, y: 0 };
+
+  const $ = (s) => document.querySelector(s);
+  const cells = [];
+
+  function load(member) {
+    grid = member.pixels.map((row) => row.padEnd(W, '.').slice(0, W).split(''));
+    while (grid.length < H) grid.push(Array(W).fill('.'));
+    grid = grid.slice(0, H);
+    palette = { ...member.palette };
+    name = member.name;
+    role = member.role;
+    current = Object.keys(palette).sort()[0] ?? '1';
+    undoStack = [];
+    renderAll();
+  }
+
+  function snapshot() {
+    undoStack.push(grid.map((r) => r.join('')));
+    if (undoStack.length > 60) undoStack.shift();
+  }
+
+  /* ── Dibujo ───────────────────────────────────────────────────────────── */
+
+  function paint(x, y, key) {
+    if (x < 0 || x >= W || y < 0 || y >= H) return;
+    grid[y][x] = key;
+    if (symmetry) grid[y][W - 1 - x] = key;
+  }
+
+  function flood(x, y, key) {
+    const target = grid[y][x];
+    if (target === key) return;
+    const queue = [[x, y]];
+    while (queue.length) {
+      const [cx, cy] = queue.pop();
+      if (cx < 0 || cx >= W || cy < 0 || cy >= H) continue;
+      if (grid[cy][cx] !== target) continue;
+      grid[cy][cx] = key;
+      queue.push([cx + 1, cy], [cx - 1, cy], [cx, cy + 1], [cx, cy - 1]);
+    }
+  }
+
+  function apply(x, y) {
+    if (tool === 'pick') {
+      const k = grid[y][x];
+      if (k !== '.' && palette[k]) { current = k; renderSlots(); }
+      return false;
+    }
+    const key = tool === 'erase' ? '.' : current;
+    if (tool === 'fill') flood(x, y, key);
+    else paint(x, y, key);
+    return true;
+  }
+
+  /* ── Render ───────────────────────────────────────────────────────────── */
+
+  function buildGrid() {
+    const g = $('#grid');
+    g.textContent = '';
+    for (let y = 0; y < H; y++) {
+      for (let x = 0; x < W; x++) {
+        const c = document.createElement('div');
+        c.className = 'cell';
+        c.dataset.x = x;
+        c.dataset.y = y;
+        g.appendChild(c);
+        cells.push(c);
+      }
+    }
+  }
+
+  function renderGrid() {
+    for (let y = 0; y < H; y++) {
+      for (let x = 0; x < W; x++) {
+        const c = cells[y * W + x];
+        const k = grid[y][x];
+        const hex = palette[k];
+        c.dataset.empty = hex ? '0' : '1';
+        if (hex) c.style.setProperty('--cellcolor', hex);
+        c.dataset.cursor = cursor.x === x && cursor.y === y && document.activeElement === $('#grid') ? '1' : '0';
+      }
+    }
+    $('#coord').textContent = 'col ' + String(cursor.x).padStart(2, '0') + ' · fila ' + String(cursor.y).padStart(2, '0');
+  }
+
+  /** Mismo algoritmo que `gridToRuns`: fusiona píxeles contiguos del mismo color. */
+  function toSvg(size) {
+    const ns = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    svg.setAttribute('width', size);
+    svg.setAttribute('height', size);
+    svg.setAttribute('shape-rendering', 'crispEdges');
+    svg.setAttribute('role', 'img');
+    svg.setAttribute('aria-label', 'Retrato pixel art de ' + name);
+    for (let y = 0; y < H; y++) {
+      let x = 0;
+      while (x < W) {
+        const k = grid[y][x];
+        const fill = palette[k];
+        if (!fill) { x++; continue; }
+        let w = 1;
+        while (x + w < W && grid[y][x + w] === k) w++;
+        const r = document.createElementNS(ns, 'rect');
+        r.setAttribute('x', x); r.setAttribute('y', y);
+        r.setAttribute('width', w); r.setAttribute('height', 1);
+        r.setAttribute('fill', fill);
+        svg.appendChild(r);
+        x += w;
+      }
+    }
+    return svg;
+  }
+
+  function renderPreviews() {
+    const slots = [['#pv-card', 96], ['#pv-md', 64], ['#pv-sm', 32], ['#pv-xs', 14]];
+    for (const [sel, size] of slots) {
+      const host = $(sel);
+      host.textContent = '';
+      host.appendChild(toSvg(size));
+    }
+    $('#pv-name').textContent = name;
+    $('#pv-role').textContent = role;
+  }
+
+  function usesOf(key) {
+    let n = 0;
+    for (const row of grid) for (const c of row) if (c === key) n++;
+    return n;
+  }
+
+  function renderSlots() {
+    const host = $('#slots');
+    host.textContent = '';
+    const keys = Object.keys(palette).sort();
+
+    for (const k of keys) {
+      const row = document.createElement('div');
+      row.className = 'slot';
+      row.dataset.active = current === k ? '1' : '0';
+      row.tabIndex = 0;
+      row.setAttribute('role', 'button');
+      row.setAttribute('aria-label', 'Color ' + k);
+
+      const key = document.createElement('span');
+      key.className = 'key';
+      key.textContent = k;
+
+      const color = document.createElement('input');
+      color.type = 'color';
+      color.value = palette[k];
+      color.addEventListener('input', () => { palette[k] = color.value; hex.value = color.value; renderAll(); });
+
+      const hex = document.createElement('input');
+      hex.type = 'text';
+      hex.value = palette[k];
+      hex.spellcheck = false;
+      hex.addEventListener('change', () => {
+        const v = hex.value.trim().toLowerCase();
+        if (/^#[0-9a-f]{6}$/.test(v)) { palette[k] = v; renderAll(); }
+        else { hex.value = palette[k]; toast('Hex inválido — usa #rrggbb'); }
+      });
+
+      const uses = document.createElement('span');
+      uses.className = 'uses';
+      const n = usesOf(k);
+      uses.textContent = n + ' px';
+      if (n === 0) uses.style.color = 'var(--danger)';
+
+      const kill = document.createElement('button');
+      kill.className = 'kill';
+      kill.type = 'button';
+      kill.textContent = '×';
+      kill.title = 'Quitar el color ' + k;
+      kill.addEventListener('click', (e) => {
+        e.stopPropagation();
+        snapshot();
+        for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (grid[y][x] === k) grid[y][x] = '.';
+        delete palette[k];
+        if (current === k) current = Object.keys(palette).sort()[0] ?? '.';
+        renderAll();
+        toast(n ? 'Quitado ' + k + ' — ' + n + ' px vaciados' : 'Quitado ' + k);
+      });
+
+      const select = () => { current = k; tool = 'brush'; syncTools(); renderSlots(); };
+      row.addEventListener('click', select);
+      row.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(); } });
+
+      row.append(key, color, hex, uses, kill);
+      host.appendChild(row);
+    }
+
+    const er = document.createElement('div');
+    er.className = 'slot eraser';
+    er.dataset.active = current === '.' ? '1' : '0';
+    er.tabIndex = 0;
+    er.setAttribute('role', 'button');
+    er.innerHTML = '<span class="key">.</span><span></span><span style="font-size:.72rem;color:var(--muted)">transparente</span><span class="uses">' + usesOf('.') + ' px</span><span></span>';
+    const selectEraser = () => { current = '.'; tool = 'erase'; syncTools(); renderSlots(); };
+    er.addEventListener('click', selectEraser);
+    er.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectEraser(); } });
+    host.appendChild(er);
+  }
+
+  /* ── Exportación ──────────────────────────────────────────────────────── */
+
+  function matchSkin() {
+    for (const [nm, def] of Object.entries(SKINS)) {
+      if (palette['3'] === def['3'] && palette['4'] === def['4']) return nm;
+    }
+    return null;
+  }
+
+  function buildCode() {
+    const rows = grid.map((r) => "      '" + r.join('') + "',").join('\n');
+    const skin = matchSkin();
+    const parts = [];
+    for (const k of Object.keys(palette).sort()) {
+      if (skin && k === '3') { parts.push('...' + skin); continue; }
+      if (skin && k === '4') continue;
+      parts.push("'" + k + "': '" + palette[k] + "'");
+    }
+    const oneLine = '    palette: { ' + parts.join(', ') + ' },';
+    const pal = oneLine.length <= 100
+      ? oneLine
+      : '    palette: {\n' + parts.map((p) => '      ' + p + ',').join('\n') + '\n    },';
+    return '    pixels: [\n' + rows + '\n    ],\n' + pal;
+  }
+
+  function renderCode() {
+    $('#out').textContent = buildCode();
+    const missing = new Set();
+    for (const row of grid) for (const c of row) if (c !== '.' && !palette[c]) missing.add(c);
+    const unused = Object.keys(palette).filter((k) => usesOf(k) === 0);
+    const notes = [];
+    if (missing.size) notes.push('Sin color en la paleta: ' + [...missing].join(', ') + ' — se dibujarán transparentes.');
+    if (unused.length) notes.push('Declarados y sin usar: ' + unused.join(', ') + '.');
+    const skin = matchSkin();
+    if (skin) notes.push('La piel coincide con ' + skin + ', así que sale como spread.');
+    $('#warn').textContent = notes.join(' ');
+  }
+
+  function renderAll() {
+    renderGrid();
+    renderPreviews();
+    renderSlots();
+    renderCode();
+  }
+
+  /* ── Interacción con el lienzo ────────────────────────────────────────── */
+
+  let drawing = false;
+
+  function cellFrom(e) {
+    const el = document.elementFromPoint(e.clientX, e.clientY);
+    if (!el || !el.classList.contains('cell')) return null;
+    return { x: +el.dataset.x, y: +el.dataset.y };
+  }
+
+  $('#grid').addEventListener('pointerdown', (e) => {
+    const c = cellFrom(e);
+    if (!c) return;
+    e.preventDefault();
+    $('#grid').setPointerCapture(e.pointerId);
+    cursor = c;
+    snapshot();
+    drawing = apply(c.x, c.y);
+    renderGrid(); renderPreviews(); renderCode();
+    if (!drawing) undoStack.pop();
+  });
+
+  $('#grid').addEventListener('pointermove', (e) => {
+    const c = cellFrom(e);
+    if (!c) return;
+    if (!drawing) { cursor = c; $('#coord').textContent = 'col ' + String(c.x).padStart(2, '0') + ' · fila ' + String(c.y).padStart(2, '0'); return; }
+    if (tool === 'fill') return;
+    apply(c.x, c.y);
+    renderGrid(); renderPreviews(); renderCode();
+  });
+
+  const stop = () => { if (drawing) { drawing = false; renderSlots(); } };
+  $('#grid').addEventListener('pointerup', stop);
+  $('#grid').addEventListener('pointercancel', stop);
+
+  $('#grid').addEventListener('keydown', (e) => {
+    const moves = { ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0] };
+    if (moves[e.key]) {
+      e.preventDefault();
+      cursor.x = Math.min(W - 1, Math.max(0, cursor.x + moves[e.key][0]));
+      cursor.y = Math.min(H - 1, Math.max(0, cursor.y + moves[e.key][1]));
+      renderGrid();
+    } else if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      snapshot();
+      if (!apply(cursor.x, cursor.y)) undoStack.pop();
+      renderAll();
+    }
+  });
+
+  $('#grid').addEventListener('focus', renderGrid);
+  $('#grid').addEventListener('blur', renderGrid);
+
+  /* ── Herramientas ─────────────────────────────────────────────────────── */
+
+  function syncTools() {
+    document.querySelectorAll('[data-tool]').forEach((b) => {
+      b.setAttribute('aria-pressed', String(b.dataset.tool === tool));
+    });
+    $('#sym').setAttribute('aria-pressed', String(symmetry));
+  }
+
+  document.querySelectorAll('[data-tool]').forEach((b) => {
+    b.addEventListener('click', () => { tool = b.dataset.tool; syncTools(); });
+  });
+
+  $('#sym').addEventListener('click', () => { symmetry = !symmetry; syncTools(); toast(symmetry ? 'Simetría activada' : 'Simetría desactivada'); });
+
+  $('#undo').addEventListener('click', undo);
+  function undo() {
+    const prev = undoStack.pop();
+    if (!prev) { toast('Nada que deshacer'); return; }
+    grid = prev.map((r) => r.split(''));
+    renderAll();
+  }
+
+  $('#clear').addEventListener('click', () => {
+    snapshot();
+    grid = Array.from({ length: H }, () => Array(W).fill('.'));
+    renderAll();
+    toast('Rejilla vaciada');
+  });
+
+  $('#blank').addEventListener('click', () => {
+    load({ name: 'Nuevo integrante', role: 'Rol', pixels: Array(H).fill('.'.repeat(W)), palette: { '1': '#2b1a12', '3': '#a9713f', '4': '#87552d', '5': '#0c3b45', '6': '#20666b' } });
+    document.querySelectorAll('.member').forEach((b) => b.setAttribute('aria-pressed', 'false'));
+  });
+
+  $('#add').addEventListener('click', () => {
+    const taken = new Set(Object.keys(palette));
+    const pool = '123456789abcdefghijklmnopqrstuvwxyz'.split('');
+    const free = pool.find((k) => !taken.has(k));
+    if (!free) { toast('No quedan claves libres'); return; }
+    palette[free] = '#88c9c4';
+    current = free;
+    renderAll();
+  });
+
+  document.querySelectorAll('[data-skin]').forEach((b) => {
+    b.addEventListener('click', () => {
+      Object.assign(palette, SKINS[b.dataset.skin]);
+      renderAll();
+      toast(b.dataset.skin.replace('_', ' ').toLowerCase() + ' aplicada');
+    });
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.target.matches('input, textarea')) return;
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); undo(); return; }
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const k = e.key.toLowerCase();
+    if (/^[1-9]$/.test(k) && palette[k]) { current = k; tool = 'brush'; syncTools(); renderSlots(); }
+    else if (k === 'b') { tool = 'brush'; syncTools(); }
+    else if (k === 'f') { tool = 'fill'; syncTools(); }
+    else if (k === 'i') { tool = 'pick'; syncTools(); }
+    else if (k === 'e' || k === '.') { tool = 'erase'; syncTools(); }
+    else if (k === 's') { symmetry = !symmetry; syncTools(); }
+  });
+
+  /* ── Copiar e importar ────────────────────────────────────────────────── */
+
+  $('#copy').addEventListener('click', async () => {
+    const text = buildCode();
+    try {
+      await navigator.clipboard.writeText(text);
+      toast('Copiado');
+    } catch {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+      toast('Copiado');
+    }
+  });
+
+  $('#load').addEventListener('click', () => {
+    const text = $('#paste').value;
+    const rows = [...text.matchAll(/'([.\w]{14})'/g)].map((m) => m[1]).filter((r) => /^[.\w]{14}$/.test(r));
+    const pal = {};
+    for (const m of text.matchAll(/'(\w)':\s*'(#[0-9a-fA-F]{6})'/g)) pal[m[1]] = m[2].toLowerCase();
+    for (const m of text.matchAll(/\.\.\.(PIEL_\w+)/g)) if (SKINS[m[1]]) Object.assign(pal, SKINS[m[1]]);
+
+    if (rows.length < H) { toast('No encontré 14 filas de 14 caracteres'); return; }
+    load({ name, role, pixels: rows.slice(0, H), palette: Object.keys(pal).length ? pal : palette });
+    toast('Cargado');
+  });
+
+  /* ── Integrantes ──────────────────────────────────────────────────────── */
+
+  function buildMembers() {
+    const host = $('#members');
+    MEMBERS.forEach((m, i) => {
+      const b = document.createElement('button');
+      b.className = 'member';
+      b.type = 'button';
+      b.setAttribute('aria-pressed', String(i === 0));
+
+      const saved = { grid, palette, name };
+      grid = m.pixels.map((r) => r.split(''));
+      palette = m.palette;
+      name = m.name;
+      b.appendChild(toSvg(26));
+      grid = saved.grid; palette = saved.palette; name = saved.name;
+
+      const label = document.createElement('span');
+      label.textContent = m.name;
+      b.appendChild(label);
+
+      b.addEventListener('click', () => {
+        document.querySelectorAll('.member').forEach((o) => o.setAttribute('aria-pressed', 'false'));
+        b.setAttribute('aria-pressed', 'true');
+        load(m);
+      });
+      host.appendChild(b);
+    });
+  }
+
+  let toastTimer;
+  function toast(msg) {
+    const t = $('#toast');
+    t.textContent = msg;
+    t.dataset.on = '1';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { t.dataset.on = '0'; }, 1800);
+  }
+
+  /* ── Arranque ─────────────────────────────────────────────────────────── */
+
+  buildGrid();
+  grid = Array.from({ length: H }, () => Array(W).fill('.'));
+  palette = {};
+  buildMembers();
+  load(MEMBERS[0]);
+  syncTools();
+</script>
+</body>
+</html>

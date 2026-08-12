@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Parallax } from '../core/parallax.directive';
 import { Reveal } from '../core/reveal.directive';
 import { TEAM } from '../data/kallix.data';
+import { Carousel } from '../ui/carousel';
 import { Icon, IconName } from '../ui/icon';
 import { PixelAvatar } from '../ui/pixel-avatar';
 import { SectionHeader } from '../ui/section-header';
@@ -15,12 +15,14 @@ interface Value {
 @Component({
   selector: 'kx-about',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [SectionHeader, Icon, PixelAvatar, Reveal, Parallax],
+  imports: [SectionHeader, Icon, PixelAvatar, Carousel, Reveal],
   templateUrl: './about.html',
   styleUrl: './about.css',
 })
 export class About {
   protected readonly team = TEAM;
+  /** Etiquetas del indicador del carrusel: un nombre por retrato. */
+  protected readonly teamNames = TEAM.map((member) => member.name);
 
   protected readonly values: readonly Value[] = [
     {

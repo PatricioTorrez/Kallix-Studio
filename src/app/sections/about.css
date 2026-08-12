@@ -20,47 +20,6 @@
   font-size: 1.02rem;
 }
 
-.crew {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 1.25rem;
-  margin-top: 0.75rem;
-  padding: 1.25rem;
-  border-radius: var(--r-lg);
-}
-
-.faces {
-  display: flex;
-  margin: 0;
-}
-
-.faces li {
-  width: 46px;
-  height: 46px;
-  padding: 3px;
-  border: 1px solid var(--stroke-strong);
-  border-radius: var(--r-pill);
-  background: var(--bg-raised);
-  overflow: hidden;
-  transition: transform var(--d-base) var(--ease-out);
-}
-
-.faces li + li {
-  margin-left: -14px;
-}
-
-.crew-title {
-  font-family: var(--font-display);
-  font-weight: 600;
-  letter-spacing: -0.015em;
-}
-
-.crew-note {
-  font-size: 0.88rem;
-  color: var(--text-dim);
-}
-
 .values {
   display: grid;
   gap: 1rem;
@@ -96,20 +55,70 @@
   color: var(--text-muted);
 }
 
-/* --- Cita ---------------------------------------------------------------- */
+/* --- Equipo --------------------------------------------------------------- */
 
-.quote {
-  position: relative;
-  margin-top: clamp(2.5rem, 6vw, 4rem);
+.team {
+  margin-top: clamp(3.5rem, 8vw, 6rem);
+  padding-top: clamp(2.5rem, 6vw, 4rem);
+  border-top: 1px solid var(--stroke);
+}
+
+.roster {
+  margin-top: clamp(2rem, 5vw, 3rem);
+}
+
+.member {
+  display: grid;
+  gap: clamp(1.25rem, 3vw, 2.5rem);
+  /* Las diapositivas se estiran a la más alta; sin esto, la ficha corta deja la
+     tarjeta a media altura y el riel se ve dentado. */
+  height: 100%;
   padding: clamp(1.75rem, 4vw, 2.75rem);
   border-radius: var(--r-xl);
   overflow: hidden;
 }
 
+.member-id {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+
+.avatar {
+  width: 96px;
+  padding: 8px;
+  margin-bottom: 0.9rem;
+  border: 1px solid var(--stroke-strong);
+  border-radius: var(--r-lg);
+  background:
+    radial-gradient(circle at 50% 20%, rgba(231, 168, 78, 0.2), transparent 70%),
+    linear-gradient(180deg, rgba(var(--substrate), 0.7), rgba(var(--substrate), 0.5));
+}
+
+.role {
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+}
+
+.specialty {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--accent-cool);
+}
+
+.member-say {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
 .quote-mark {
   position: absolute;
   top: -2.5rem;
-  right: 1.5rem;
+  right: 0;
   font-family: var(--font-display);
   font-size: 12rem;
   line-height: 1;
@@ -120,26 +129,40 @@
 
 blockquote {
   position: relative;
-  max-width: 46ch;
-  margin: 0 0 1.25rem;
+  max-width: 42ch;
+  margin: 0 0 1.1rem;
   font-family: var(--font-display);
-  font-size: clamp(1.2rem, 2.4vw, 1.6rem);
+  font-size: clamp(1.15rem, 2.2vw, 1.5rem);
   font-weight: 500;
   line-height: 1.35;
   letter-spacing: -0.02em;
   text-wrap: balance;
 }
 
-figcaption {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.6rem;
-  font-size: 0.9rem;
+.bio {
+  max-width: 52ch;
+  font-size: 0.95rem;
+  color: var(--text-muted);
 }
 
-figcaption strong {
-  font-family: var(--font-display);
+/* `auto` empuja las etiquetas al fondo: quedan alineadas aunque la biografía
+   de uno mida tres líneas y la de otro dos. */
+.skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0;
+  padding-top: 1.25rem;
+  margin-top: auto;
+}
+
+.skills li {
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--stroke);
+  border-radius: var(--r-xs);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-dim);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -151,15 +174,26 @@ figcaption strong {
   .value:hover .value-icon {
     color: var(--accent);
   }
-
-  .crew:hover .faces li {
-    transform: translate3d(0, -2px, 0);
-  }
 }
 
 @media (min-width: 640px) {
   .values {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* En una sola columna la comilla cae justo encima de la primera línea de la
+   frase; solo tiene sitio cuando la ficha se parte en dos columnas. */
+@media (max-width: 759px) {
+  .quote-mark {
+    display: none;
+  }
+}
+
+@media (min-width: 760px) {
+  .member {
+    grid-template-columns: minmax(0, 200px) minmax(0, 1fr);
+    align-items: start;
   }
 }
 

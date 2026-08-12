@@ -20,6 +20,7 @@ export interface NavLink {
 
 export const NAV_LINKS: readonly NavLink[] = [
   { label: 'Servicios', href: '#servicios' },
+  { label: 'Productos', href: '#productos' },
   { label: 'Tecnologías', href: '#tecnologias' },
   { label: 'Modelos', href: '#modelos' },
   { label: 'Proceso', href: '#proceso' },
@@ -42,18 +43,80 @@ export const CONTACT = {
 /** Las tres ofertas, resumidas bajo el titular. */
 export const HERO_TAGS: readonly string[] = ['Sistemas SaaS', 'Apps Android', 'ChatBots'];
 
+export interface HeroMock {
+  readonly id: 'saas' | 'chatbot' | 'android';
+  /** Nombra la pieza que se ve, no el servicio: las etiquetas ya están arriba. */
+  readonly label: string;
+  readonly preview: PreviewName;
+  /** Profundidad del parallax de puntero; a más profundidad, más recorrido. */
+  readonly depth: number;
+  readonly alt: string;
+}
+
 /**
- * Contenido de la maqueta de panel del hero. Es una ventana ilustrativa: no
- * presume métricas nuestras, enseña la oferta y el compromiso de respuesta.
+ * Las tres maquetas apiladas del hero. Enseñan lo que construimos en vez de
+ * prometerlo: son SVG de `project-preview.ts`, sin una sola cifra nuestra.
+ *
+ * El orden del array es el orden en el DOM; quién queda encima de quién lo
+ * decide el `z-index` por `data-kind` en `hero.css`.
  */
-export const HERO_PANEL = {
-  title: 'KALLIX · panel',
-  badge: 'disponibles',
-  metricLabel: 'Respondemos tu mensaje en',
-  metricValue: '< 24 h',
-  chips: ['Sistemas SaaS', 'Apps Android', 'ChatBots'],
-  footnote: 'Diseño, código y operación con el mismo equipo',
-} as const;
+export const HERO_MOCKS: readonly HeroMock[] = [
+  {
+    id: 'saas',
+    label: 'Panel de operación',
+    preview: 'dashboard',
+    depth: 10,
+    alt: 'Maqueta de un panel de administración con métricas y tabla',
+  },
+  {
+    id: 'chatbot',
+    label: 'ChatBots en Telegram',
+    preview: 'chat',
+    depth: 22,
+    alt: 'Maqueta de un chatbot de Telegram atendiendo a un cliente',
+  },
+  {
+    id: 'android',
+    label: 'App Android',
+    preview: 'mobile',
+    depth: 32,
+    alt: 'Maqueta de una aplicación móvil',
+  },
+];
+
+/* ── Productos propios ──────────────────────────────────────────────────── */
+
+export interface Product {
+  readonly id: string;
+  readonly name: string;
+  readonly tagline: string;
+  readonly description: string;
+  /** Salen de la descripción del producto; no inventar capacidades. */
+  readonly features: readonly string[];
+  /** Enlace externo: se abre en pestaña nueva. */
+  readonly url: string;
+  readonly status: string;
+  readonly preview: PreviewName;
+}
+
+/**
+ * Software de la marca, en línea y visitable. A diferencia del portafolio que
+ * se retiró el 2026-08-07, esto sí se puede comprobar: el enlace lleva al
+ * producto funcionando.
+ */
+export const PRODUCTS: readonly Product[] = [
+  {
+    id: 'tonalli',
+    name: 'Tonalli',
+    tagline: 'Hoteles y restaurantes',
+    description:
+      'Sistema de gestión integral para hoteles y restaurantes que simplifica reservaciones, ocupación y la administración de tu negocio en una sola plataforma.',
+    features: ['Reservaciones', 'Ocupación', 'Administración en una sola plataforma'],
+    url: 'https://tonalli-stay-flow.base44.app',
+    status: 'En línea',
+    preview: 'calendar',
+  },
+];
 
 /* ── Servicios ──────────────────────────────────────────────────────────── */
 
@@ -265,7 +328,7 @@ export const PROCESS: readonly ProcessStep[] = [
     step: '03',
     title: 'Desarrollo',
     description:
-      'Sprints de dos semanas con demo al final de cada uno. Nada de cajas negras: ves el avance real, no un porcentaje.',
+      'Arranca cuando el alcance y el prototipo de las dos etapas anteriores están aprobados, no antes. Sprints de dos semanas con demo al final de cada uno: ves el avance real, no un porcentaje.',
     duration: '4 a 16 semanas',
     deliverables: ['Demo quincenal', 'Entorno de pruebas', 'Código en tu repositorio'],
     icon: 'code',
@@ -300,47 +363,100 @@ export interface TeamMember {
   readonly role: string;
   readonly specialty: string;
   readonly bio: string;
+  /** Frase para el carrusel de `about`. Cada quien responde por la suya. */
+  readonly quote: string;
   readonly skills: readonly string[];
   /** Rejilla 14×14; cada carácter es un color de `palette`, `.` es transparente. */
   readonly pixels: readonly string[];
   readonly palette: Readonly<Record<string, string>>;
 }
 
-const SKIN = { '3': '#e7b78a', '4': '#c98f62' };
+/** Los dos tonos de piel del equipo: `3` es la base, `4` la sombra (boca, mentón). */
+const PIEL_MORENA = { '3': '#a9713f', '4': '#87552d' };
+const PIEL_CLARA = { '3': '#e8bd93', '4': '#c4915f' };
 
 export const TEAM: readonly TeamMember[] = [
   {
     id: 'patricio',
     name: 'Patricio',
-    role: 'CEO · Arquitectura',
-    specialty: 'Apps Android',
-    bio: 'Dirige los proyectos y define la arquitectura. Su terreno es el móvil: apps que aguantan años en producción.',
-    skills: ['Kotlin', 'Flutter', 'Producto'],
+    role: 'Desarrollo Mobile',
+    specialty: 'Aplicaciones móviles · Desarrollo offline',
+    bio: 'Apps móviles para entornos financieros: operan sin conexión y sincronizan después con los sistemas web vía APIs. También Oracle, APEX y bases de datos empresariales.',
+    quote:
+      'No entregamos proyectos: entregamos software que alguien va a usar todos los días. Esa diferencia se nota en cada decisión que tomamos.',
+    skills: ['Flutter', 'SQLite', 'APIs', 'Oracle'],
+    // Anteojos (`8` la montura dorada, `5` la pupila), camisa desabrochada (piel
+    // en el pecho) y mangas remangadas (`2` el puño doblado, `3` el antebrazo).
     pixels: [
       '..............',
       '....111111....',
-      '...11111111...',
-      '..1111111112..',
-      '..113333331...',
-      '..133333333...',
-      '..133533533...',
-      '..133333333...',
-      '..134444433...',
-      '...34444443...',
+      '..1111111111..',
+      '..1111111111..',
+      '..1333333331..',
+      '..1888338881..',
+      '..1858338581..',
+      '..1333333331..',
+      '..3333443333..',
+      '...33333333...',
       '....333333....',
+      '..6663333666..',
+      '.226663366622.',
+      '33366666666333',
+    ],
+    palette: {
+      '1': '#1f2937',
+      '2': '#c2883a',
+      ...PIEL_MORENA,
+      '5': '#0c3b45',
+      '6': '#e7a84e',
+      '8': '#f0c46a',
+    },
+  },
+  {
+    id: 'jesus',
+    name: 'Jesús',
+    role: 'Backend & Desarrollo Web',
+    specialty: 'Sistemas web · APIs · Gestión de información',
+    bio: 'Plataformas web para procesos de empresa: clientes, créditos, cobranza, usuarios y permisos. Integra los sistemas web con las apps móviles mediante APIs.',
+    quote:
+      'Detrás de una pantalla simple hay reglas que no perdonan: permisos, saldos, cobranza. Si el backend no las respeta, la interfaz solo disimula.',
+    skills: ['Laravel', 'PHP', 'MySQL', 'APIs'],
+    // Barba sin bigote: `2` recorre mejillas y mentón, pero la fila sobre la boca
+    // se queda en piel.
+    pixels: [
+      '..............',
+      '...11111111...',
+      '..1111111111..',
+      '..1111111111..',
+      '..1133333311..',
+      '..1333333331..',
+      '..1355335531..',
+      '..1333333331..',
+      '..1233333321..',
+      '..1223443221..',
+      '...22222222...',
       '...66666666...',
       '..6666666666..',
       '.666666776666.',
     ],
-    palette: { '1': '#1f2937', '2': '#4b5563', ...SKIN, '5': '#0c3b45', '6': '#e7a84e', '7': '#14252c' },
+    palette: {
+      '1': '#4b3a2a',
+      '2': '#5c4632',
+      ...PIEL_CLARA,
+      '5': '#0c3b45',
+      '6': '#20666b',
+      '7': '#cff0ea',
+    },
   },
   {
-    id: 'pancho',
-    name: 'Pancho',
+    id: 'francisco',
+    name: 'Francisco',
     role: 'IA & ChatBots',
-    specialty: 'Agentes inteligentes',
-    bio: 'Construye los asistentes conversacionales: los entrena con la información del cliente y los conecta a WhatsApp.',
-    skills: ['Claude', 'LangChain', 'Python'],
+    specialty: 'Inteligencia artificial · Automatización',
+    bio: 'ChatBots en producción que consultan información, se conectan a APIs y ejecutan acciones dentro de otros sistemas. Backend e IA para automatizar procesos.',
+    quote:
+      'Un bot útil no es el que habla bonito: es el que busca el dato correcto y hace algo con él. Cuando no sabe, pasa la conversación a una persona.',
+    skills: ['Python', 'IA', 'ChatBots', 'APIs'],
     pixels: [
       '..............',
       '...88888888...',
@@ -348,91 +464,87 @@ export const TEAM: readonly TeamMember[] = [
       '..8811111188..',
       '..8833333388..',
       '..8333333338..',
-      '..133533533...',
-      '..133333333...',
-      '..133344433...',
+      '..8355335538..',
+      '...33333333...',
+      '...33344333...',
       '...33333333...',
       '....333333....',
       '...66666666...',
       '..6666666666..',
       '.666666776666.',
     ],
-    palette: { '1': '#3e2a1f', '2': '#5c4030', '3': '#d9a272', '4': '#b07e52', '5': '#0c3b45', '6': '#3e9b94', '7': '#0c3b45', '8': '#cff0ea' },
+    palette: {
+      '1': '#3e2a1f',
+      ...PIEL_CLARA,
+      '5': '#0c3b45',
+      '6': '#3e9b94',
+      '7': '#0c3b45',
+      '8': '#cff0ea',
+    },
   },
   {
-    id: 'chui',
-    name: 'Chui',
-    role: 'Backend',
-    specialty: 'Laravel',
-    bio: 'Construye las APIs y los sistemas SaaS multi-tenant que sostienen todo lo demás.',
-    skills: ['Laravel', 'PostgreSQL', 'APIs'],
+    id: 'claudio',
+    name: 'Claudio',
+    role: 'Full Stack & Cloud',
+    specialty: 'Frontend · Backend · Procesamiento de datos',
+    bio: 'Soluciones web con Angular y tecnologías cloud. Ha trabajado en proyectos institucionales que convierten documentos físicos en datos estructurados con IA.',
+    quote:
+      'La mitad del trabajo es convertir lo que ya existe —papeles, hojas de cálculo, correos— en datos con los que el sistema pueda trabajar.',
+    skills: ['Angular', 'TypeScript', 'AWS'],
+    // Peinado partido al medio (`2` es la raya) y complexión ancha: la cara ocupa
+    // doce columnas y los hombros llegan al borde.
     pixels: [
-      '..............',
-      '....111111....',
       '...11111111...',
-      '..1111111111..',
-      '..1133333311..',
-      '..133333333...',
-      '..185888583...',
-      '..133333333...',
-      '..133344433...',
+      '..1111221111..',
+      '.111112211111.',
+      '.111112211111.',
+      '.113333333311.',
+      '.133333333331.',
+      '.133553355331.',
+      '.133333333331.',
+      '.133334433331.',
+      '..3333333333..',
       '...33333333...',
-      '....333333....',
-      '...66666666...',
       '..6666666666..',
-      '.666666776666.',
+      '.666666666666.',
+      '66666666666666',
     ],
-    palette: { '1': '#111827', '2': '#374151', '3': '#c98f62', '4': '#a3703f', '5': '#0c3b45', '6': '#20666b', '7': '#cff0ea', '8': '#88c9c4' },
+    palette: { '1': '#2b1a12', '2': '#5a3b24', ...PIEL_MORENA, '5': '#0c3b45', '6': '#d96c2c' },
   },
   {
-    id: 'culadio',
-    name: 'Culadio',
-    role: 'Frontend',
-    specialty: 'Angular',
-    bio: 'Traduce el diseño a interfaces que responden al instante y no se rompen cuando el sistema crece.',
-    skills: ['Angular', 'TypeScript', 'CSS'],
+    id: 'miguel',
+    name: 'Miguel',
+    role: 'Desarrollo de Software',
+    specialty: 'Python · Inteligencia artificial · Automatización',
+    bio: 'Desarrolla herramientas basadas en IA: Python y APIs de modelos para automatizar la generación y el procesamiento de información.',
+    quote:
+      'Cada proceso que alguien repite a mano todas las semanas es una tarea que el software debería estar haciendo solo.',
+    skills: ['Python', 'IA', 'APIs'],
     pixels: [
       '..............',
       '...88888888...',
       '..8888888888..',
-      '.888888888888.',
+      '..8888888888..',
+      '.222222222222.',
       '..1133333311..',
-      '..133333333...',
-      '..133533533...',
-      '..133333333...',
-      '..133344433...',
+      '...35533553...',
+      '...33333333...',
+      '...33344333...',
       '...33333333...',
       '....333333....',
       '...66666666...',
       '..6666666666..',
       '.666666776666.',
     ],
-    palette: { '1': '#2b1a12', '2': '#4b5563', ...SKIN, '5': '#0c3b45', '6': '#114a55', '7': '#e7a84e', '8': '#d96c2c' },
-  },
-  {
-    id: 'mitot',
-    name: 'Mitot',
-    role: 'Desarrollo',
-    specialty: 'En formación continua',
-    bio: 'Participa en los proyectos del estudio mientras sigue preparándose. Aprende rápido y pregunta mejor.',
-    skills: ['Angular', 'Laravel', 'QA'],
-    pixels: [
-      '..............',
-      '...11111111...',
-      '..1111111111..',
-      '..1111111111..',
-      '..1133333311..',
-      '..1333333331..',
-      '..1335335331..',
-      '..1333333331..',
-      '..1333444331..',
-      '..1333333331..',
-      '...13333331...',
-      '...66666666...',
-      '..6666666666..',
-      '.666666776666.',
-    ],
-    palette: { '1': '#4b3a2a', '2': '#6b5540', ...SKIN, '5': '#0c3b45', '6': '#88c9c4', '7': '#0c3b45' },
+    palette: {
+      '1': '#241a12',
+      '2': '#0a2a32',
+      ...PIEL_MORENA,
+      '5': '#0c3b45',
+      '6': '#88c9c4',
+      '7': '#0c3b45',
+      '8': '#2b7f7a',
+    },
   },
 ];
 
@@ -452,7 +564,7 @@ export const FAQS: readonly Faq[] = [
   {
     question: '¿Cuánto tarda un proyecto típico?',
     answer:
-      'Un chatbot conectado a WhatsApp puede estar operando en 3 o 4 semanas. Un MVP de SaaS toma entre 8 y 12 semanas. Una app Android publicada en Google Play, entre 10 y 16. Trabajamos en sprints de dos semanas con demo al final de cada uno, así que ves avance real desde la semana dos.',
+      'Los plazos se cuentan desde que el plan está cerrado, no desde la primera llamada. Antes van el descubrimiento y el diseño —de una a cuatro semanas— donde dejamos por escrito qué se va a construir; hasta que las dos partes estamos de acuerdo en eso no se escribe código de producción, porque programar sobre un alcance a medio entender es lo que hace que los proyectos se dupliquen. Con el plan cerrado: un chatbot puede estar operando en 3 o 4 semanas, un MVP de SaaS toma entre 8 y 12, y una app Android publicada en Google Play, entre 10 y 16. Dentro de esa ventana trabajamos en sprints de dos semanas con demo al final de cada uno, así que ves avance real desde la semana dos.',
   },
   {
     question: '¿Hacen apps para iOS también?',
@@ -511,6 +623,7 @@ export const FOOTER_COLUMNS: readonly FooterColumn[] = [
   {
     title: 'Estudio',
     links: [
+      { label: 'Productos propios', href: '#productos' },
       { label: 'Nosotros', href: '#nosotros' },
       { label: 'Equipo', href: '#equipo' },
       { label: 'Proceso', href: '#proceso' },

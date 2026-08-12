@@ -37,7 +37,7 @@ export class SiteHeader implements OnDestroy {
 
   private readonly progressBar = viewChild.required<ElementRef<HTMLElement>>('progress');
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
-  private spy?: IntersectionObserver;
+  private sections: { href: string; element: HTMLElement }[] = [];
   private frame = 0;
 
   constructor() {
@@ -69,7 +69,6 @@ export class SiteHeader implements OnDestroy {
     cancelAnimationFrame(this.frame);
     removeEventListener('scroll', this.onScroll);
     removeEventListener('resize', this.onScroll);
-    this.spy?.disconnect();
     document.body.style.overflow = '';
     this.setBackgroundInert(false);
   }
@@ -115,25 +114,35 @@ export class SiteHeader implements OnDestroy {
       const progress = max > 0 ? Math.min(scrolled / max, 1) : 0;
       this.progressBar().nativeElement.style.transform = `scaleX(${progress.toFixed(4)})`;
       if (this.scrolled() !== scrolled > 8) this.scrolled.set(scrolled > 8);
+      // `set` con el mismo valor no notifica, así que esto no dispara CD por frame.
+      this.active.set(this.sectionAtReadingLine());
     });
   };
 
   private watchSections(): void {
-    if (typeof IntersectionObserver === 'undefined') return;
+    this.sections = this.links
+      .map((link) => ({ href: link.href, element: document.querySelector<HTMLElement>(link.href) }))
+      .filter((section): section is { href: string; element: HTMLElement } => !!section.element);
+  }
 
-    const targets = this.links
-      .map((link) => document.querySelector(link.href))
-      .filter((element): element is Element => !!element);
+  /**
+   * Qué sección cruza la línea de lectura (45% de la altura de la ventana).
+   *
+   * Se calcula entero en cada frame en lugar de reaccionar a un
+   * `IntersectionObserver`: aquel solo **asignaba** el resaltado y nunca lo
+   * quitaba, así que la última sección visitada se quedaba encendida sobre el
+   * hero, sobre el CTA y sobre cualquier tramo sin entrada en el menú. Devolver
+   * cadena vacía cuando no hay nada es justo lo que faltaba.
+   */
+  private sectionAtReadingLine(): string {
+    const line = scrollY + innerHeight * 0.45;
 
-    this.spy = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) this.active.set(`#${entry.target.id}`);
-        }
-      },
-      { rootMargin: '-45% 0px -50% 0px', threshold: 0 },
-    );
+    for (const { href, element } of this.sections) {
+      const rect = element.getBoundingClientRect();
+      const top = rect.top + scrollY;
+      if (line >= top && line < top + rect.height) return href;
+    }
 
-    targets.forEach((target) => this.spy!.observe(target));
+    return '';
   }
 }

@@ -6,10 +6,10 @@ import { Faq } from './sections/faq';
 import { Hero } from './sections/hero';
 import { Pricing } from './sections/pricing';
 import { Process } from './sections/process';
+import { Products } from './sections/products';
 import { Services } from './sections/services';
 import { SiteFooter } from './sections/site-footer';
 import { SiteHeader } from './sections/site-header';
-import { Team } from './sections/team';
 import { Tech } from './sections/tech';
 
 @Component({
@@ -20,11 +20,11 @@ import { Tech } from './sections/tech';
     Hero,
     About,
     Services,
+    Products,
     Tech,
     Pricing,
     Cta,
     Process,
-    Team,
     Faq,
     Contact,
     SiteFooter,
