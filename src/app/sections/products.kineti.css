@@ -1,0 +1,413 @@
+/* ── Kineti · la repetición ────────────────────────────────────────────────
+   Gimnasio: fuerza y ritmo cardiaco. La barra lleva los mismos discos rojos
+   que flanquean la K del logo.
+
+   Acto I (0–26 %) · la barra cae sobre los hombros, el icono acusa el peso y
+   se acomoda. Acto II (26–62 %) · la repetición: sentadilla, subida, press
+   por encima de la cabeza con la barra flexionándose, y bloqueo arriba.
+   Acto III (62–100 %) · la suelta: caída, golpe seco, temblor, doble latido
+   y la barra se retira. Reglas comunes en `products.motion.css`.
+
+   El icono se aplasta desde la base (`transform-origin` abajo), así que su
+   borde superior baja `--icon × (1 − escalaY)`; la barra suma ese tramo en
+   cada fotograma para seguir apoyada sobre él. */
+
+.barbell {
+  position: absolute;
+  z-index: 2;
+  /* El centro de la barra (y = 28 de 56) apoya justo bajo el borde superior.
+     Con 1.75 iconos de largo, los discos quedan por fuera del icono. */
+  top: calc(var(--icon) * -0.18);
+  left: 50%;
+  width: calc(var(--icon) * 1.75);
+  height: auto;
+  overflow: visible;
+  translate: -50% 0;
+  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.35));
+  /* Solo existe durante la firma: en reposo está fuera de cuadro e invisible,
+     que es también el fotograma 100 % de `kineti-lift`. */
+  transform: translate3d(0, -26px, 0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.barbell .bar {
+  fill: rgba(var(--veil), 0.72);
+}
+
+.barbell .collar {
+  fill: rgba(var(--veil), 0.9);
+}
+
+.barbell .plate {
+  fill: var(--brand);
+  stroke: color-mix(in srgb, var(--brand) 60%, #000);
+  stroke-width: 1;
+}
+
+/* Cada mitad gira desde el centro de la barra: con carga, las puntas caen. */
+.bar-half {
+  transform-box: view-box;
+  transform-origin: 120px 28px;
+}
+
+.pulse {
+  border: 2px solid color-mix(in srgb, var(--brand) 80%, transparent);
+  border-radius: 23%;
+  opacity: 0;
+}
+
+.lines {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 50%;
+  display: flex;
+  gap: 14px;
+  translate: -50% 0;
+  pointer-events: none;
+}
+
+.lines i {
+  width: 2px;
+  height: 22px;
+  border-radius: 2px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--brand) 80%, transparent),
+    transparent
+  );
+  opacity: 0;
+}
+
+.lines i:nth-child(2) {
+  height: 30px;
+}
+
+.is-playing[data-product='kineti'] .motion {
+  transform-origin: 50% 100%;
+  animation: kineti-rep var(--play);
+}
+
+.is-playing[data-product='kineti'] .barbell {
+  animation: kineti-lift var(--play);
+}
+
+.is-playing[data-product='kineti'] .bar-half.is-left {
+  animation: kineti-bend-left var(--play) var(--ease-out);
+}
+
+.is-playing[data-product='kineti'] .bar-half.is-right {
+  animation: kineti-bend-right var(--play) var(--ease-out);
+}
+
+.is-playing[data-product='kineti'] .pulse:nth-of-type(1) {
+  animation: kineti-beat-1 var(--play) var(--ease-out);
+}
+
+.is-playing[data-product='kineti'] .pulse:nth-of-type(2) {
+  animation: kineti-beat-2 var(--play) var(--ease-out);
+}
+
+.is-playing[data-product='kineti'] .lines i {
+  animation: kineti-lines var(--play) var(--ease-out);
+}
+
+.is-playing[data-product='kineti'] .floor {
+  animation: kineti-floor var(--play) var(--ease-out);
+}
+
+@keyframes kineti-rep {
+  /* ── Acto I · recibe la barra ── */
+  0%,
+  4% {
+    transform: translate3d(0, 0, 0) scale(1, 1);
+    animation-timing-function: var(--ease-out);
+  }
+  9% {
+    transform: translate3d(0, 5px, 0) scale(1.05, 0.93);
+    animation-timing-function: var(--ease-out);
+  }
+  15%,
+  26% {
+    transform: translate3d(0, 0, 0) scale(1, 1);
+    animation-timing-function: var(--ease-out);
+  }
+
+  /* ── Acto II · la repetición ── */
+  /* Sentadilla: baja y se ensancha bajo la carga. */
+  32%,
+  35% {
+    transform: translate3d(0, 8px, 0) scale(1.07, 0.88);
+    animation-timing-function: var(--ease-out);
+  }
+  /* De pie, estirándose. */
+  41% {
+    transform: translate3d(0, -6px, 0) scale(0.97, 1.05);
+    animation-timing-function: var(--ease-out);
+  }
+  /* Empuja la barra hacia arriba: se comprime al hacer fuerza. */
+  46% {
+    transform: translate3d(0, -4px, 0) scale(1.02, 0.98);
+    animation-timing-function: var(--ease-out);
+  }
+  /* Bloqueo arriba, y la suelta: 100 ms en línea recta hasta el golpe. */
+  52%,
+  62% {
+    transform: translate3d(0, -6px, 0) scale(1, 1);
+    animation-timing-function: linear;
+  }
+
+  /* ── Acto III · el golpe y el temblor ── */
+  64% {
+    transform: translate3d(0, 5px, 0) scale(1.08, 0.9);
+    animation-timing-function: var(--ease-out);
+  }
+  67% {
+    transform: translate3d(-4px, 0, 0) scale(1, 1);
+  }
+  70% {
+    transform: translate3d(4px, 0, 0) scale(1, 1);
+  }
+  73% {
+    transform: translate3d(-2px, 0, 0) scale(1, 1);
+  }
+  76% {
+    transform: translate3d(1px, 0, 0) scale(1, 1);
+  }
+  80%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1, 1);
+  }
+}
+
+/* La barra cae sobre los hombros, sigue el borde superior del icono y, en el
+   press, sube sola: un cuarto de icono, lo que cabe en el escenario sin que
+   los discos se corten. Al final se desvanece: el icono queda como estaba. */
+@keyframes kineti-lift {
+  0% {
+    transform: translate3d(0, -26px, 0);
+    opacity: 0;
+    animation-timing-function: var(--ease-out);
+  }
+  5% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+    animation-timing-function: var(--ease-out);
+  }
+  9% {
+    transform: translate3d(0, calc(var(--icon) * 0.07 + 5px), 0);
+    opacity: 1;
+    animation-timing-function: var(--ease-out);
+  }
+  15%,
+  26% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+    animation-timing-function: var(--ease-out);
+  }
+  32%,
+  35% {
+    transform: translate3d(0, calc(var(--icon) * 0.12 + 8px), 0);
+    opacity: 1;
+    animation-timing-function: var(--ease-out);
+  }
+  41% {
+    transform: translate3d(0, calc(var(--icon) * -0.05 - 6px), 0);
+    opacity: 1;
+    animation-timing-function: var(--ease-out);
+  }
+  46%,
+  62% {
+    transform: translate3d(0, calc(var(--icon) * -0.24), 0);
+    opacity: 1;
+    animation-timing-function: linear;
+  }
+  64% {
+    transform: translate3d(0, calc(var(--icon) * 0.1 + 5px), 0);
+    opacity: 1;
+    animation-timing-function: var(--ease-out);
+  }
+  67% {
+    transform: translate3d(-4px, 0, 0);
+    opacity: 1;
+  }
+  70% {
+    transform: translate3d(4px, 0, 0);
+    opacity: 1;
+  }
+  73% {
+    transform: translate3d(-2px, 0, 0);
+    opacity: 1;
+  }
+  76% {
+    transform: translate3d(1px, 0, 0);
+    opacity: 1;
+  }
+  80%,
+  88% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+    animation-timing-function: var(--ease-out);
+  }
+  100% {
+    transform: translate3d(0, -26px, 0);
+    opacity: 0;
+  }
+}
+
+/* Flexión: las puntas caen al cargar, rebotan al bloquear arriba y vuelven a
+   caer con el golpe. La derecha es el espejo exacto de la izquierda. */
+@keyframes kineti-bend-left {
+  0%,
+  22%,
+  58%,
+  74%,
+  100% {
+    transform: rotate(0deg);
+  }
+  9% {
+    transform: rotate(-3deg);
+  }
+  15% {
+    transform: rotate(0deg);
+  }
+  30% {
+    transform: rotate(-4deg);
+  }
+  44% {
+    transform: rotate(-6deg);
+  }
+  49% {
+    transform: rotate(3deg);
+  }
+  53% {
+    transform: rotate(-1.5deg);
+  }
+  64% {
+    transform: rotate(-5deg);
+  }
+  69% {
+    transform: rotate(2deg);
+  }
+}
+
+@keyframes kineti-bend-right {
+  0%,
+  22%,
+  58%,
+  74%,
+  100% {
+    transform: rotate(0deg);
+  }
+  9% {
+    transform: rotate(3deg);
+  }
+  15% {
+    transform: rotate(0deg);
+  }
+  30% {
+    transform: rotate(4deg);
+  }
+  44% {
+    transform: rotate(6deg);
+  }
+  49% {
+    transform: rotate(-3deg);
+  }
+  53% {
+    transform: rotate(1.5deg);
+  }
+  64% {
+    transform: rotate(5deg);
+  }
+  69% {
+    transform: rotate(-2deg);
+  }
+}
+
+@keyframes kineti-beat-1 {
+  0%,
+  63% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  64% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  80%,
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* El segundo latido, más corto y más débil: lub-dub. */
+@keyframes kineti-beat-2 {
+  0%,
+  70% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  71% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  86%,
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+
+/* Estelas de impulso bajo el icono mientras se pone de pie. */
+@keyframes kineti-lines {
+  0%,
+  34% {
+    transform: translate3d(0, -8px, 0);
+    opacity: 0;
+  }
+  39% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.9;
+  }
+  50%,
+  100% {
+    transform: translate3d(0, 12px, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes kineti-floor {
+  0%,
+  100% {
+    transform: scaleX(1);
+    opacity: 0.8;
+  }
+  9% {
+    transform: scaleX(1.1);
+    opacity: 0.95;
+  }
+  15%,
+  26% {
+    transform: scaleX(1);
+    opacity: 0.8;
+  }
+  32% {
+    transform: scaleX(1.12);
+    opacity: 0.95;
+  }
+  41%,
+  62% {
+    transform: scaleX(0.88);
+    opacity: 0.6;
+  }
+  64% {
+    transform: scaleX(1.24);
+    opacity: 1;
+  }
+  78% {
+    transform: scaleX(1);
+    opacity: 0.8;
+  }
+}

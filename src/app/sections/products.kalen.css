@@ -1,0 +1,368 @@
+/* ── Kalen · el mazo ───────────────────────────────────────────────────────
+   Despachos de abogados: orden, peso, formalidad. Nada rebota.
+
+   Acto I (0–27 %) · el mazo baja desde fuera del escenario, se posa y toma
+   impulso. Acto II (27–66 %) · golpea el icono dos veces —fuerte y luego más
+   suave, «¡orden!»—, y cada golpe suelta su onda. Acto III (66–100 %) · el
+   expediente sale de detrás en abanico, se vuelve a cerrar y el mazo se
+   retira por donde vino. Reglas comunes en `products.motion.css`. */
+
+.sheet {
+  position: absolute;
+  top: 10%;
+  left: 19%;
+  width: 62%;
+  height: 80%;
+  border: 1px solid color-mix(in srgb, var(--brand) 45%, transparent);
+  border-radius: 9%;
+  /* Tres renglones de texto dibujados con un degradado, sin nodos extra. */
+  background:
+    repeating-linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--brand) 40%, transparent) 0 3px,
+        transparent 3px 11px
+      )
+      50% 34% / 64% 30% no-repeat,
+    var(--bg-raised);
+  box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.45);
+  /* Reposo: escondidas justo detrás del icono (miden 62 × 80% de él, así que
+     lo cubre entero) y además invisibles. */
+  opacity: 0;
+  transform: translate3d(0, 0, 0) rotate(0deg) scale(0.96);
+}
+
+/* Onda del impacto: la silueta del icono que se expande y se apaga. Una sola
+   pieza sirve para los dos golpes: entre ellos vuelve al tamaño de partida
+   mientras está invisible. */
+.seal {
+  border: 2px solid color-mix(in srgb, var(--brand) 85%, transparent);
+  border-radius: 23%;
+  opacity: 0;
+}
+
+/* El mazo, en la esquina superior derecha. Girado 0° es el golpe: la cara de
+   la cabeza (y = 70 de 80) toca el borde superior del icono a un 78% de su
+   ancho. Gira desde la punta del mango (148, 40), donde estaría la mano; en
+   pantalla, un ángulo positivo levanta la cabeza. El reposo son 54°, fuera
+   del escenario: entra y sale por el mismo sitio. Los colores son madera y
+   latón fijos: es un objeto, no un rol del tema.
+
+   El tamaño y los ángulos están atados al alto de `.stage` (2.25 iconos): a
+   0.6 iconos de largo y con 54° de tope, la cabeza cabe dentro del recorte en
+   todo el recorrido. Medido barriendo la animación entera; si tocas cualquiera
+   de las tres cifras, vuelve a medirlo. `top` y `left` salen de ahí: la cara
+   de la cabeza (0.4375 del largo) cae 6 px bajo el borde del icono, y su
+   centro (0.169 del largo) al 78% del ancho. */
+.gavel {
+  position: absolute;
+  z-index: 3;
+  /* +6 px: en el instante del golpe el icono ya se hundió (escala .95 y 4 px
+     abajo); sin ellos la cabeza se quedaba a 8 px de tocarlo. */
+  top: calc(var(--icon) * -0.2625 + 6px);
+  left: calc(var(--icon) * 0.679);
+  width: calc(var(--icon) * 0.6);
+  height: auto;
+  overflow: visible;
+  transform-origin: 92.5% 50%;
+  transform: rotate(54deg);
+  opacity: 0;
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.35));
+  pointer-events: none;
+}
+
+.gavel .handle {
+  fill: #7a4a22;
+}
+
+.gavel .head {
+  fill: #8f5a2c;
+}
+
+.gavel .band {
+  fill: #d9a441;
+}
+
+.is-playing[data-product='kalen'] .gavel {
+  animation: kalen-gavel var(--play);
+}
+
+.is-playing[data-product='kalen'] .motion {
+  animation: kalen-struck var(--play);
+}
+
+.is-playing[data-product='kalen'] .seal {
+  animation: kalen-seal var(--play) var(--ease-out);
+}
+
+.is-playing[data-product='kalen'] .sheet:nth-child(1) {
+  animation: kalen-sheet-left var(--play);
+}
+
+.is-playing[data-product='kalen'] .sheet:nth-child(2) {
+  animation: kalen-sheet-right var(--play);
+}
+
+.is-playing[data-product='kalen'] .sheet:nth-child(3) {
+  animation: kalen-sheet-up var(--play);
+}
+
+.is-playing[data-product='kalen'] .floor {
+  animation: kalen-floor var(--play) var(--ease-out);
+}
+
+@keyframes kalen-gavel {
+  /* ── Acto I · el mazo llega al estrado ── */
+  0% {
+    transform: rotate(54deg);
+    opacity: 0;
+    animation-timing-function: var(--ease-out);
+  }
+  4% {
+    transform: rotate(51deg);
+    opacity: 1;
+    animation-timing-function: var(--ease-out);
+  }
+  /* Baja y se posa: 500 ms, sin rebote. */
+  14% {
+    transform: rotate(32deg);
+    opacity: 1;
+    animation-timing-function: var(--ease-in-out);
+  }
+  17% {
+    transform: rotate(35deg);
+    opacity: 1;
+    animation-timing-function: var(--ease-out);
+  }
+  20% {
+    transform: rotate(32deg);
+    opacity: 1;
+    animation-timing-function: var(--ease-out);
+  }
+  /* Toma impulso y se queda un instante arriba. */
+  26%,
+  27% {
+    transform: rotate(46deg);
+    opacity: 1;
+    animation-timing-function: linear;
+  }
+
+  /* ── Acto II · los dos golpes ── */
+  /* Primer golpe: 100 ms en línea recta, sin aceleración visible. */
+  29% {
+    transform: rotate(0deg);
+    opacity: 1;
+    animation-timing-function: var(--ease-out);
+  }
+  35% {
+    transform: rotate(18deg);
+    opacity: 1;
+    animation-timing-function: var(--ease-in-out);
+  }
+  43%,
+  44% {
+    transform: rotate(30deg);
+    opacity: 1;
+    animation-timing-function: linear;
+  }
+  /* Segundo golpe, más corto. */
+  46% {
+    transform: rotate(0deg);
+    opacity: 1;
+    animation-timing-function: var(--ease-out);
+  }
+  52% {
+    transform: rotate(22deg);
+    opacity: 1;
+    animation-timing-function: var(--ease-in-out);
+  }
+
+  /* ── Acto III · espera a que se abra el expediente y se retira ── */
+  60%,
+  88% {
+    transform: rotate(30deg);
+    opacity: 1;
+    animation-timing-function: var(--ease-in-out);
+  }
+  94% {
+    transform: rotate(46deg);
+    opacity: 1;
+    animation-timing-function: var(--ease-out);
+  }
+  100% {
+    transform: rotate(54deg);
+    opacity: 0;
+  }
+}
+
+/* El icono recibe los golpes: se prepara y se aplasta en cada uno. */
+@keyframes kalen-struck {
+  0%,
+  26% {
+    transform: translate3d(0, 0, 0) scale(1);
+    animation-timing-function: linear;
+  }
+  28% {
+    transform: translate3d(0, -2px, 0) scale(1.01);
+    animation-timing-function: linear;
+  }
+  29% {
+    transform: translate3d(0, 4px, 0) scale(0.95);
+    animation-timing-function: var(--ease-out);
+  }
+  35% {
+    transform: translate3d(0, 0, 0) scale(1.015);
+    animation-timing-function: var(--ease-in-out);
+  }
+  40%,
+  44% {
+    transform: translate3d(0, 0, 0) scale(1);
+    animation-timing-function: linear;
+  }
+  46% {
+    transform: translate3d(0, 2px, 0) scale(0.97);
+    animation-timing-function: var(--ease-out);
+  }
+  52% {
+    transform: translate3d(0, 0, 0) scale(1.008);
+  }
+  58%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+/* Dos ondas con una sola pieza: la fuerte con el primer golpe, otra más tenue
+   con el segundo. El salto de 45 % a 45.5 % ocurre en opacidad 0. */
+@keyframes kalen-seal {
+  0%,
+  28% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  29% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  45% {
+    transform: scale(1.42);
+    opacity: 0;
+  }
+  45.5% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  46% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  62%,
+  100% {
+    transform: scale(1.3);
+    opacity: 0;
+  }
+}
+
+@keyframes kalen-sheet-left {
+  0%,
+  66% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(0.96);
+    opacity: 0;
+    animation-timing-function: var(--ease-out);
+  }
+  /* Aún detrás del icono: se encienden sin que se note. */
+  67% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(0.96);
+    opacity: 1;
+    animation-timing-function: var(--ease-out);
+  }
+  76%,
+  86% {
+    transform: translate3d(-58%, 6%, 0) rotate(-19deg) scale(1);
+    opacity: 1;
+    animation-timing-function: var(--ease-in-out);
+  }
+  96% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(0.96);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(0.96);
+    opacity: 0;
+  }
+}
+
+@keyframes kalen-sheet-right {
+  0%,
+  68% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(0.96);
+    opacity: 0;
+    animation-timing-function: var(--ease-out);
+  }
+  69% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(0.96);
+    opacity: 1;
+    animation-timing-function: var(--ease-out);
+  }
+  78%,
+  86% {
+    transform: translate3d(58%, 6%, 0) rotate(19deg) scale(1);
+    opacity: 1;
+    animation-timing-function: var(--ease-in-out);
+  }
+  96% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(0.96);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(0.96);
+    opacity: 0;
+  }
+}
+
+@keyframes kalen-sheet-up {
+  0%,
+  70% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(0.96);
+    opacity: 0;
+    animation-timing-function: var(--ease-out);
+  }
+  71% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(0.96);
+    opacity: 1;
+    animation-timing-function: var(--ease-out);
+  }
+  80%,
+  86% {
+    transform: translate3d(0, -42%, 0) rotate(0deg) scale(1);
+    opacity: 1;
+    animation-timing-function: var(--ease-in-out);
+  }
+  96% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(0.96);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(0.96);
+    opacity: 0;
+  }
+}
+
+/* La sombra se ensancha con cada golpe. */
+@keyframes kalen-floor {
+  0%,
+  26%,
+  38%,
+  56%,
+  100% {
+    transform: scaleX(1);
+    opacity: 0.8;
+  }
+  29% {
+    transform: scaleX(1.14);
+    opacity: 1;
+  }
+  46% {
+    transform: scaleX(1.08);
+    opacity: 0.95;
+  }
+}

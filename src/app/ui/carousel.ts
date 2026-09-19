@@ -9,6 +9,7 @@ import {
   contentChild,
   inject,
   input,
+  output,
   signal,
   viewChild,
 } from '@angular/core';
@@ -257,6 +258,8 @@ export class Carousel {
   readonly autoplayMs = input(0);
   /** Etiquetas accesibles del indicador, en el orden de `items`. */
   readonly itemLabels = input<readonly string[]>([]);
+  /** Índice de la diapositiva que pasa a estar activa, por scroll, flecha o avance automático. */
+  readonly activeChange = output<number>();
 
   protected readonly slide = contentChild.required<TemplateRef<unknown>>('slide');
   protected readonly thumb = contentChild<TemplateRef<unknown>>('thumb');
@@ -283,7 +286,10 @@ export class Carousel {
       const element = this.viewport().nativeElement;
       const slideWidth = this.slideWidth(element);
       if (!slideWidth) return;
-      this.active.set(Math.round(element.scrollLeft / slideWidth));
+      const index = Math.round(element.scrollLeft / slideWidth);
+      if (index === this.active()) return;
+      this.active.set(index);
+      this.activeChange.emit(index);
     });
   }
 

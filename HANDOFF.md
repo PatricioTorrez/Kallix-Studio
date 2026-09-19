@@ -1,7 +1,7 @@
 # KALLIX — Landing Page
 
 Documento de continuidad. Todo lo necesario para retomar el proyecto sin volver a
-deducir decisiones. Última actualización: **2026-08-12**.
+deducir decisiones. Última actualización: **2026-09-19**.
 
 > **La marca pasó de «Kallix Studio» a «KALLIX»** el 2026-08-11, en versalitas en
 > todas partes. El logotipo ya no es pixel art: `logo.ts` lleva el isotipo oficial
@@ -17,6 +17,163 @@ Landing page completa y funcional. Build de producción sin warnings, pruebas en
 **La página ofrece tres cosas y solo tres:** sistemas SaaS, apps móviles Android y
 chatbots para negocios. Todo el contenido inventado (portafolio, testimonios,
 clientes, productos propios, estadísticas) se eliminó el 2026-08-07; ver §7.
+
+### Cambios del 2026-09-19
+
+- **Las cuatro firmas pasan de 1.8 s a 5 s en tres actos.** Lo pidió Patricio:
+  «una de entrada, intermediaria y una final». No es una animación larga, son
+  tres cortas encadenadas con un respiro entre ellas; la rejilla de tiempos, la
+  misma para los cuatro, está en la cabecera de `products.motion.css`:
+
+  | Acto            | Tramo     | Qué pasa                                 |
+  | --------------- | --------- | ---------------------------------------- |
+  | I · entrada     | 0–~27 %   | El objeto del oficio llega y se acomoda  |
+  | II · intermedio | ~27–70 %  | El verbo del producto: lo que hace       |
+  | III · final     | ~70–100 % | El desenlace, y todo se retira al reposo |
+
+  Con `--play: 5000ms`, **1 % = 50 ms**: sirve para comprobar de un vistazo que
+  ningún gesto suelto se pasa de rosca (un golpe son 2 %, un movimiento de
+  interfaz nunca más de 6 %). `PLAY_MS` en `products.ts` va con ello.
+
+  Reparto por producto: Kalen, el mazo entra y se prepara / dos golpes con su
+  onda / el expediente en abanico y la retirada. Kineti, la barra cae sobre los
+  hombros / sentadilla, press y bloqueo / la suelta, golpe, temblor y doble
+  latido. Kivo, el ticket se imprime / el escaneo y la confirmación / monedas,
+  avisos y el ticket se guarda. Kora, caen los audífonos / seis tiempos de baile
+  / acento final y se los quita.
+
+  Tercera regla nueva del bloque: **los retrasos se escriben como fracción de
+  `--play`** (`calc(var(--play) * 0.62)`), nunca en milisegundos sueltos, para
+  que cambiar la duración no descoloque el guion. Las duraciones de los gestos
+  sueltos —monedas, avisos, notas, ondas— sí van en ms: son el gesto, no su
+  posición en el guion.
+
+- **Los audífonos de Kora ahora rodean el logo**, no se le ponen encima. El
+  lienzo pasó a ser un cuadrado de 1.5 iconos centrado sobre el icono (viewBox
+  `0 0 300 300`, con el icono en 50…250), la diadema arquea **por fuera** de esa
+  caja y las copas se apoyan en los costados a media altura, con la almohadilla
+  pisando el borde 4 unidades. Medido con `getPointAtLength`: la holgura mínima
+  entre el trazo de la diadema y la esquina redondeada del icono es de 4.9
+  unidades, así que no se tocan en ningún punto. Si retocas la curva, vuelve a
+  medirlo: es lo único que separa «puestos» de «encima». El brillo de la diadema
+  recorre el mismo `d` recortado con `stroke-dasharray`, para que no se despegue.
+
+  Las tres ondas pasaron a cuatro y viven en un contenedor `.waves` propio, para
+  indexarlas con `:nth-child` sin contar el resto de la pila (la trampa de Kivo).
+  La cuarta es el acento del acto III y se abre más que las otras.
+
+- **Corregido: el mazo de Kalen se salía del escenario.** `.stage` recorta
+  (`overflow: clip`) y el mazo levantado sacaba la cabeza fuera de la tarjeta:
+  hasta 65 px, medidos barriendo la firma entera. Con 1.8 s pasaba en un
+  parpadeo; con 5 s se queda ahí segundos y salta a la vista. También era
+  anterior a este cambio. Tres cifras quedaron atadas entre sí y hay que
+  moverlas juntas: `.stage` mide ahora **2.25 iconos** de alto (era 2), el mazo
+  **0.6 iconos** de largo (era 0.8) y su ángulo de tope son **54°** (era 66).
+  `top` y `left` se recalcularon a partir del nuevo largo. Barrido de los 5 s
+  con el escenario como referencia: **0 px de desbordamiento en los cuatro
+  productos**, a 1280 y a 390 px.
+
+- **Corregido: `svg { max-width: 100% }` recortaba las piezas anchas.** El reset
+  global de `styles.css` las medía contra `.icon-stack`, que mide justo un icono,
+  y el navegador las encogía sin avisar: **la barra de Kineti salía del ancho del
+  icono en vez de 1.75, con los discos por dentro**, y los audífonos salían
+  cuadrados. `.gavel`, `.barbell` y `.headphones` llevan ahora `max-width: none`
+  en `products.motion.css`. Era un fallo anterior a este cambio: la verificación
+  de «0 px de desbordamiento» no lo detecta, porque el recorte es justo lo que
+  evita el desbordamiento.
+
+  Verificado por CDP en Chrome headless (la extensión sigue sin conectar): las
+  siete animaciones de cada firma duran 5000 ms, el fotograma final coincide con
+  el reposo pieza por pieza en los cuatro productos —lo único que difiere es el
+  `halo`, que respira en su propio bucle de 7 s—, 0 px de desbordamiento, y
+  fotogramas congelados revisados en ambos temas y a 390 px.
+
+### Cambios del 2026-09-18
+
+- **`productos` pasa de Tonalli a cuatro productos propios, en carrusel.** Tonalli
+  salió. Entran dos SaaS —**Kalen** (despachos de abogados: casos, contactos,
+  agenda, facturas, documentos, equipos y roles con permisos) y **Kineti**
+  (membresías de gimnasios)— y dos apps Android —**Kivo** (gastos personales y
+  préstamos, lee notificaciones bancarias, escanea tickets) y **Kora**
+  (reproductor FLAC de música local)—. Datos en `PRODUCTS` (`kallix.data.ts`),
+  ahora con `kind`, `icon`, `color` y `colorOnLight`; `url`, `status` y `preview` se
+  fueron porque ninguno tiene enlace público confirmado.
+
+  Usa `kx-carousel` igual que el equipo: una ficha por diapositiva (icono solo, centrado sobre un
+  resplandor de su color, a un lado, texto al otro) y **los iconos de las
+  apps como miniaturas del indicador**, así los cuatro se ven aunque solo uno esté
+  desplegado. Avance automático cada 9 s.
+
+  El escenario del icono son capas centradas en un mismo punto: halo de su color
+  que respira (7 s), anillos concéntricos desvanecidos con máscara, y el icono
+  como placa de vidrio (brillo en el canto, sombra teñida, `[kxTilt]` con reflejo
+  bajo el puntero) sobre una sombra de contacto que se encoge cuando el icono se
+  eleva al pasar por la ficha. Se centran con la propiedad `translate`, no con
+  `transform`, para que la animación no pise el centrado. Hubo un barrido de
+  radar girando dentro de los anillos: **se quitó a petición**, no lo repongas.
+
+  **Cada logo tiene una animación de firma según su producto**, una hoja por
+  producto (`products.kalen.css`, `.kineti`, `.kivo`, `.kora`) más las reglas
+  comunes en `products.motion.css`. Así ninguna pasa del presupuesto de 12 kB
+  por estilo de componente, y cambiar un producto no toca a los demás:
+
+  | Producto | Firma                                                                                                                      |
+  | -------- | -------------------------------------------------------------------------------------------------------------------------- |
+  | Kalen    | Un mazo de juez golpea el icono dos veces (onda en el primero); el expediente sale en abanico y el mazo se retira          |
+  | Kineti   | La barra cae sobre el icono: sentadilla, press sobre la cabeza con la barra flexionándose, golpe, temblor, doble latido    |
+  | Kivo     | Un ticket con su $ sale por detrás y se escanea; confirma con un pulso, saltan tres monedas y aparecen avisos «+$» y «−$»  |
+  | Kora     | Caen unos audífonos, quedan puestos alrededor del logo y baila al compás; notas, ondas y un ecualizador en lugar de sombra |
+
+  Las piezas que son objetos (mazo, ticket, monedas, audífonos) llevan colores
+  fijos de madera, papel, oro o plástico, iguales en ambos temas. Lo que es
+  texto o grafía usa roles del tema: los avisos de Kivo `--text` sobre
+  `--bg-raised`, y las notas de Kora el mismo `color-mix` que el título.
+
+  **Sin elevación al pasar el puntero.** El icono subía 8 px y se quedaba arriba
+  mientras el cursor siguiera encima; se quitó (y el envoltorio `.lift` con
+  ella). Pasar el puntero solo dispara la firma, que siempre vuelve sola.
+
+  ⚠️ **Al terminar, cada logo vuelve a su estado natural** (lo pidió Patricio):
+  en reposo se ve solo el icono. Hojas, barra, ecualizador y demás piezas entran
+  y salen dentro de la animación. Hubo una versión que las dejaba puestas como
+  «personalidad en reposo» y se descartó: no la repongas.
+
+  Corren **al mostrarse y al pasar el puntero** (lo eligió Patricio): `products.ts`
+  pone `.is-playing` cuando el carrusel entra en pantalla (`IntersectionObserver`
+  al 45%), cuando cambia de diapositiva —`kx-carousel` tiene ahora la salida
+  `activeChange`— y en `pointerenter` de la ficha; la quita al terminar
+  (`PLAY_MS` en TS = `--play` en CSS, cámbialos juntos; hoy 5 s, ver
+  2026-09-19). No reinicia una firma a medias ni corre con
+  `prefers-reduced-motion`.
+
+  Tres reglas del bloque: el fotograma 100% de cada animación es **idéntico al
+  reposo**, y el reposo es el logo tal cual (al quitar la clase nada salta ni
+  se queda puesto); la firma anima `.motion`, un nivel
+  por fuera de `.icon`, porque `[kxTilt]` escribe `transform` en línea sobre
+  `.icon`; y las piezas repetidas van en su propio contenedor para indexar con
+  `:nth-child` — sueltas, `:nth-of-type` contaba la sombra del piso y corrió los
+  retrasos de Kivo un lugar.
+
+  Verificado en Chrome headless por CDP (la extensión no conecta): cada
+  diapositiva dispara solo su firma y la apaga al terminar, icono y halo
+  centrados al píxel, 0 px de desbordamiento, fotogramas congelados revisados en
+  ambos temas y a 390 px. El script de un solo uso quedó fuera del repo.
+
+  Los PNG originales (`public/imagenes/*.png`, ~800 kB cada uno) no se usan en la
+  página: se sirven `public/imagenes/apps/*.png`, cuadrados de 384 px (86–156 kB)
+  con el fondo de cada logo horneado. Kora venía transparente y va sobre crema
+  `#f5f2ee`, porque su sombra negra desaparece sobre oscuro.
+
+  Cada título lleva el color de su marca (`color`): Kalen `#768de5`, Kineti
+  `#fd1923`, Kivo `#0ec9b8`, Kora `#fb9dbd`, que también tiñe el resplandor del
+  icono. En tema claro esos tonos bajan hasta 1.6:1 sobre crema, así que el
+  título usa `colorOnLight`: el mismo tono con la luminosidad bajada y la
+  saturación intacta, hasta 4.5:1 (auditado en `scripts/contrast.mjs`). El cambio
+  lo hace el token global `--light-mix` (0% en oscuro, 100% en claro) dentro de
+  un `color-mix()`, no `:host-context()`: así respeta la frontera `.on-dark`.
+
+  ⚠️ Lo de Kineti más allá de «membresías» (socios, planes, vencimientos) son deducción, no descripción del equipo. Sin
+  comprobar en navegador: la extensión de Chrome no conectó.
 
 ### Cambios del 2026-08-12
 
@@ -210,7 +367,7 @@ src/
     │   ├── section-header.ts   antetítulo + título proyectado + entradilla
     │   ├── tabs.ts             indicador por clip-path (técnica de la lista duplicada)
     │   ├── accordion.ts        grid-template-rows 0fr→1fr, sin medir alturas en JS
-    │   ├── carousel.ts         snap nativo + autoplay + miniaturas · equipo de `about`
+    │   ├── carousel.ts         snap nativo + autoplay + miniaturas + activeChange · equipo y productos
     │   └── marquee.ts          cinta continua, pausa al hover ⚠️ sin uso
     └── sections/               11 secciones (ts + html + css cuando crecen)
         site-header, hero, about, services, products, tech, pricing, cta,

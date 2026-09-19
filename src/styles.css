@@ -68,6 +68,9 @@
   --veil: 207, 240, 234;
   /* Fondo de scrims, desvanecidos y cristal. */
   --substrate: 4, 22, 28;
+  /* Peso de la variante clara en un `color-mix()`: permite a un componente
+     elegir entre dos colores por tema sin `:host-context()`. */
+  --light-mix: 0%;
 
   --bg: var(--ink-950);
   --bg-raised: #06202a;
@@ -126,6 +129,7 @@
 [data-theme='light'] {
   --veil: 4, 22, 28;
   --substrate: 244, 241, 236;
+  --light-mix: 100%;
 
   --bg: var(--cream);
   --bg-raised: #fbfaf8;

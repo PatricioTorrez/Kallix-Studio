@@ -47,6 +47,12 @@ const ON_SURFACE = [
   // la mitad derecha se desvanecía sobre crema y el dibujo quedaba cojo.
   ['logo-teal', '#3c918a', 3.0],
   ['logo-amber', '#ad762a', 3.0],
+  // Títulos de producto (`PRODUCTS[].colorOnLight`): el tono de marca con la
+  // luminosidad bajada hasta pasar 4.5 en la peor superficie.
+  ['kalen', '#3c5dda', 4.5],
+  ['kineti', '#d2020b', 4.5],
+  ['kivo', '#087369', 4.5],
+  ['kora', '#ce084c', 4.5],
 ];
 
 /** [nombre, primer plano, fondo, mínimo] — pares que no van sobre superficie */

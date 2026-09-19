@@ -1,0 +1,111 @@
+/* Animaciones de firma de los logos de `productos`: reglas comunes. Cada
+   producto tiene su hoja —`products.kalen.css`, `.kineti`, `.kivo`, `.kora`—
+   para que ninguna pase del presupuesto de 12 kB por estilo de componente
+   (`angular.json`) y porque cambian por razones distintas: `products.css` es
+   la ficha; estas, la personalidad de cada producto. */
+
+/* ══ Animaciones de firma ═════════════════════════════════════════════════
+
+   Cada logo tiene una, según lo que es el producto. Corren una vez cuando su
+   diapositiva aparece y otra al pasar el puntero por la ficha: la clase
+   `.is-playing` la pone y la quita `products.ts` tras `--play`.
+
+   ── Los tres actos ──────────────────────────────────────────────────────
+
+   La firma dura 5 s y se cuenta en tres actos, iguales para los cuatro
+   productos. No es una animación larga: son tres cortas encadenadas, cada
+   una con su propio arranque y su propio final, separadas por un respiro.
+
+   | Acto           | Tramo    | Qué pasa                                  |
+   | -------------- | -------- | ----------------------------------------- |
+   | I · entrada    | 0–~27 %  | El objeto del oficio llega y se acomoda   |
+   | II · intermedio| ~27–70 % | El verbo del producto: lo que hace        |
+   | III · final    | ~70–100 %| El desenlace, y todo se retira al reposo  |
+
+   Los límites son orientativos —cada producto los corre un par de puntos
+   según su compás—, pero el orden y las tres pausas no se negocian: sin
+   ellas los cuatro vuelven a ser una única maraña de 5 s.
+
+   Con `--play: 5000ms`, **1 % = 50 ms**. Sirve para comprobar que ningún
+   gesto suelto se pasa de rosca: un golpe son 2 % (100 ms), un movimiento de
+   interfaz nunca más de 6 % (300 ms); solo lo explicativo —el expediente en
+   abanico, el ticket imprimiéndose— puede durar más.
+
+   Reglas de oro de este bloque:
+   1. El reposo es el logo tal cual. Todo lo que aparece durante la firma
+      —hojas, barra, ecualizador, audífonos— entra y sale dentro de ella:
+      fuera de `.is-playing` no se ve nada añadido.
+   2. El fotograma 100 % de cada animación es igual al reposo del elemento.
+      Así, al quitarse la clase, nada salta.
+   3. Los retrasos se escriben como fracción de `--play`
+      (`calc(var(--play) * 0.62)`), nunca en milisegundos sueltos: cambiar la
+      duración de la firma no debe descolocar el guion. */
+
+.product {
+  --play: 5000ms;
+}
+
+/* Las piezas de cada producto comparten la caja del icono y se apilan dentro
+   de ella: `isolation` mantiene los `z-index: -1` por encima del escenario. */
+.icon-stack {
+  isolation: isolate;
+}
+
+.motion {
+  position: relative;
+}
+
+/* Las piezas dibujadas en SVG son más anchas que el icono a propósito: la
+   barra de Kineti mide 1.75 iconos y los audífonos de Kora 1.5. El reset
+   global (`svg { max-width: 100% }` en `styles.css`) las recortaba contra
+   `.icon-stack`, que mide justo un icono, y el navegador las encogía sin
+   avisar —la barra quedaba del ancho del icono, con los discos por dentro; los
+   audífonos, cuadrados y encima del logo—. Caben de sobra en `.stage`. */
+.gavel,
+.barbell,
+.headphones {
+  max-width: none;
+}
+
+.sheets,
+.seal,
+.pulse,
+.waves,
+.wave {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* `products.ts` ya no pone `.is-playing` con esta preferencia; esto es la
+     red por si la preferencia cambia con una firma a medio correr. */
+  .is-playing
+    :is(
+      .motion,
+      .gavel,
+      .seal,
+      .sheet,
+      .barbell,
+      .bar-half,
+      .pulse,
+      .lines i,
+      .receipt,
+      .coin,
+      .chip,
+      .headphones,
+      .note,
+      .wave,
+      .eq,
+      .eq i,
+      .floor
+    ) {
+    animation: none;
+  }
+
+  /* Aparte: un pseudo-elemento dentro de `:is()` invalidaría toda la regla. */
+  .is-playing .receipt::after {
+    animation: none;
+  }
+}

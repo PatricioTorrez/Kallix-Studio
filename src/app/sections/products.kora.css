@@ -1,0 +1,559 @@
+/* ── Kora · el baile ───────────────────────────────────────────────────────
+   Música sin pérdida, de tu propio celular: rítmico y alegre.
+
+   Acto I (0–27 %) · caen unos audífonos y quedan puestos alrededor del logo
+   —diadema por encima, copas apoyadas en los costados—, que acusa el peso;
+   un ecualizador toma el lugar de la sombra. Acto II (27–72 %) · el logo baila
+   al compás, un tiempo cada 450 ms: en cada tiempo cae y se aplasta, entre
+   tiempos se mece, y de los audífonos salen notas. Acto III (72–100 %) · un
+   acento final con la onda más ancha, el baile se calma y los audífonos se
+   levantan: el logo queda tal cual. Reglas comunes en `products.motion.css`.
+
+   El compás manda las cifras: 450 ms son 9 %, así que los tiempos caen en
+   27, 36, 45, 54, 63 y 72 %, y los meneos en las mitades (31.5, 40.5…). */
+
+.wave {
+  border: 1.5px solid color-mix(in srgb, var(--brand) 70%, transparent);
+  border-radius: 50%;
+  opacity: 0;
+}
+
+.eq {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 50%;
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: calc(var(--icon) * 0.2);
+  translate: -50% 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.eq i {
+  width: 5px;
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(
+    0deg,
+    color-mix(in srgb, var(--brand) 55%, transparent),
+    var(--brand)
+  );
+  transform: scaleY(0.22);
+  transform-origin: 50% 100%;
+}
+
+/* Audífonos: van dentro de `.motion`, así que bailan pegados al icono. El
+   lienzo es un cuadrado de 1.5 iconos centrado sobre el icono —de ahí el
+   `translate` con los dos ejes—, y dentro de él el icono ocupa 50…250 de 300.
+   La diadema arquea por fuera de esa caja y las copas se apoyan en los
+   costados: puestos, no encima. En reposo están fuera de cuadro, que es
+   también el fotograma 100 % de `kora-phones`. */
+.headphones {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  width: calc(var(--icon) * 1.5);
+  height: calc(var(--icon) * 1.5);
+  overflow: visible;
+  translate: -50% -50%;
+  opacity: 0;
+  transform: translate3d(0, -30px, 0);
+  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.35));
+  pointer-events: none;
+}
+
+.headphones .band {
+  fill: none;
+  stroke: #2a2f35;
+  stroke-width: 12;
+  stroke-linecap: round;
+}
+
+.headphones .band-shine {
+  fill: none;
+  stroke: var(--brand);
+  stroke-width: 3;
+  stroke-linecap: round;
+  opacity: 0.85;
+}
+
+.headphones .cup {
+  fill: #2a2f35;
+}
+
+.headphones .cushion {
+  fill: var(--brand);
+}
+
+/* Notas que salen de las copas: a su altura (44 %) y por fuera del icono, el
+   ancho justo donde están apoyadas. Son grafía, no texto que leer: toman el
+   color del título, con su variante oscurecida en tema claro. */
+.notes {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.note {
+  position: absolute;
+  top: 44%;
+  font: 700 calc(var(--icon) * 0.2) / 1 var(--font-display);
+  color: color-mix(in srgb, var(--brand-on-light) var(--light-mix), var(--brand));
+  opacity: 0;
+}
+
+.note:nth-child(1),
+.note:nth-child(3) {
+  left: 110%;
+}
+
+.note:nth-child(2) {
+  right: 110%;
+}
+
+.is-playing[data-product='kora'] .headphones {
+  animation: kora-phones var(--play);
+}
+
+/* Las notas salen dentro del acto II, escalonadas entre tiempo y tiempo. */
+.is-playing[data-product='kora'] .note:nth-child(1) {
+  animation: kora-note-right 900ms var(--ease-out) calc(var(--play) * 0.3) backwards;
+}
+
+.is-playing[data-product='kora'] .note:nth-child(2) {
+  animation: kora-note-left 900ms var(--ease-out) calc(var(--play) * 0.44) backwards;
+}
+
+.is-playing[data-product='kora'] .note:nth-child(3) {
+  animation: kora-note-right 760ms var(--ease-out) calc(var(--play) * 0.58) backwards;
+}
+
+/* Caen sobre la cabeza al empezar y se levantan al terminar. */
+@keyframes kora-phones {
+  0% {
+    transform: translate3d(0, -30px, 0);
+    opacity: 0;
+    animation-timing-function: var(--ease-out);
+  }
+  4% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+    animation-timing-function: var(--ease-out);
+  }
+  /* Se asientan sobre las orejas. */
+  6% {
+    transform: translate3d(0, 3px, 0);
+    opacity: 1;
+    animation-timing-function: var(--ease-out);
+  }
+  9%,
+  88% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+    animation-timing-function: var(--ease-in-out);
+  }
+  94% {
+    transform: translate3d(0, -16px, 0);
+    opacity: 1;
+    animation-timing-function: var(--ease-out);
+  }
+  100% {
+    transform: translate3d(0, -30px, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes kora-note-right {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.95) rotate(0deg);
+    opacity: 0;
+  }
+  18% {
+    transform: translate3d(6px, -10px, 0) scale(1) rotate(6deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(calc(var(--icon) * 0.24), calc(var(--icon) * -0.5), 0) scale(1)
+      rotate(20deg);
+    opacity: 0;
+  }
+}
+
+@keyframes kora-note-left {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.95) rotate(0deg);
+    opacity: 0;
+  }
+  18% {
+    transform: translate3d(-6px, -10px, 0) scale(1) rotate(-6deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(calc(var(--icon) * -0.24), calc(var(--icon) * -0.5), 0) scale(1)
+      rotate(-20deg);
+    opacity: 0;
+  }
+}
+
+.is-playing[data-product='kora'] .eq {
+  animation: kora-eq-show var(--play) var(--ease-out);
+}
+
+.is-playing[data-product='kora'] .floor {
+  animation: kora-floor var(--play) var(--ease-out);
+}
+
+/* Baila desde los pies: los aplastones salen de la base, no del centro. */
+.is-playing[data-product='kora'] .motion {
+  transform-origin: 50% 100%;
+  animation: kora-dance var(--play);
+}
+
+/* Una onda en los tiempos 1, 3 y 5; la cuarta es el acento del acto III y se
+   abre más que las otras. */
+.is-playing[data-product='kora'] .wave {
+  animation: kora-wave 900ms var(--ease-out) backwards;
+}
+
+.is-playing[data-product='kora'] .wave:nth-child(1) {
+  animation-delay: calc(var(--play) * 0.27);
+}
+
+.is-playing[data-product='kora'] .wave:nth-child(2) {
+  animation-delay: calc(var(--play) * 0.45);
+}
+
+.is-playing[data-product='kora'] .wave:nth-child(3) {
+  animation-delay: calc(var(--play) * 0.63);
+}
+
+.is-playing[data-product='kora'] .wave:nth-child(4) {
+  animation-name: kora-wave-final;
+  animation-duration: 1100ms;
+  animation-delay: calc(var(--play) * 0.72);
+}
+
+.is-playing[data-product='kora'] .eq i:nth-child(3n + 1) {
+  animation: kora-eq-a var(--play) var(--ease-in-out);
+}
+
+.is-playing[data-product='kora'] .eq i:nth-child(3n + 2) {
+  animation: kora-eq-b var(--play) var(--ease-in-out);
+}
+
+.is-playing[data-product='kora'] .eq i:nth-child(3n) {
+  animation: kora-eq-c var(--play) var(--ease-in-out);
+}
+
+@keyframes kora-dance {
+  /* ── Acto I · recibe los audífonos y se acomoda ── */
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1, 1);
+    animation-timing-function: var(--ease-out);
+  }
+  4% {
+    transform: translate3d(0, 4px, 0) rotate(0deg) scale(1.06, 0.93);
+    animation-timing-function: var(--ease-out);
+  }
+  9% {
+    transform: translate3d(0, -2px, 0) rotate(0deg) scale(0.99, 1.02);
+    animation-timing-function: var(--ease-in-out);
+  }
+  14% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1, 1);
+    animation-timing-function: var(--ease-in-out);
+  }
+
+  /* ── Acto II · seis tiempos, uno cada 9 % ── */
+  /* Toma aire justo antes del primero. */
+  25% {
+    transform: translate3d(0, -3px, 0) rotate(0deg) scale(0.99, 1.02);
+    animation-timing-function: var(--ease-out);
+  }
+  27% {
+    transform: translate3d(0, 3px, 0) rotate(0deg) scale(1.05, 0.94);
+    animation-timing-function: var(--ease-out);
+  }
+  29% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1, 1);
+    animation-timing-function: var(--ease-in-out);
+  }
+  31.5% {
+    transform: translate3d(-8px, -10px, 0) rotate(-7deg) scale(0.98, 1.03);
+    animation-timing-function: var(--ease-in-out);
+  }
+  36% {
+    transform: translate3d(0, 3px, 0) rotate(0deg) scale(1.05, 0.94);
+    animation-timing-function: var(--ease-out);
+  }
+  38% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1, 1);
+    animation-timing-function: var(--ease-in-out);
+  }
+  40.5% {
+    transform: translate3d(8px, -10px, 0) rotate(7deg) scale(0.98, 1.03);
+    animation-timing-function: var(--ease-in-out);
+  }
+  45% {
+    transform: translate3d(0, 3px, 0) rotate(0deg) scale(1.05, 0.94);
+    animation-timing-function: var(--ease-out);
+  }
+  47% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1, 1);
+    animation-timing-function: var(--ease-in-out);
+  }
+  49.5% {
+    transform: translate3d(-8px, -10px, 0) rotate(-7deg) scale(0.98, 1.03);
+    animation-timing-function: var(--ease-in-out);
+  }
+  54% {
+    transform: translate3d(0, 3px, 0) rotate(0deg) scale(1.05, 0.94);
+    animation-timing-function: var(--ease-out);
+  }
+  56% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1, 1);
+    animation-timing-function: var(--ease-in-out);
+  }
+  58.5% {
+    transform: translate3d(8px, -10px, 0) rotate(7deg) scale(0.98, 1.03);
+    animation-timing-function: var(--ease-in-out);
+  }
+  63% {
+    transform: translate3d(0, 3px, 0) rotate(0deg) scale(1.05, 0.94);
+    animation-timing-function: var(--ease-out);
+  }
+  65% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1, 1);
+    animation-timing-function: var(--ease-in-out);
+  }
+  67.5% {
+    transform: translate3d(-8px, -10px, 0) rotate(-7deg) scale(0.98, 1.03);
+    animation-timing-function: var(--ease-in-out);
+  }
+
+  /* ── Acto III · el acento final y la calma ── */
+  72% {
+    transform: translate3d(0, 4px, 0) rotate(0deg) scale(1.08, 0.9);
+    animation-timing-function: var(--ease-out);
+  }
+  75% {
+    transform: translate3d(0, -4px, 0) rotate(0deg) scale(0.99, 1.02);
+    animation-timing-function: var(--ease-in-out);
+  }
+  79% {
+    transform: translate3d(4px, -4px, 0) rotate(4deg) scale(1, 1);
+    animation-timing-function: var(--ease-out);
+  }
+  84%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1, 1);
+  }
+}
+
+@keyframes kora-wave {
+  0% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  8% {
+    transform: scale(1.04);
+    opacity: 0.75;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+/* El acento: se abre más y tarda más en apagarse. */
+@keyframes kora-wave-final {
+  0% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  7% {
+    transform: scale(1.05);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+@keyframes kora-eq-show {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  8%,
+  84% {
+    opacity: 1;
+  }
+}
+
+/* La sombra se aparta mientras el ecualizador está a la vista. */
+@keyframes kora-floor {
+  0%,
+  100% {
+    opacity: 0.8;
+  }
+  8%,
+  84% {
+    opacity: 0;
+  }
+}
+
+/* Las tres barras van desfasadas: la primera marca los tiempos, la segunda
+   las mitades y la tercera va por libre. Todas arrancan y terminan en el
+   reposo del ecualizador, y todas suben en el acento del 72 %. */
+@keyframes kora-eq-a {
+  0%,
+  10% {
+    transform: scaleY(0.22);
+  }
+  18% {
+    transform: scaleY(0.5);
+  }
+  27% {
+    transform: scaleY(1);
+  }
+  31.5% {
+    transform: scaleY(0.4);
+  }
+  36% {
+    transform: scaleY(0.8);
+  }
+  40.5% {
+    transform: scaleY(0.3);
+  }
+  45% {
+    transform: scaleY(0.95);
+  }
+  49.5% {
+    transform: scaleY(0.35);
+  }
+  54% {
+    transform: scaleY(0.75);
+  }
+  58.5% {
+    transform: scaleY(0.3);
+  }
+  63% {
+    transform: scaleY(0.9);
+  }
+  67.5% {
+    transform: scaleY(0.4);
+  }
+  72% {
+    transform: scaleY(1);
+  }
+  78% {
+    transform: scaleY(0.35);
+  }
+  86%,
+  100% {
+    transform: scaleY(0.22);
+  }
+}
+
+@keyframes kora-eq-b {
+  0%,
+  12% {
+    transform: scaleY(0.22);
+  }
+  22.5% {
+    transform: scaleY(0.7);
+  }
+  27% {
+    transform: scaleY(0.45);
+  }
+  31.5% {
+    transform: scaleY(0.95);
+  }
+  36% {
+    transform: scaleY(0.4);
+  }
+  40.5% {
+    transform: scaleY(1);
+  }
+  45% {
+    transform: scaleY(0.5);
+  }
+  49.5% {
+    transform: scaleY(0.85);
+  }
+  54% {
+    transform: scaleY(0.35);
+  }
+  58.5% {
+    transform: scaleY(0.9);
+  }
+  63% {
+    transform: scaleY(0.45);
+  }
+  67.5% {
+    transform: scaleY(0.8);
+  }
+  72% {
+    transform: scaleY(0.95);
+  }
+  78% {
+    transform: scaleY(0.3);
+  }
+  86%,
+  100% {
+    transform: scaleY(0.22);
+  }
+}
+
+@keyframes kora-eq-c {
+  0%,
+  14% {
+    transform: scaleY(0.22);
+  }
+  27% {
+    transform: scaleY(0.8);
+  }
+  33% {
+    transform: scaleY(0.35);
+  }
+  38% {
+    transform: scaleY(0.95);
+  }
+  43% {
+    transform: scaleY(0.4);
+  }
+  47% {
+    transform: scaleY(0.7);
+  }
+  52% {
+    transform: scaleY(0.3);
+  }
+  56% {
+    transform: scaleY(0.9);
+  }
+  61% {
+    transform: scaleY(0.45);
+  }
+  65% {
+    transform: scaleY(0.75);
+  }
+  70% {
+    transform: scaleY(0.35);
+  }
+  72% {
+    transform: scaleY(0.9);
+  }
+  78% {
+    transform: scaleY(0.4);
+  }
+  86%,
+  100% {
+    transform: scaleY(0.22);
+  }
+}

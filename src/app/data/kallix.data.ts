@@ -86,35 +86,101 @@ export const HERO_MOCKS: readonly HeroMock[] = [
 
 /* ── Productos propios ──────────────────────────────────────────────────── */
 
+export type ProductKind = 'saas' | 'android';
+
 export interface Product {
   readonly id: string;
   readonly name: string;
+  readonly kind: ProductKind;
+  /** Para quién es, en dos o tres palabras. */
   readonly tagline: string;
   readonly description: string;
   /** Salen de la descripción del producto; no inventar capacidades. */
   readonly features: readonly string[];
-  /** Enlace externo: se abre en pestaña nueva. */
-  readonly url: string;
-  readonly status: string;
-  readonly preview: PreviewName;
+  /**
+   * Icono cuadrado de 384 px en `public/imagenes/apps/`, derivado del PNG
+   * original de `public/imagenes/` con el fondo ya horneado.
+   */
+  readonly icon: string;
+  /** Color de marca exacto: título en tema oscuro y resplandor tras el icono. */
+  readonly color: string;
+  /**
+   * El mismo tono, oscurecido solo en luminosidad (saturación intacta) hasta
+   * 4.5:1 sobre todas las superficies claras. Medido en `scripts/contrast.mjs`.
+   */
+  readonly colorOnLight: string;
 }
 
+export const PRODUCT_KIND_LABEL: Readonly<Record<ProductKind, string>> = {
+  saas: 'Sistema SaaS',
+  android: 'App Android',
+};
+
 /**
- * Software de la marca, en línea y visitable. A diferencia del portafolio que
- * se retiró el 2026-08-07, esto sí se puede comprobar: el enlace lleva al
- * producto funcionando.
+ * Software de la marca. Tonalli salió el 2026-09-18; entran dos SaaS y dos
+ * apps Android, con las capacidades tal como las describe el equipo.
  */
 export const PRODUCTS: readonly Product[] = [
   {
-    id: 'tonalli',
-    name: 'Tonalli',
-    tagline: 'Hoteles y restaurantes',
+    id: 'kalen',
+    name: 'Kalen',
+    kind: 'saas',
+    tagline: 'Despachos de abogados',
     description:
-      'Sistema de gestión integral para hoteles y restaurantes que simplifica reservaciones, ocupación y la administración de tu negocio en una sola plataforma.',
-    features: ['Reservaciones', 'Ocupación', 'Administración en una sola plataforma'],
-    url: 'https://tonalli-stay-flow.base44.app',
-    status: 'En línea',
-    preview: 'calendar',
+      'Para licenciados en derecho y sus despachos: casos, contactos, agenda, facturas y documentos en un solo lugar. Arma equipos de trabajo y define roles a tu medida, con los permisos exactos de cada quien.',
+    features: [
+      'Gestión de casos',
+      'Contactos y agenda',
+      'Facturación',
+      'Documentos',
+      'Equipos de trabajo',
+      'Roles y permisos personalizados',
+    ],
+    icon: 'imagenes/apps/kalen.png',
+    color: '#768de5',
+    colorOnLight: '#3c5dda',
+  },
+  {
+    id: 'kineti',
+    name: 'Kineti',
+    kind: 'saas',
+    tagline: 'Gimnasios',
+    description:
+      'Administra las membresías de tu gimnasio desde un mismo panel: quién es socio, qué plan tiene y cuándo le toca renovar.',
+    features: ['Membresías', 'Socios y planes', 'Vencimientos y renovaciones'],
+    icon: 'imagenes/apps/kineti.png',
+    color: '#fd1923',
+    colorOnLight: '#d2020b',
+  },
+  {
+    id: 'kivo',
+    name: 'Kivo',
+    kind: 'android',
+    tagline: 'Finanzas personales',
+    description:
+      'Tus gastos de comida, servicios y todo lo demás, junto con los préstamos que haces y los que pides: a quién, cuánto y cuándo toca pagar o cobrar. Registra los cargos leyendo las notificaciones de tus apps bancarias y escanea tus tickets.',
+    features: [
+      'Gastos por categoría',
+      'Préstamos dados y recibidos',
+      'Fechas de pago y de cobro',
+      'Lee notificaciones bancarias',
+      'Escaneo de tickets',
+    ],
+    icon: 'imagenes/apps/kivo.png',
+    color: '#0ec9b8',
+    colorOnLight: '#087369',
+  },
+  {
+    id: 'kora',
+    name: 'Kora',
+    kind: 'android',
+    tagline: 'Música en alta fidelidad',
+    description:
+      'Reproductor de audio FLAC para la música que ya tienes en tu celular o tablet. No descarga ni transmite nada: reproduce tus archivos, sin pérdida de calidad.',
+    features: ['Audio FLAC sin pérdida', 'Tu música local', 'Sin descargas ni streaming'],
+    icon: 'imagenes/apps/kora.png',
+    color: '#fb9dbd',
+    colorOnLight: '#ce084c',
   },
 ];
 

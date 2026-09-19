@@ -1,0 +1,335 @@
+/* ── Kivo · el ticket ──────────────────────────────────────────────────────
+   Finanzas personales: gastos, préstamos, tickets.
+
+   Acto I (0–26 %) · un ticket de compra sale por detrás del icono, como si se
+   imprimiera. Acto II (26–60 %) · un haz lo escanea de arriba abajo y el
+   icono confirma la lectura con un pulso. Acto III (60–100 %) · el dinero se
+   mueve —saltan monedas, aparecen un ingreso (+$) y un gasto (−$)— y el
+   ticket vuelve a guardarse. Sin cifras inventadas: solo el signo. Reglas
+   comunes en `products.motion.css`. */
+
+/* Papel de ticket: colores fijos de papel y tinta, igual en ambos temas. */
+.receipt {
+  position: absolute;
+  z-index: -1;
+  top: 8%;
+  left: 24%;
+  width: 52%;
+  height: 78%;
+  border-radius: 7% 7% 0 0;
+  overflow: hidden;
+  background:
+    repeating-linear-gradient(180deg, rgba(29, 43, 42, 0.28) 0 3px, transparent 3px 10px) 50% 24% /
+      62% 16% no-repeat,
+    #f7f4ec;
+  box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.45);
+  /* Reposo: escondido detrás del icono e invisible. */
+  opacity: 0;
+  transform: translate3d(0, 0, 0) scale(0.96);
+}
+
+/* El total, arriba: lo único del ticket que asoma por encima del icono. */
+.receipt b {
+  position: absolute;
+  top: 4%;
+  left: 0;
+  width: 100%;
+  font: 700 calc(var(--icon) * 0.1) / 1 var(--font-mono);
+  color: #1d2b2a;
+  text-align: center;
+}
+
+/* El haz del escáner recorre la parte visible del ticket. */
+.receipt::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 12%;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    color-mix(in srgb, var(--brand) 35%, transparent) 70%,
+    var(--brand)
+  );
+  opacity: 0;
+  transform: translate3d(0, -100%, 0);
+}
+
+/* Monedas: salen del centro del icono. Oro y tinta fijos, como el papel. */
+.coins,
+.chips {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.coin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: calc(var(--icon) * 0.26);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  font: 700 calc(var(--icon) * 0.14) / 1 var(--font-mono);
+  color: #6b4a0c;
+  background: radial-gradient(circle at 35% 30%, #ffe08a, #f2b632 55%, #c98a12);
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.35),
+    inset 0 -3px 0 rgba(0, 0, 0, 0.18),
+    0 6px 12px -4px rgba(0, 0, 0, 0.45);
+  opacity: 0;
+}
+
+/* Aviso del banco: punto de color y el signo. Marca para ingreso, óxido
+   para gasto. El texto usa `--text` sobre `--bg-raised`: roles del tema. */
+.chip {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: calc(var(--icon) * 0.4);
+  height: 17%;
+  padding-right: 9%;
+  border: 1px solid var(--stroke-strong);
+  border-radius: var(--r-pill);
+  background: var(--bg-raised);
+  box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.5);
+  font: 700 calc(var(--icon) * 0.085) / 1 var(--font-mono);
+  color: var(--text);
+  opacity: 0;
+}
+
+.chip::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  width: 22%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  translate: 0 -50%;
+  background: var(--brand);
+}
+
+.chip.is-out::before {
+  background: var(--rust-500);
+}
+
+.chip:nth-child(1) {
+  top: 16%;
+  left: -32%;
+}
+
+.chip:nth-child(2) {
+  top: 60%;
+  right: -32%;
+}
+
+.is-playing[data-product='kivo'] .receipt {
+  animation: kivo-receipt var(--play);
+}
+
+.is-playing[data-product='kivo'] .receipt::after {
+  animation: kivo-scan var(--play);
+}
+
+.is-playing[data-product='kivo'] .motion {
+  animation: kivo-confirm var(--play) var(--ease-out);
+}
+
+/* Acto III. Escalonados por `animation-delay` con `backwards`: antes de su
+   turno cada pieza toma el fotograma 0 (invisible), no su estado final. El
+   retraso es una fracción de `--play`; la duración, el gesto en sí, no. */
+.is-playing[data-product='kivo'] .coin:nth-child(1) {
+  animation: kivo-coin-left 780ms calc(var(--play) * 0.6) backwards;
+}
+
+.is-playing[data-product='kivo'] .coin:nth-child(2) {
+  animation: kivo-coin-right 780ms calc(var(--play) * 0.625) backwards;
+}
+
+.is-playing[data-product='kivo'] .coin:nth-child(3) {
+  animation: kivo-coin-up 780ms calc(var(--play) * 0.65) backwards;
+}
+
+.is-playing[data-product='kivo'] .chip {
+  animation: kivo-chip 700ms var(--ease-out) backwards;
+}
+
+.is-playing[data-product='kivo'] .chip:nth-child(1) {
+  animation-delay: calc(var(--play) * 0.68);
+}
+
+.is-playing[data-product='kivo'] .chip:nth-child(2) {
+  animation-delay: calc(var(--play) * 0.71);
+}
+
+@keyframes kivo-receipt {
+  /* ── Acto I · se imprime ── */
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.96);
+    opacity: 0;
+    animation-timing-function: var(--ease-out);
+  }
+  3% {
+    transform: translate3d(0, 0, 0) scale(0.96);
+    opacity: 1;
+    animation-timing-function: var(--ease-out);
+  }
+  /* Asoma por encima del icono, y ahí se queda hasta el final del acto III. */
+  20%,
+  84% {
+    transform: translate3d(0, -50%, 0) scale(1);
+    opacity: 1;
+    animation-timing-function: var(--ease-in-out);
+  }
+  96% {
+    transform: translate3d(0, 0, 0) scale(0.96);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(0.96);
+    opacity: 0;
+  }
+}
+
+/* ── Acto II · el escaneo ── */
+@keyframes kivo-scan {
+  0%,
+  26% {
+    transform: translate3d(0, -100%, 0);
+    opacity: 0;
+    animation-timing-function: var(--ease-in-out);
+  }
+  28% {
+    opacity: 1;
+    animation-timing-function: var(--ease-in-out);
+  }
+  46% {
+    transform: translate3d(0, 330%, 0);
+    opacity: 1;
+  }
+  50%,
+  100% {
+    transform: translate3d(0, 330%, 0);
+    opacity: 0;
+  }
+}
+
+/* Lectura completa: un pulso corto de confirmación. */
+@keyframes kivo-confirm {
+  0%,
+  48%,
+  100% {
+    transform: scale(1);
+  }
+  52% {
+    transform: scale(1.05);
+  }
+  56% {
+    transform: scale(0.99);
+  }
+  60% {
+    transform: scale(1);
+  }
+}
+
+@keyframes kivo-coin-left {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.95) rotate(0deg);
+    opacity: 0;
+    animation-timing-function: var(--ease-out);
+  }
+  15% {
+    transform: translate3d(calc(var(--icon) * -0.3), calc(var(--icon) * -0.34), 0) scale(1)
+      rotate(-20deg);
+    opacity: 1;
+    animation-timing-function: var(--ease-out);
+  }
+  60% {
+    transform: translate3d(calc(var(--icon) * -0.62), calc(var(--icon) * -0.44), 0) scale(1)
+      rotate(-40deg);
+    opacity: 1;
+    animation-timing-function: var(--ease-in-out);
+  }
+  100% {
+    transform: translate3d(calc(var(--icon) * -0.76), calc(var(--icon) * -0.12), 0) scale(1)
+      rotate(-60deg);
+    opacity: 0;
+  }
+}
+
+@keyframes kivo-coin-right {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.95) rotate(0deg);
+    opacity: 0;
+    animation-timing-function: var(--ease-out);
+  }
+  15% {
+    transform: translate3d(calc(var(--icon) * 0.32), calc(var(--icon) * -0.38), 0) scale(1)
+      rotate(18deg);
+    opacity: 1;
+    animation-timing-function: var(--ease-out);
+  }
+  60% {
+    transform: translate3d(calc(var(--icon) * 0.64), calc(var(--icon) * -0.5), 0) scale(1)
+      rotate(36deg);
+    opacity: 1;
+    animation-timing-function: var(--ease-in-out);
+  }
+  100% {
+    transform: translate3d(calc(var(--icon) * 0.8), calc(var(--icon) * -0.2), 0) scale(1)
+      rotate(56deg);
+    opacity: 0;
+  }
+}
+
+@keyframes kivo-coin-up {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.95) rotate(0deg);
+    opacity: 0;
+    animation-timing-function: var(--ease-out);
+  }
+  15% {
+    transform: translate3d(calc(var(--icon) * -0.04), calc(var(--icon) * -0.42), 0) scale(1)
+      rotate(-8deg);
+    opacity: 1;
+    animation-timing-function: var(--ease-out);
+  }
+  60% {
+    transform: translate3d(calc(var(--icon) * -0.08), calc(var(--icon) * -0.7), 0) scale(1)
+      rotate(-16deg);
+    opacity: 1;
+    animation-timing-function: var(--ease-in-out);
+  }
+  100% {
+    transform: translate3d(calc(var(--icon) * -0.1), calc(var(--icon) * -0.56), 0) scale(1)
+      rotate(-24deg);
+    opacity: 0;
+  }
+}
+
+@keyframes kivo-chip {
+  0% {
+    transform: translate3d(0, 10px, 0) scale(0.95);
+    opacity: 0;
+  }
+  20% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 1;
+  }
+  72% {
+    transform: translate3d(0, -6px, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, -16px, 0) scale(1);
+    opacity: 0;
+  }
+}
