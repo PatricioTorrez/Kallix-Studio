@@ -1,0 +1,139 @@
+/* Capas del escenario del icono que se retiraron de `products.css` el
+   2026-09-21 junto con las firmas.
+
+   ESTE ARCHIVO NO SE COMPILA. Está aquí porque las firmas dependen de él:
+   animan `.floor` (la sombra de contacto se encoge y se aplasta) y necesitan
+   `.motion` como envoltorio y `.icon-stack` aislado. Reponer las firmas sin
+   reponer esto deja animaciones apuntando a elementos que ya no existen.
+
+   El equipo pidió «que se vea más profesional» y con ello se fueron el halo
+   que respira, los anillos concéntricos, el brillo de vidrio, el reflejo que
+   sigue al puntero y la sombra de contacto: el icono quedó como placa limpia
+   con su sombra teñida. Ver `README.md`. */
+
+/* Todas las capas se centran con `top/left: 50%` + la propiedad `translate`,
+   no con `transform`: así las animaciones de `transform` (respirar) no pisan
+   el centrado. */
+.halo,
+.rings {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Dos luces en una: un núcleo intenso pegado al icono y una bruma amplia que
+   se funde con la tarjeta. Respira despacio para que la ficha no sea un
+   póster, pero sin llamar la atención mientras se lee el texto de al lado. */
+.halo {
+  z-index: -2;
+  width: calc(var(--icon) * 3.2);
+  aspect-ratio: 1;
+  background:
+    radial-gradient(
+      closest-side,
+      color-mix(in srgb, var(--brand) 55%, transparent) 0%,
+      color-mix(in srgb, var(--brand) 26%, transparent) 30%,
+      transparent 56%
+    ),
+    radial-gradient(closest-side, color-mix(in srgb, var(--brand) 14%, transparent), transparent);
+  animation: halo-breathe 7s ease-in-out infinite alternate;
+}
+
+/* Anillos concéntricos cada 32 px, desvanecidos hacia fuera con una máscara:
+   el eco del sol de bandas del hero, en el color de cada producto. */
+.rings {
+  z-index: -1;
+  width: calc(var(--icon) * 2.9);
+  aspect-ratio: 1;
+  background: repeating-radial-gradient(
+    circle,
+    transparent 0 31px,
+    color-mix(in srgb, var(--brand) 30%, transparent) 31px 32px
+  );
+  -webkit-mask: radial-gradient(closest-side, transparent 30%, #000 38%, transparent 100%);
+  mask: radial-gradient(closest-side, transparent 30%, #000 38%, transparent 100%);
+}
+
+/* Brillo fijo en la esquina superior, como luz cenital sobre vidrio. */
+.gloss {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    150deg,
+    rgba(255, 255, 255, 0.26) 0%,
+    rgba(255, 255, 255, 0.06) 34%,
+    transparent 52%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+
+/* Reflejo que sigue al puntero: `[kxTilt]` lo traslada, aquí solo se enciende. */
+.spot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 70%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.4), transparent 65%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--d-base) ease;
+}
+
+/* Sombra de contacto: las firmas la encogen o la aplastan según lo que haga
+   el icono. Sin elevación al pasar el puntero: se quedaba arriba mientras el
+   cursor siguiera encima, y el logo tiene que volver solo a su estado natural. */
+.floor {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 50%;
+  width: 78%;
+  height: 20px;
+  translate: -50% 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--brand) 55%, transparent),
+    transparent
+  );
+  opacity: 0.8;
+}
+
+@keyframes halo-breathe {
+  from {
+    transform: scale(0.94);
+    opacity: 0.8;
+  }
+  to {
+    transform: scale(1.04);
+    opacity: 1;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .icon:hover .spot {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .halo {
+    animation: none;
+  }
+}
+
+/* El escenario medía 2.25 iconos de alto —y no 2— porque recorta
+   (`overflow: clip`) y el mazo de Kalen levantado sacaba la cabeza fuera de la
+   tarjeta. Sin firmas bajó a 1.9. Si las repones, devuélvelo a 2.25 y vuelve a
+   medir el desbordamiento. */
+.stage {
+  min-height: calc(var(--icon) * 2.25);
+}

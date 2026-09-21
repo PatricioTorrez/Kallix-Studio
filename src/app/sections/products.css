@@ -30,23 +30,21 @@
 
 /* ── Escenario del icono ───────────────────────────────────────────────── */
 
-/* `--brand` llega por producto desde los datos. Aquí solo tiñe luz y sombra,
-   nunca texto, así que vale el color exacto en ambos temas.
+/* Escenario sobrio: fondo neutro y el icono solo. El halo que respiraba, los
+   anillos concéntricos, el brillo de vidrio, el reflejo al puntero y la sombra
+   de contacto se retiraron el 2026-09-21 con las firmas; están guardados en
+   `products-motion/products.stage.css`.
 
-   Todas las capas se centran con `top/left: 50%` + la propiedad `translate`,
-   no con `transform`: así las animaciones de `transform` (respirar)
-   no pisan el centrado. */
+   Aquí no queda nada teñido de `--brand`: la sombra de color bajo la placa
+   también se fue, a petición. El color de cada producto solo vive ya en su
+   título. */
 .stage {
   --icon: clamp(120px, 28vw, 176px);
 
   position: relative;
   display: grid;
   place-items: center;
-  /* 2.25 y no 2: el escenario recorta (`overflow: clip`) y la firma de Kalen
-     levanta el mazo por encima del icono. Con dos iconos de alto, la cabeza
-     del mazo se cortaba contra el borde de la tarjeta. Si subes el ángulo del
-     mazo o el tamaño de otra pieza, vuelve a medir el desbordamiento. */
-  min-height: calc(var(--icon) * 2.25);
+  min-height: calc(var(--icon) * 1.9);
   padding: clamp(2.5rem, 6vw, 3.5rem) 1.5rem;
   border-bottom: 1px solid var(--stroke);
   background: linear-gradient(180deg, rgba(var(--substrate), 0.55), rgba(var(--substrate), 0.3));
@@ -54,55 +52,9 @@
   isolation: isolate;
 }
 
-.halo,
-.rings {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  translate: -50% -50%;
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-/* Dos luces en una: un núcleo intenso pegado al icono y una bruma amplia que
-   se funde con la tarjeta. Respira despacio para que la ficha no sea un
-   póster, pero sin llamar la atención mientras se lee el texto de al lado. */
-.halo {
-  z-index: -2;
-  width: calc(var(--icon) * 3.2);
-  aspect-ratio: 1;
-  background:
-    radial-gradient(
-      closest-side,
-      color-mix(in srgb, var(--brand) 55%, transparent) 0%,
-      color-mix(in srgb, var(--brand) 26%, transparent) 30%,
-      transparent 56%
-    ),
-    radial-gradient(closest-side, color-mix(in srgb, var(--brand) 14%, transparent), transparent);
-  animation: halo-breathe 7s ease-in-out infinite alternate;
-}
-
-/* Anillos concéntricos cada 32 px, desvanecidos hacia fuera con una máscara:
-   el eco del sol de bandas del hero, en el color de cada producto. */
-.rings {
-  z-index: -1;
-  width: calc(var(--icon) * 2.9);
-  aspect-ratio: 1;
-  background: repeating-radial-gradient(
-    circle,
-    transparent 0 31px,
-    color-mix(in srgb, var(--brand) 30%, transparent) 31px 32px
-  );
-  -webkit-mask: radial-gradient(closest-side, transparent 30%, #000 38%, transparent 100%);
-  mask: radial-gradient(closest-side, transparent 30%, #000 38%, transparent 100%);
-}
-
-.icon-stack {
-  position: relative;
-}
-
-/* El icono como placa de vidrio: radio de icono adaptativo de Android, canto
-   iluminado y una sombra teñida de su propio color. */
+/* El icono, con el radio adaptativo de Android y una sombra neutra que solo lo
+   asienta sobre el escenario. Sin resplandor de color debajo: es lo que hacía
+   que la ficha pareciera un póster. */
 .icon {
   position: relative;
   width: var(--icon);
@@ -110,77 +62,15 @@
   border-radius: 23%;
   overflow: hidden;
   box-shadow:
-    0 0 0 1px rgba(var(--veil), 0.1),
-    0 2px 6px rgba(0, 0, 0, 0.22),
-    0 26px 56px -18px color-mix(in srgb, var(--brand) 75%, transparent);
+    0 0 0 1px rgba(var(--veil), 0.08),
+    0 2px 6px rgba(0, 0, 0, 0.16),
+    0 18px 36px -22px rgba(0, 0, 0, 0.5);
 }
 
 .app-icon {
   display: block;
   width: 100%;
   height: 100%;
-}
-
-/* Brillo fijo en la esquina superior, como luz cenital sobre vidrio. */
-.gloss {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(
-    150deg,
-    rgba(255, 255, 255, 0.26) 0%,
-    rgba(255, 255, 255, 0.06) 34%,
-    transparent 52%
-  );
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.35),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-  pointer-events: none;
-}
-
-/* Reflejo que sigue al puntero: `[kxTilt]` lo traslada, aquí solo se enciende. */
-.spot {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 70%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.4), transparent 65%);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity var(--d-base) ease;
-}
-
-/* Sombra de contacto: las firmas de `products.motion*.css` la encogen o la
-   aplastan según lo que haga el icono. Sin elevación al pasar el puntero: se
-   quedaba arriba mientras el cursor siguiera encima, y el logo tiene que volver
-   solo a su estado natural. */
-.floor {
-  position: absolute;
-  top: calc(100% + 14px);
-  left: 50%;
-  width: 78%;
-  height: 20px;
-  translate: -50% 0;
-  border-radius: 50%;
-  background: radial-gradient(
-    closest-side,
-    color-mix(in srgb, var(--brand) 55%, transparent),
-    transparent
-  );
-  opacity: 0.8;
-}
-
-@keyframes halo-breathe {
-  from {
-    transform: scale(0.94);
-    opacity: 0.8;
-  }
-  to {
-    transform: scale(1.04);
-    opacity: 1;
-  }
 }
 
 /* ── Texto ─────────────────────────────────────────────────────────────── */
@@ -248,12 +138,6 @@
   object-fit: cover;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .icon:hover .spot {
-    opacity: 1;
-  }
-}
-
 @media (min-width: 560px) {
   .features {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -274,11 +158,5 @@
 
   .body {
     justify-content: center;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .halo {
-    animation: none;
   }
 }

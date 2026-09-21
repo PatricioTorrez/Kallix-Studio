@@ -1,0 +1,139 @@
+<!-- Piezas de plantilla de las animaciones de firma de `productos`.
+
+     ESTE ARCHIVO NO SE COMPILA. Es el recorte literal de lo que se quitó de
+     `sections/products.html` el 2026-09-21 al desactivar las firmas; está aquí
+     para poder reponerlas sin reescribirlas. Las instrucciones de reactivación
+     están en `README.md`, al lado.
+
+     Los tres bloques van dentro de `.icon-stack`, en este orden:
+       1. «Detrás del icono»  — antes de `<div class="motion">`
+       2. `.motion` / `.icon`  — el icono envuelto y los audífonos de Kora
+       3. `.floor` y «delante del icono» — después de `.motion`
+-->
+
+<!-- ── 1 · Detrás del icono ──────────────────────────────────────────────── -->
+@switch (product.id) {
+  @case ('kalen') {
+    <span class="sheets" aria-hidden="true">
+      <span class="sheet"></span>
+      <span class="sheet"></span>
+      <span class="sheet"></span>
+    </span>
+    <span class="seal" aria-hidden="true"></span>
+  }
+  @case ('kineti') {
+    <span class="pulse" aria-hidden="true"></span>
+    <span class="pulse" aria-hidden="true"></span>
+    <span class="lines" aria-hidden="true"><i></i><i></i><i></i></span>
+  }
+  @case ('kivo') {
+    <!-- Ticket de compra: sale por detrás del icono y un haz lo escanea. -->
+    <span class="receipt" aria-hidden="true"><b>$</b></span>
+  }
+  @case ('kora') {
+    <!-- Una onda por tiempo marcado; la cuarta es el acento final. En su
+         propio contenedor para indexarlas con `:nth-child` sin contar el
+         resto de la pila. -->
+    <span class="waves" aria-hidden="true">
+      <span class="wave"></span>
+      <span class="wave"></span>
+      <span class="wave"></span>
+      <span class="wave"></span>
+    </span>
+    <span class="eq" aria-hidden="true"> <i></i><i></i><i></i><i></i><i></i><i></i><i></i> </span>
+  }
+}
+
+<!-- ── 2 · El icono envuelto ─────────────────────────────────────────────── -->
+<!-- La firma anima `.motion`; `[kxTilt]` escribe su propio transform en
+     `.icon`, un nivel más adentro. Lo que va dentro de `.motion` y fuera de
+     `.icon` se mueve con el icono. -->
+<div class="motion">
+  <div class="icon" [kxTilt]="12">
+    <img
+      class="app-icon"
+      [src]="product.icon"
+      [alt]="'Icono de ' + product.name"
+      width="384"
+      height="384"
+      loading="lazy"
+      decoding="async"
+    />
+    <span class="gloss" aria-hidden="true"></span>
+    <span class="spot" aria-hidden="true"></span>
+  </div>
+
+  @if (product.id === 'kora') {
+    <!-- Audífonos puestos: el logo es la cabeza. El lienzo es un cuadrado de
+         1.5 iconos centrado en el icono, así que el icono ocupa x/y 50…250 de
+         300. La diadema arquea por fuera de esas coordenadas —nunca cruza el
+         logo— y las copas se apoyan en los costados, a media altura. El brillo
+         recorre el mismo trazo que la diadema, recortado con `stroke-dasharray`
+         para que no se despegue de ella. Viajan con el icono mientras baila. -->
+    <svg class="headphones" viewBox="0 0 300 300" aria-hidden="true">
+      <path class="band" d="M 20 160 C 20 -35, 280 -35, 280 160" />
+      <path
+        class="band-shine"
+        d="M 20 160 C 20 -35, 280 -35, 280 160"
+        pathLength="100"
+        stroke-dasharray="46 100"
+        stroke-dashoffset="-27"
+      />
+      <rect class="cup" x="1" y="122" width="38" height="76" rx="17" />
+      <rect class="cushion" x="33" y="132" width="21" height="56" rx="10" />
+      <rect class="cup" x="261" y="122" width="38" height="76" rx="17" />
+      <rect class="cushion" x="246" y="132" width="21" height="56" rx="10" />
+    </svg>
+  }
+</div>
+<span class="floor" aria-hidden="true"></span>
+
+<!-- ── 3 · Delante del icono ─────────────────────────────────────────────── -->
+@switch (product.id) {
+  @case ('kalen') {
+    <!-- Mazo de juez. Girado 0° es el instante del golpe: la cara inferior de
+         la cabeza toca el borde superior del icono. -->
+    <svg class="gavel" viewBox="0 0 160 80" aria-hidden="true">
+      <rect class="handle" x="42" y="34" width="112" height="12" rx="6" />
+      <rect class="head" x="8" y="8" width="38" height="62" rx="7" />
+      <rect class="band" x="8" y="18" width="38" height="6" />
+      <rect class="band" x="8" y="54" width="38" height="6" />
+    </svg>
+  }
+  @case ('kineti') {
+    <!-- La barra: cada mitad es un grupo para poder flexionarla desde el
+         centro cuando carga el peso. -->
+    <svg class="barbell" viewBox="0 0 240 56" aria-hidden="true">
+      <g class="bar-half is-left">
+        <rect class="bar" x="4" y="25.5" width="116" height="5" rx="2.5" />
+        <rect class="collar" x="34" y="20" width="5" height="16" rx="1.5" />
+        <rect class="plate" x="20" y="4" width="12" height="48" rx="3" />
+        <rect class="plate" x="8" y="11" width="10" height="34" rx="3" />
+      </g>
+      <g class="bar-half is-right">
+        <rect class="bar" x="120" y="25.5" width="116" height="5" rx="2.5" />
+        <rect class="collar" x="201" y="20" width="5" height="16" rx="1.5" />
+        <rect class="plate" x="208" y="4" width="12" height="48" rx="3" />
+        <rect class="plate" x="222" y="11" width="10" height="34" rx="3" />
+      </g>
+    </svg>
+  }
+  @case ('kivo') {
+    <span class="coins" aria-hidden="true">
+      <span class="coin">$</span>
+      <span class="coin">$</span>
+      <span class="coin">$</span>
+    </span>
+    <span class="chips" aria-hidden="true">
+      <span class="chip is-in">+$</span>
+      <span class="chip is-out">−$</span>
+    </span>
+  }
+  @case ('kora') {
+    <span class="notes" aria-hidden="true">
+      <span class="note">♪</span>
+      <span class="note">♫</span>
+      <span class="note">♪</span>
+    </span>
+  }
+}

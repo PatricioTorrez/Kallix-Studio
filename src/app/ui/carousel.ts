@@ -47,9 +47,9 @@ import { Icon } from './icon';
       aria-roledescription="carrusel"
       [attr.aria-label]="label()"
     >
-      <div class="rail">
+      <div class="rail" [class.is-full]="full()">
         @for (item of items(); track $index) {
-          <div class="slide" [class.is-full]="full()">
+          <div class="slide">
             <ng-container
               *ngTemplateOutlet="slide(); context: { $implicit: item, index: $index }"
             />
@@ -121,19 +121,42 @@ import { Icon } from './icon';
     }
 
     .rail {
+      --gap: 1.25rem;
+
       display: flex;
-      gap: 1.25rem;
+      gap: var(--gap);
       padding-block: 0.4rem;
     }
 
+    /* Cada ficha deja asomar la siguiente por la derecha. Cuánto, lo decide
+       quien usa el carrusel con la propiedad --peek, que cuenta desde el borde
+       de una ficha hasta el de la siguiente: el asomo que se ve es --peek menos
+       el hueco del riel. */
     .slide {
-      flex: 0 0 min(560px, 88%);
+      flex: 0 0 calc(100% - var(--peek, 4rem));
       scroll-snap-align: start;
     }
 
+    /* Separador final: el hueco que le falta al riel para que la última ficha
+       pueda pegarse al borde izquierdo. Sin él, el scroll se acaba antes de
+       su posición de ajuste y nunca queda alineada. Mide --peek menos el
+       hueco, que el riel ya pone delante del separador.
+
+       No vale poner ese hueco como relleno del riel: el flex-basis de la ficha
+       es un porcentaje y se mide contra el ancho interior del riel, así que
+       el relleno se restaría dos veces y la ficha saldría corta. */
+    .rail::after {
+      content: '';
+      flex: 0 0 max(0px, calc(var(--peek, 4rem) - var(--gap)));
+    }
+
     /* Una diapositiva por movimiento: sin asomo de la siguiente. */
-    .slide.is-full {
+    .rail.is-full .slide {
       flex-basis: 100%;
+    }
+
+    .rail.is-full::after {
+      content: none;
     }
 
     /* Con miniaturas, indicador y flechas no caben en una línea por debajo de
@@ -252,7 +275,11 @@ import { Icon } from './icon';
 export class Carousel {
   readonly items = input.required<readonly unknown[]>();
   readonly label = input('Carrusel');
-  /** Cada diapositiva ocupa el ancho completo, sin asomar la siguiente. */
+  /**
+   * Cada diapositiva ocupa el ancho completo, sin asomar la siguiente. Por
+   * omisión asoma: el ancho del asomo se ajusta con la propiedad `--peek`
+   * desde quien usa el carrusel.
+   */
   readonly full = input(false);
   /** Milisegundos entre avances automáticos; 0 lo desactiva. */
   readonly autoplayMs = input(0);

@@ -1,7 +1,7 @@
 # KALLIX — Landing Page
 
 Documento de continuidad. Todo lo necesario para retomar el proyecto sin volver a
-deducir decisiones. Última actualización: **2026-09-19**.
+deducir decisiones. Última actualización: **2026-09-21**.
 
 > **La marca pasó de «Kallix Studio» a «KALLIX»** el 2026-08-11, en versalitas en
 > todas partes. El logotipo ya no es pixel art: `logo.ts` lleva el isotipo oficial
@@ -18,7 +18,62 @@ Landing page completa y funcional. Build de producción sin warnings, pruebas en
 chatbots para negocios. Todo el contenido inventado (portafolio, testimonios,
 clientes, productos propios, estadísticas) se eliminó el 2026-08-07; ver §7.
 
+### Cambios del 2026-09-21
+
+- **`productos`: las firmas de los logos quedan desactivadas y el carrusel deja
+  asomar la siguiente ficha.** Dos comentarios del equipo: «yo digo que sea un
+  carrusel donde se vea como un avance de la siguiente card» y «que se vea más
+  profesional». Patricio pidió **no borrar** las animaciones: moverlas y
+  reactivarlas si algún día se quieren de vuelta.
+
+  Todo lo de las firmas vive ahora en **`src/app/sections/products-motion/`**,
+  fuera de la compilación: las cinco hojas CSS, el recorte de plantilla
+  (`products.motion.html`), las capas del escenario que animaban
+  (`products.stage.css`) y un `README.md` con los cuatro pasos para reponerlas.
+  `products.ts` se quedó sin estado —fuera `PLAY_MS`, la señal `playing`, el
+  `IntersectionObserver` y `[kxTilt]`— y la ficha es estática.
+
+  **Escenario sobrio.** Con las firmas se fueron el halo de marca que respiraba,
+  los anillos concéntricos, el brillo de vidrio, el reflejo bajo el puntero y la
+  sombra de contacto. Queda el icono como placa limpia sobre el degradado neutro
+  del sustrato, con una sombra **neutra** que solo lo asienta: el resplandor de
+  color que llevaba debajo también se fue, lo pidió Patricio al verlo. En el
+  escenario ya no queda nada teñido de `--brand`; el color de cada producto solo
+  vive en su título. `.stage` bajó de 2.25 iconos de alto a 1.9: los 2.25 eran
+  para que el mazo de Kalen no se cortara.
+
+  ⚠️ **El asomo se probó y se descartó el mismo día.** Se implementó tal como
+  lo pidió el equipo —la siguiente ficha asomando por la derecha, con un trozo
+  de su icono— y Patricio lo paró al verlo: «que no se vea el inicio de la
+  siguiente tarjeta, solo una». `productos` volvió a `[full]="true"`. Si vuelve
+  a pedirse, es quitar ese atributo y dar un valor a `--peek` en `products.css`;
+  lo que se midió entonces fue `clamp(3.25rem, 12vw, 10.5rem)`, porque el
+  escenario ocupa 0.8 de las 2 columnas y el icono va centrado en él, así que el
+  icono de la siguiente app empieza a unos 105 px de su borde: con menos asoma
+  el canto vacío de la tarjeta y no se lee como un avance.
+
+  **`kx-carousel` se quedó sabiendo hacer el asomo**, y mejor que antes. El modo
+  sin `[full]` existía ya y estaba roto: la última ficha no llegaba nunca a su
+  posición de ajuste. El hueco que le falta al riel va ahora como **separador
+  `::after`** (`--peek` menos el hueco del riel), no como `padding-inline-end`:
+  el `flex-basis` de la ficha es un porcentaje y se mide contra el ancho
+  **interior** del riel, así que con relleno se restaría dos veces y la ficha
+  saldría 70 px corta. Por eso el modificador `is-full` pasó de la diapositiva
+  al riel: el separador es suyo.
+
+  Verificado por CDP en Chrome headless (la extensión sigue sin conectar), en
+  ambos temas y a 1280 y 390 px: cero piezas de firma en el DOM, cero
+  animaciones corriendo en la ficha, ninguna sombra teñida bajo el icono, 0 px
+  de desborde horizontal, la ficha del ancho del visor (la siguiente empieza 19
+  px por fuera) y la última alineada al borde con desfase 0. El carrusel de
+  `nosotros` sigue igual. Build de producción sin warnings, 19 pruebas en verde
+  y `scripts/contrast.mjs` en OK.
+
 ### Cambios del 2026-09-19
+
+> Las firmas que describe esta entrada y la siguiente están **desactivadas**
+> desde el 2026-09-21; el código está completo en `products-motion/`. Lo que
+> sigue vale tal cual si se reponen.
 
 - **Las cuatro firmas pasan de 1.8 s a 5 s en tres actos.** Lo pidió Patricio:
   «una de entrada, intermediaria y una final». No es una animación larga, son
@@ -367,11 +422,17 @@ src/
     │   ├── section-header.ts   antetítulo + título proyectado + entradilla
     │   ├── tabs.ts             indicador por clip-path (técnica de la lista duplicada)
     │   ├── accordion.ts        grid-template-rows 0fr→1fr, sin medir alturas en JS
-    │   ├── carousel.ts         snap nativo + autoplay + miniaturas + activeChange · equipo y productos
+    │   ├── carousel.ts         snap nativo + autoplay + miniaturas + activeChange
+    │   │                     [full] = una ficha por pantalla · lo usan equipo Y
+    │   │                     productos. Sin él asoma la siguiente según --peek,
+    │   │                     con separador ::after al final ⚠️ hoy nadie lo usa
     │   └── marquee.ts          cinta continua, pausa al hover ⚠️ sin uso
     └── sections/               11 secciones (ts + html + css cuando crecen)
         site-header, hero, about, services, products, tech, pricing, cta,
         process, faq, contact, site-footer
+        └── products-motion/    ⏸️ Firmas de los logos, DESACTIVADAS el 2026-09-21.
+                                No se compila: cinco hojas CSS, el recorte de
+                                plantilla y README.md con cómo reponerlas
 ```
 
 **Orden en `app.html`:** hero → nosotros (**incluye el equipo**) → servicios →
