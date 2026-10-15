@@ -61,7 +61,8 @@
           <h3 class="h3">Mensaje recibido</h3>
           <p>
             Gracias por escribir. Te respondemos en menos de 24 horas hábiles desde
-            <strong>{{ contact.email }}</strong>.
+            <strong>{{ contact.email }}</strong
+            >.
           </p>
           <button type="button" class="btn btn--secondary" (click)="reset()">
             Enviar otro mensaje
@@ -69,6 +70,15 @@
         </div>
       } @else {
         <form [formGroup]="form" (ngSubmit)="send()" novalidate>
+          <input
+            class="honey"
+            type="text"
+            formControlName="honey"
+            tabindex="-1"
+            autocomplete="off"
+            aria-hidden="true"
+          />
+
           <div class="row">
             <div class="field">
               <label for="c-name">Nombre</label>
@@ -82,7 +92,9 @@
                 [attr.aria-describedby]="invalid('name') ? 'e-name' : null"
               />
               @if (invalid('name')) {
-                <p class="error" id="e-name" role="alert">Necesitamos tu nombre para responderte.</p>
+                <p class="error" id="e-name" role="alert">
+                  Necesitamos tu nombre para responderte.
+                </p>
               }
             </div>
 
@@ -165,7 +177,9 @@
             <span>Acepto que KALLIX use estos datos para responder mi solicitud.</span>
           </label>
           @if (invalid('privacy')) {
-            <p class="error" id="e-privacy" role="alert">Necesitamos tu autorización para responderte.</p>
+            <p class="error" id="e-privacy" role="alert">
+              Necesitamos tu autorización para responderte.
+            </p>
           }
 
           <button
@@ -185,9 +199,7 @@
             </p>
           }
 
-          <p class="disclaimer">
-            Firmamos NDA antes de revisar cualquier información sensible.
-          </p>
+          <p class="disclaimer">Firmamos NDA antes de revisar cualquier información sensible.</p>
         </form>
       }
     </div>

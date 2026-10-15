@@ -4,6 +4,12 @@
   overflow: clip;
 }
 
+/* Honeypot antispam: fuera de la vista y del orden de tabulación. */
+.honey {
+  position: absolute;
+  left: -9999px;
+}
+
 .glow {
   position: absolute;
   right: -10%;

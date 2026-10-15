@@ -7,10 +7,15 @@ import { PixelSprite } from '../ui/pixel-sprite';
 import { SectionHeader } from '../ui/section-header';
 
 /**
- * Endpoint del formulario. Vacío = envío simulado (útil en desarrollo).
- * Pon aquí tu backend o un servicio tipo Formspree y no hay nada más que tocar.
+ * El formulario se entrega con FormSubmit (https://formsubmit.co): sin cuenta ni clave,
+ * reenvía cada envío al buzón de la URL. El primer envío manda un correo de activación;
+ * tras confirmarlo, FormSubmit da un alias aleatorio que puede sustituir al correo para
+ * no publicarlo en el bundle. Vacío = envío simulado.
  */
-const CONTACT_ENDPOINT = '';
+const FORMSUBMIT_INBOX = 'patriciotzdz@gmail.com';
+const CONTACT_ENDPOINT = `https://formsubmit.co/ajax/${FORMSUBMIT_INBOX}`;
+
+const DEFAULTS = { kind: 'Sistema SaaS', budget: 'Por definir', privacy: false };
 
 type SubmitState = 'idle' | 'sending' | 'success' | 'error';
 
@@ -35,10 +40,12 @@ export class Contact {
     name: ['', [Validators.required, Validators.minLength(2)]],
     email: ['', [Validators.required, Validators.email]],
     company: [''],
-    kind: ['Sistema SaaS', Validators.required],
-    budget: ['Por definir'],
+    kind: [DEFAULTS.kind, Validators.required],
+    budget: [DEFAULTS.budget],
     message: ['', [Validators.required, Validators.minLength(20)]],
-    privacy: [false, Validators.requiredTrue],
+    privacy: [DEFAULTS.privacy, Validators.requiredTrue],
+    // Honeypot: invisible para personas; si un bot lo rellena, FormSubmit descarta el envío.
+    honey: [''],
   });
 
   protected invalid(field: string): boolean {
@@ -58,20 +65,39 @@ export class Contact {
     this.state.set('sending');
 
     try {
-      if (CONTACT_ENDPOINT) {
+      if (FORMSUBMIT_INBOX) {
+        const { name, email, company, kind, budget, message, honey } = this.form.getRawValue();
         const response = await fetch(CONTACT_ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify(this.form.getRawValue()),
+          body: JSON.stringify({
+            _subject: `Nuevo proyecto · ${kind} · ${name}`,
+            _replyto: email,
+            _template: 'table',
+            _captcha: 'false',
+            _honey: honey,
+            Nombre: name,
+            Correo: email,
+            Empresa: company || '—',
+            Proyecto: kind,
+            Presupuesto: budget,
+            Mensaje: message,
+          }),
         });
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        // FormSubmit responde `success` como cadena ("true"/"false"), no como booleano.
+        const result = (await response.json().catch(() => null)) as {
+          success?: boolean | string;
+        } | null;
+        if (!response.ok || String(result?.success) !== 'true') {
+          throw new Error(`HTTP ${response.status}`);
+        }
       } else {
-        // Sin endpoint configurado: se simula la latencia para poder ver los estados.
+        // Sin buzón configurado: se simula la latencia para poder ver los estados.
         await new Promise((resolve) => setTimeout(resolve, 900));
       }
 
       this.state.set('success');
-      this.form.reset({ kind: 'Web', budget: 'Por definir', privacy: false });
+      this.form.reset(DEFAULTS);
       this.submitted.set(false);
     } catch {
       this.state.set('error');

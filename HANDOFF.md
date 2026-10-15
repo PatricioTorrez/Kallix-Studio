@@ -371,7 +371,7 @@ npx ng test --watch=false
 | Contenido       | Solo lo verificable, en un archivo único                     | Nada de clientes, casos ni cifras que no podamos sostener. Cambiar el discurso es editar un archivo                                                             |
 | Oferta          | Tres servicios, no seis                                      | SaaS, Android y chatbots. Decir menos y decirlo completo vende mejor que un catálogo                                                                            |
 | Precios         | Fuera de la página                                           | Se definen en la propuesta, después de entender el alcance. Los modelos de trabajo se quedan, sin cifras                                                        |
-| Formulario      | Endpoint configurable, simula por defecto                    | Sin backend todavía; conectar es una línea                                                                                                                      |
+| Formulario      | FormSubmit (JSON por `fetch`), simula si no hay buzón        | Sin backend propio ni cuenta. Web3Forms se descartó: ya exige cuenta para dar la clave                                                                          |
 | Tailwind        | Descartado                                                   | Con un design system propio de tokens aportaba poco y sumaba configuración                                                                                      |
 
 ### Identidad gráfica
@@ -590,11 +590,11 @@ violaciones duras. Seis hallazgos, todos corregidos:
 
 ### Bloqueantes para publicar
 
-| #   | Qué                                                                                     | Dónde                                                 |
-| --- | --------------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| 1   | **Endpoint del formulario** — hoy simula el envío con 900 ms de latencia                | `src/app/sections/contact.ts:15` → `CONTACT_ENDPOINT` |
-| 2   | **Teléfono y WhatsApp reales** — son placeholders                                       | `src/app/data/kallix.data.ts` → `CONTACT`             |
-| 3   | **Dominio real** — `https://kallix.studio/` está hardcodeado en canonical, OG y JSON-LD | `src/index.html`                                      |
+| #   | Qué                                                                                                                                          | Dónde                                              |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| 1   | **Formulario activo en FormSubmit** — entrega a `patriciotzdz@gmail.com`; se decidió dejar el correo visible en el bundle en lugar del alias | `src/app/sections/contact.ts` → `FORMSUBMIT_INBOX` |
+| 2   | **Teléfono y WhatsApp reales** — son placeholders                                                                                            | `src/app/data/kallix.data.ts` → `CONTACT`          |
+| 3   | **Dominio real** — `https://kallix.studio/` está hardcodeado en canonical, OG y JSON-LD                                                      | `src/index.html`                                   |
 
 ### Recorte de contenido ficticio (2026-08-07)
 
