@@ -590,11 +590,11 @@ violaciones duras. Seis hallazgos, todos corregidos:
 
 ### Bloqueantes para publicar
 
-| #   | Qué                                                                                                                                          | Dónde                                              |
-| --- | -------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| 1   | **Formulario activo en FormSubmit** — entrega a `patriciotzdz@gmail.com`; se decidió dejar el correo visible en el bundle en lugar del alias | `src/app/sections/contact.ts` → `FORMSUBMIT_INBOX` |
-| 2   | **Teléfono y WhatsApp reales** — son placeholders                                                                                            | `src/app/data/kallix.data.ts` → `CONTACT`          |
-| 3   | **Dominio real** — `https://kallix.studio/` está hardcodeado en canonical, OG y JSON-LD                                                      | `src/index.html`                                   |
+| #   | Qué                                                                                                                                                                                  | Dónde                                              |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------- |
+| 1   | **Formulario activo en FormSubmit** — entrega a `patriciotzdz@gmail.com` vía alias; activado en `kallix-studio.vercel.app`. Un dominio nuevo pide activarlo otra vez desde el correo | `src/app/sections/contact.ts` → `FORMSUBMIT_INBOX` |
+| 2   | **Teléfono y WhatsApp reales** — son placeholders                                                                                                                                    | `src/app/data/kallix.data.ts` → `CONTACT`          |
+| 3   | **Dominio real** — `https://kallix.studio/` está hardcodeado en canonical, OG y JSON-LD                                                                                              | `src/index.html`                                   |
 
 ### Recorte de contenido ficticio (2026-08-07)
 

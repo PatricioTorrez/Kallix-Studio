@@ -8,11 +8,11 @@ import { SectionHeader } from '../ui/section-header';
 
 /**
  * El formulario se entrega con FormSubmit (https://formsubmit.co): sin cuenta ni clave,
- * reenvía cada envío al buzón de la URL. El primer envío manda un correo de activación;
- * tras confirmarlo, FormSubmit da un alias aleatorio que puede sustituir al correo para
- * no publicarlo en el bundle. Vacío = envío simulado.
+ * reenvía cada envío al buzón de la URL. Se usa el alias aleatorio de patriciotzdz@gmail.com
+ * para no publicar el correo en el bundle. FormSubmit activa por dominio: cada dominio
+ * nuevo manda un correo de activación antes de entregar. Vacío = envío simulado.
  */
-const FORMSUBMIT_INBOX = 'patriciotzdz@gmail.com';
+const FORMSUBMIT_INBOX = '0d78b8ea3b6cc0009aedae7986b81848';
 const CONTACT_ENDPOINT = `https://formsubmit.co/ajax/${FORMSUBMIT_INBOX}`;
 
 const DEFAULTS = { kind: 'Sistema SaaS', budget: 'Por definir', privacy: false };
