@@ -44,7 +44,12 @@
   display: flex;
   flex-direction: column;
   gap: 0.45rem;
-  padding-right: 6rem;
+}
+
+/* Hueco para el sello, solo donde hay sello y solo en el título: antes lo
+   reservaban las tres tarjetas y la descripción salía en columnas de 100 px. */
+.is-highlighted .plan-head .h3 {
+  padding-right: 6.5rem;
 }
 
 .desc {

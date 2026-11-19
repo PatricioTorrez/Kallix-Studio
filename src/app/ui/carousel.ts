@@ -21,7 +21,10 @@ import { Icon } from './icon';
  *
  * El navegador ya resuelve arrastre, inercia, rebote en los extremos y
  * accesibilidad de teclado mejor que cualquier reimplementación en JS: aquí
- * solo se añaden los controles, el indicador y el avance automático.
+ * solo se añaden los controles, el indicador y el contador de posición.
+ *
+ * No avanza solo: se quitó el 2026-11-18. Mover un texto mientras alguien lo
+ * lee es hostil, y el asomo de la siguiente ficha ya invita a pasar.
  *
  * Plantillas que acepta por contenido:
  * - `#slide` (obligatoria) — cada diapositiva.
@@ -31,25 +34,27 @@ import { Icon } from './icon';
   selector: 'kx-carousel',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NgTemplateOutlet, Icon],
-  host: {
-    '(pointerenter)': 'paused.set(true)',
-    '(pointerleave)': 'paused.set(false)',
-    '(focusin)': 'paused.set(true)',
-    '(focusout)': 'paused.set(false)',
-  },
   template: `
     <div
       class="viewport"
       #viewport
       (scroll)="onScroll()"
+      (pointerdown)="stopGlide()"
+      (wheel)="stopGlide()"
       tabindex="0"
-      role="group"
+      role="region"
       aria-roledescription="carrusel"
       [attr.aria-label]="label()"
     >
       <div class="rail" [class.is-full]="full()">
         @for (item of items(); track $index) {
-          <div class="slide">
+          <div
+            class="slide kx-slide"
+            [class.is-active]="$index === active()"
+            role="group"
+            aria-roledescription="diapositiva"
+            [attr.aria-label]="$index + 1 + ' de ' + items().length"
+          >
             <ng-container
               *ngTemplateOutlet="slide(); context: { $implicit: item, index: $index }"
             />
@@ -59,17 +64,16 @@ import { Icon } from './icon';
     </div>
 
     <div class="controls">
-      <div class="dots" role="tablist" [attr.aria-label]="'Ir a ' + label()">
+      <div class="dots" role="group" [attr.aria-label]="'Ir a ' + label()">
         @for (item of items(); track $index) {
           <button
             type="button"
-            role="tab"
             class="dot"
             [class.is-thumb]="!!thumb()"
             [class.is-active]="$index === active()"
-            [attr.aria-selected]="$index === active()"
+            [attr.aria-current]="$index === active() ? 'true' : null"
             [attr.aria-label]="itemLabels()[$index] ?? 'Elemento ' + ($index + 1)"
-            (click)="goToByUser($index)"
+            (click)="goTo($index)"
           >
             @if (thumb(); as template) {
               <ng-container
@@ -80,25 +84,36 @@ import { Icon } from './icon';
         }
       </div>
 
-      <div class="arrows">
-        <button
-          type="button"
-          class="arrow"
-          aria-label="Anterior"
-          (click)="step(-1)"
-          [disabled]="active() === 0"
-        >
-          <kx-icon name="chevronLeft" [size]="18" />
-        </button>
-        <button
-          type="button"
-          class="arrow"
-          aria-label="Siguiente"
-          (click)="step(1)"
-          [disabled]="active() === items().length - 1"
-        >
-          <kx-icon name="chevronRight" [size]="18" />
-        </button>
+      <div class="nav">
+        <!-- Dónde estás: «02 / 05». Se anuncia con cortesía al cambiar. -->
+        <p class="count mono" aria-live="polite" aria-atomic="true">
+          <span class="sr-only">{{ itemLabels()[active()] ?? 'Elemento' }},</span>
+          <span class="count-now">{{ pad(active() + 1) }}</span>
+          <span class="count-sep" aria-hidden="true">/</span>
+          <span class="sr-only">de</span>
+          {{ pad(items().length) }}
+        </p>
+
+        <div class="arrows">
+          <button
+            type="button"
+            class="arrow"
+            aria-label="Anterior"
+            (click)="goTo(active() - 1)"
+            [disabled]="active() === 0"
+          >
+            <kx-icon name="chevronLeft" [size]="18" />
+          </button>
+          <button
+            type="button"
+            class="arrow"
+            aria-label="Siguiente"
+            (click)="goTo(active() + 1)"
+            [disabled]="active() === items().length - 1"
+          >
+            <kx-icon name="chevronRight" [size]="18" />
+          </button>
+        </div>
       </div>
     </div>
   `,
@@ -112,8 +127,6 @@ import { Icon } from './icon';
       scroll-snap-type: x mandatory;
       scrollbar-width: none;
       overscroll-behavior-x: contain;
-      /* El arrastre en escritorio no debe seleccionar el texto de la cita. */
-      -webkit-overflow-scrolling: touch;
     }
 
     .viewport::-webkit-scrollbar {
@@ -135,6 +148,19 @@ import { Icon } from './icon';
     .slide {
       flex: 0 0 calc(100% - var(--peek, 4rem));
       scroll-snap-align: start;
+      /* Sin esto, una flecha pulsada dos veces rápido puede saltarse una ficha. */
+      scroll-snap-stop: always;
+      /* Anclada a la izquierda: la ficha que asoma conserva su canto junto al
+         hueco y encoge hacia fuera, no hacia la ficha activa. */
+      transform-origin: left center;
+    }
+
+    /* Antes de que el script mida: la ficha que asoma queda un plano por
+       detrás. Después, \`update()\` escribe opacidad y escala en línea según la
+       posición real del scroll, así que no hay transición CSS que salte. */
+    .slide:not(.is-active) {
+      opacity: 0.45;
+      transform: scale(0.96);
     }
 
     /* Separador final: el hueco que le falta al riel para que la última ficha
@@ -176,38 +202,69 @@ import { Icon } from './icon';
       gap: 0.5rem;
     }
 
-    /* Al envolver, las flechas siguen a la derecha en lugar de saltar al margen. */
-    .arrows {
+    /* Al envolver, contador y flechas siguen a la derecha. */
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
       margin-left: auto;
     }
 
+    /* Flex para que el espacio alrededor de la barra no dependa del espacio en
+       blanco de la plantilla ni de los textos solo para lectores. */
+    .count {
+      display: flex;
+      gap: 0.4em;
+      margin: 0;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .count-now {
+      color: var(--text);
+    }
+
+    /* El punto se ve de 24×6 pero el área táctil es de 44 px de alto. */
     .dot {
+      position: relative;
       width: 24px;
-      height: 6px;
+      height: 44px;
       padding: 0;
       border: 0;
+      background: none;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .dot:not(.is-thumb)::before {
+      content: '';
+      position: absolute;
+      inset: 19px 0;
       border-radius: var(--r-pill);
       background: var(--surface-3);
-      cursor: pointer;
+      transform-origin: left;
       transition:
         background-color var(--d-base) ease,
         transform var(--d-base) var(--ease-out);
     }
 
-    .dot:not(.is-thumb).is-active {
+    .dot:not(.is-thumb).is-active::before {
       background: var(--accent);
       transform: scaleX(1.5);
-      transform-origin: left;
     }
 
     /* Indicador con miniatura: el punto se convierte en el marco del retrato. */
     .dot.is-thumb {
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
       padding: 3px;
       border: 1px solid var(--stroke-strong);
       border-radius: var(--r-pill);
-      background: var(--bg-raised);
+      /* Quien usa el carrusel puede dar su propio fondo con --thumb-ground. */
+      background: var(--thumb-ground, var(--bg-raised));
       overflow: hidden;
       opacity: 0.5;
       transition:
@@ -231,13 +288,14 @@ import { Icon } from './icon';
     .arrow {
       display: grid;
       place-items: center;
-      width: 42px;
-      height: 42px;
+      width: 44px;
+      height: 44px;
       border: 1px solid var(--stroke-strong);
       border-radius: var(--r-pill);
       background: var(--surface);
       color: var(--text-muted);
       cursor: pointer;
+      touch-action: manipulation;
       transition:
         transform var(--d-press) var(--ease-out),
         background-color var(--d-base) ease,
@@ -266,6 +324,10 @@ import { Icon } from './icon';
     }
 
     @media (prefers-reduced-motion: reduce) {
+      .slide:not(.is-active) {
+        transform: none;
+      }
+
       .dot.is-thumb.is-active {
         transform: none;
       }
@@ -281,74 +343,129 @@ export class Carousel {
    * desde quien usa el carrusel.
    */
   readonly full = input(false);
-  /** Milisegundos entre avances automáticos; 0 lo desactiva. */
-  readonly autoplayMs = input(0);
   /** Etiquetas accesibles del indicador, en el orden de `items`. */
   readonly itemLabels = input<readonly string[]>([]);
-  /** Índice de la diapositiva que pasa a estar activa, por scroll, flecha o avance automático. */
+  /** Índice de la diapositiva que pasa a estar activa, por scroll, flecha o indicador. */
   readonly activeChange = output<number>();
 
   protected readonly slide = contentChild.required<TemplateRef<unknown>>('slide');
   protected readonly thumb = contentChild<TemplateRef<unknown>>('thumb');
   protected readonly active = signal(0);
-  /** El avance automático se detiene mientras el puntero o el foco están dentro. */
-  protected readonly paused = signal(false);
 
   private readonly viewport = viewChild.required<ElementRef<HTMLElement>>('viewport');
   private frame = 0;
-  private timer = 0;
+  private glideFrame = 0;
+  private fade?: Animation;
 
   constructor() {
-    afterNextRender(() => this.startAutoplay());
+    afterNextRender(() => this.update());
     inject(DestroyRef).onDestroy(() => {
-      clearInterval(this.timer);
       cancelAnimationFrame(this.frame);
+      cancelAnimationFrame(this.glideFrame);
     });
+  }
+
+  protected pad(n: number): string {
+    return String(n).padStart(2, '0');
   }
 
   protected onScroll(): void {
     if (this.frame) return;
     this.frame = requestAnimationFrame(() => {
       this.frame = 0;
-      const element = this.viewport().nativeElement;
-      const slideWidth = this.slideWidth(element);
-      if (!slideWidth) return;
-      const index = Math.round(element.scrollLeft / slideWidth);
-      if (index === this.active()) return;
-      this.active.set(index);
-      this.activeChange.emit(index);
+      this.update();
     });
   }
 
-  protected step(direction: 1 | -1): void {
-    this.goToByUser(this.active() + direction);
-  }
-
-  /** Salto pedido por una persona: reinicia la cuenta para no encadenar avances. */
-  protected goToByUser(index: number): void {
-    this.goTo(index);
-    if (this.timer) this.startAutoplay();
-  }
-
-  private goTo(index: number): void {
+  protected goTo(index: number): void {
     const element = this.viewport().nativeElement;
-    const clamped = Math.max(0, Math.min(index, this.items().length - 1));
-    element.scrollTo({
-      left: clamped * this.slideWidth(element),
-      behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+    const left = this.clamp(index) * this.slideWidth(element);
+    if (!prefersReducedMotion()) {
+      this.glide(element, left);
+      return;
+    }
+    // Sin desplazamiento visible, pero tampoco un salto seco: fundido cruzado.
+    // Animación web y no CSS, porque la regla global de movimiento reducido
+    // acorta toda animación CSS a 0.01 ms.
+    this.fade?.cancel();
+    const out = element.animate([{ opacity: 1 }, { opacity: 0 }], {
+      duration: 140,
+      easing: 'ease-out',
+      fill: 'forwards',
     });
+    this.fade = out;
+    out.onfinish = () => {
+      element.scrollTo({ left, behavior: 'auto' });
+      out.cancel();
+      this.fade = element.animate([{ opacity: 0 }, { opacity: 1 }], {
+        duration: 260,
+        easing: 'ease-out',
+      });
+    };
   }
 
-  private startAutoplay(): void {
-    clearInterval(this.timer);
-    const every = this.autoplayMs();
-    if (!every || prefersReducedMotion()) return;
+  /** Una persona tomó el control (dedo, rueda): el deslizamiento cede al instante. */
+  protected stopGlide(): void {
+    if (!this.glideFrame) return;
+    cancelAnimationFrame(this.glideFrame);
+    this.glideFrame = 0;
+    this.viewport().nativeElement.style.scrollSnapType = '';
+  }
 
-    this.timer = setInterval(() => {
-      // Ni con el puntero encima, ni con el foco dentro, ni con la pestaña al fondo.
-      if (this.paused() || document.hidden) return;
-      this.goTo((this.active() + 1) % this.items().length);
-    }, every) as unknown as number;
+  /**
+   * Desplazamiento animado propio. `scrollTo({ behavior: 'smooth' })` no sirve:
+   * Chrome en Windows lo vuelve un salto seco cuando los efectos de animación
+   * del sistema están apagados, aunque la página no pida movimiento reducido.
+   * El snap se suspende mientras dura: con `mandatory`, cada `scrollLeft`
+   * intermedio se reajustaría a la ficha más cercana.
+   */
+  private glide(element: HTMLElement, to: number): void {
+    this.stopGlide();
+    const from = element.scrollLeft;
+    if (Math.abs(to - from) < 1) return;
+    const duration = 520;
+    const start = performance.now();
+    element.style.scrollSnapType = 'none';
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / duration);
+      // ease-out quart: arranca rápido y se posa suave, como --ease-out.
+      element.scrollLeft = from + (to - from) * (1 - (1 - t) ** 4);
+      if (t < 1) {
+        this.glideFrame = requestAnimationFrame(tick);
+        return;
+      }
+      this.glideFrame = 0;
+      element.style.scrollSnapType = '';
+    };
+    this.glideFrame = requestAnimationFrame(tick);
+  }
+
+  /** Activa la ficha más cercana y pinta la profundidad de todas según el scroll. */
+  private update(): void {
+    const element = this.viewport().nativeElement;
+    // Lecturas primero, escrituras después: un solo cálculo de estilo por fotograma.
+    const slideWidth = this.slideWidth(element);
+    if (!slideWidth) return;
+    const position = element.scrollLeft / slideWidth;
+    const slides = element.querySelectorAll<HTMLElement>('.slide');
+    const reduced = prefersReducedMotion();
+
+    slides.forEach((slide, i) => {
+      // 0 en su sitio, 1 a una ficha de distancia o más.
+      const distance = Math.min(1, Math.abs(i - position));
+      slide.style.opacity = String(1 - 0.55 * distance);
+      slide.style.transform = reduced ? '' : `scale(${1 - 0.04 * distance})`;
+    });
+
+    // Acotado: el rebote elástico de iOS puede dar un scrollLeft fuera de rango.
+    const index = this.clamp(Math.round(position));
+    if (index === this.active()) return;
+    this.active.set(index);
+    this.activeChange.emit(index);
+  }
+
+  private clamp(index: number): number {
+    return Math.max(0, Math.min(index, this.items().length - 1));
   }
 
   private slideWidth(element: HTMLElement): number {

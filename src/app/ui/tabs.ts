@@ -95,6 +95,7 @@ export interface TabItem {
     }
 
     .tab {
+      min-height: 44px;
       padding: 0.55rem 1.05rem;
       border: 0;
       border-radius: var(--r-pill);

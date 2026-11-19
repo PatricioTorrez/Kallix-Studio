@@ -63,7 +63,10 @@
   border-top: 1px solid var(--stroke);
 }
 
+/* Asoma el retrato de quien sigue, no solo el canto de su tarjeta. */
 .roster {
+  --peek: clamp(3.25rem, 10vw, 8rem);
+
   margin-top: clamp(2rem, 5vw, 3rem);
 }
 
@@ -93,7 +96,12 @@
   border-radius: var(--r-lg);
   background:
     radial-gradient(circle at 50% 20%, rgba(231, 168, 78, 0.2), transparent 70%),
-    linear-gradient(180deg, rgba(var(--substrate), 0.7), rgba(var(--substrate), 0.5));
+    var(--avatar-ground);
+}
+
+/* Las miniaturas del indicador llevan el mismo fondo que el retrato grande. */
+.roster {
+  --thumb-ground: var(--avatar-ground);
 }
 
 .role {

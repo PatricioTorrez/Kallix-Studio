@@ -1,7 +1,7 @@
 # KALLIX — Landing Page
 
 Documento de continuidad. Todo lo necesario para retomar el proyecto sin volver a
-deducir decisiones. Última actualización: **2026-09-21**.
+deducir decisiones. Última actualización: **2026-11-18**.
 
 > **La marca pasó de «Kallix Studio» a «KALLIX»** el 2026-08-11, en versalitas en
 > todas partes. El logotipo ya no es pixel art: `logo.ts` lleva el isotipo oficial
@@ -17,6 +17,98 @@ Landing page completa y funcional. Build de producción sin warnings, pruebas en
 **La página ofrece tres cosas y solo tres:** sistemas SaaS, apps móviles Android y
 chatbots para negocios. Todo el contenido inventado (portafolio, testimonios,
 clientes, productos propios, estadísticas) se eliminó el 2026-08-07; ver §7.
+
+### Cambios del 2026-11-18
+
+Revisión de diseño con dos skills nuevas, `web-design-guidelines` (Vercel) y
+`design-taste-frontend` (tasteskill). Donde chocan con este proyecto manda
+`CLAUDE.md`: de tasteskill se tomaron solo criterios (nada se inclina, áreas
+táctiles de 44 px, un solo sistema), **no** sus fotografías, efectos ni scripts.
+
+- **Carruseles: asoma la siguiente ficha, hay contador y ya no avanzan solos.**
+  Lo pidió Claudio para los dos (`nosotros` y `productos`), y revierte la decisión
+  del 2026-09-21 de una sola ficha. `--peek` vive en `about.css` (`.roster`) y
+  `products.css` (`.catalog`); la ficha que asoma se ve al 45 % de opacidad para
+  leerse como «lo siguiente». Volver a una sola es `[full]="true"`.
+  `kx-carousel` perdió `autoplayMs` y todo su código (pausas, temporizador), y
+  ganó un contador «01 / 04» con `aria-live="polite"`. El indicador dejó de ser
+  `tablist`/`tab` —no había `tabpanel`— y usa `aria-current`. Flechas y puntos
+  miden 44 px; las diapositivas son `group` con «2 de 5» y `scroll-snap-stop:
+  always` evita saltarse una ficha con dos clics rápidos.
+- **Equipo en orden Patricio, Francisco, Claudio, Jesús, Miguel.** Claudio lleva
+  playera negra y audífonos grises con almohadillas negras (`7` y `8` de su paleta).
+- **Servicios: fuera `[kxTilt]` y su foco de luz.** La directiva sigue en
+  `core/` porque la usa `products-motion/`.
+- `color-scheme` en `<html>` sigue a `data-theme` (antes solo la meta, que
+  obedecía al sistema); `touch-action: manipulation` en `a`, `button` y `label`;
+  el error del formulario usa `--badge-rust` (el `#eda274` fijo daba ~2:1 en claro);
+  nombres de producto con `translate="no"`.
+
+Segunda pasada, con auditoría automática sobre la página real (1440, 390 y 320):
+
+- **Corregido: «Infraestructura» se cortaba en Tecnologías a partir de 900 px.**
+  En fila, el título le quitaba ancho al pill; `.tabs-wrap` lleva `flex: none`
+  en ese tramo.
+- **Áreas táctiles de 44 px:** pestañas, chips del formulario, botón de menú,
+  `.btn--sm`, redes del footer y «Hablemos de tu proyecto» (con margen negativo
+  para no mover nada). Los enlaces del footer solo crecen con `pointer: coarse`:
+  con ratón la lista sigue compacta. Quedan por debajo el logo del header (39) y
+  la píldora de estado del footer (34), los dos sin vecinos cerca.
+- Copy: «Más elegido» → «Recomendado» (sin clientes, era una cifra implícita
+  inventada); «Disponibles para proyectos · Q4» → «Disponibles para nuevos
+  proyectos» (el trimestre caducaba solo); placeholders terminan en «…»; el
+  correo lleva `spellcheck="false"`. Ojo: esos textos siguen en las plantillas,
+  no en `kallix.data.ts`.
+
+Tercera pasada:
+
+- **Enlaces honestos.** Fuera «Aviso de privacidad» y «Términos de servicio» del
+  footer: llevaban a `#nosotros`. Vuelven cuando existan las páginas (el aviso
+  de privacidad es obligatorio en México al recoger datos con el formulario).
+  «Tecnologías» pasó de la columna Servicios a Estudio.
+- **Motion mejorado, sin quitar nada.** Los botones suben 1 px al pasar y se
+  hunden al pulsar (`:hover:active` gana al `:hover`); los enlaces del footer
+  usan el mismo subrayado que crece desde la izquierda que `.link`; el reveal
+  recorre 14 px en 560 ms (antes 20 px en 620 ms): acompaña, no protagoniza.
+- Corregido: en Modelos, `padding-right: 6rem` reservaba el hueco del sello en
+  las tres tarjetas y partía título y descripción en columnas de 100 px. Ahora
+  solo en el título de la destacada.
+- Corregido: en móvil la esquina pixelada de Servicios se montaba sobre la
+  maqueta; pasó arriba a la derecha, girada para conservar el sentido.
+- El subrayado de «Hablemos de tu proyecto» se reubicó bajo el texto al crecer
+  la caja a 44 px.
+- **Fondo de los retratos más claro en tema oscuro.** Token `--avatar-ground`
+  en `styles.css` (oscuro `#355861→#284951`; claro, el crema de antes). Las
+  miniaturas del carrusel lo toman por `--thumb-ground`, que `kx-carousel` acepta
+  con `--bg-raised` como respaldo.
+- **Animación al pasar de ficha en los carruseles.** Dos capas, solo
+  `transform`/`opacity`: la ficha que no está activa queda un plano por detrás
+  (`scale(0.96)` anclada a la izquierda, 45 % de opacidad) y avanza al activarse
+  en 420 ms; y el contenido de la ficha nueva entra escalonado. Esto último vive
+  en `styles.css` (sección «Carrusel»), no en `carousel.ts`, porque el contenido
+  lo pinta quien usa el carrusel y el encapsulado no lo alcanza. Es opt-in:
+  `data-slide-stagger` escalona a sus hijos directos (0/60/120/180 ms, sube 10
+  px) y `data-slide-pop` hace aparecer un elemento desde `scale(0.94)`. Hoy lo
+  llevan retrato, ficha y cita del equipo, e icono y texto de productos.
+  ⚠️ Al verificar: esta máquina tiene los efectos de animación de Windows
+  apagados, así que Chrome informa `prefers-reduced-motion: reduce` y el sitio
+  las desactiva a propósito. Para verlas hay que encenderlos o emular
+  `no-preference` (CDP `Emulation.setEmulatedMedia`).
+- **Corregido: el carrusel saltaba sin transición.** Dos causas. Una, la escala
+  y la opacidad cambiaban de golpe al pasar `.is-active` a mitad del recorrido;
+  ahora `update()` las escribe en línea en cada fotograma según la distancia
+  real de cada ficha a su punto de ajuste, también al arrastrar. Dos, y la que
+  se veía: **`scrollTo({ behavior: 'smooth' })` es un salto seco en Chrome
+  para Windows con los efectos de animación apagados**, aunque la página no
+  pida movimiento reducido. `glide()` anima `scrollLeft` por su cuenta (520 ms,
+  ease-out quart) con el snap suspendido mientras dura, y cede al instante si
+  alguien toca o usa la rueda. Con movimiento reducido no hay desplazamiento:
+  fundido cruzado con la Web Animations API (la regla global acorta las CSS).
+  Medido fotograma a fotograma por CDP en los dos modos.
+
+Verificado por CDP en Chrome headless a 1280 y 390, en ambos temas: 0 px de
+desborde, 10 s sin avance, el contador sigue a las flechas hasta el final, la
+última ficha alineada con desfase 0 y la flecha deshabilitada.
 
 ### Cambios del 2026-09-21
 
@@ -422,10 +514,10 @@ src/
     │   ├── section-header.ts   antetítulo + título proyectado + entradilla
     │   ├── tabs.ts             indicador por clip-path (técnica de la lista duplicada)
     │   ├── accordion.ts        grid-template-rows 0fr→1fr, sin medir alturas en JS
-    │   ├── carousel.ts         snap nativo + autoplay + miniaturas + activeChange
-    │   │                     [full] = una ficha por pantalla · lo usan equipo Y
-    │   │                     productos. Sin él asoma la siguiente según --peek,
-    │   │                     con separador ::after al final ⚠️ hoy nadie lo usa
+    │   ├── carousel.ts         snap nativo + miniaturas + contador + activeChange,
+    │   │                     sin avance automático. Lo usan equipo y productos,
+    │   │                     ambos con asomo (--peek). [full] = una ficha por
+    │   │                     pantalla ⚠️ hoy nadie lo usa
     │   └── marquee.ts          cinta continua, pausa al hover ⚠️ sin uso
     └── sections/               11 secciones (ts + html + css cuando crecen)
         site-header, hero, about, services, products, tech, pricing, cta,

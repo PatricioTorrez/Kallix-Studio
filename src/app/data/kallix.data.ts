@@ -479,42 +479,6 @@ export const TEAM: readonly TeamMember[] = [
     },
   },
   {
-    id: 'jesus',
-    name: 'Jesús',
-    role: 'Backend & Desarrollo Web',
-    specialty: 'Sistemas web · APIs · Gestión de información',
-    bio: 'Plataformas web para procesos de empresa: clientes, créditos, cobranza, usuarios y permisos. Integra los sistemas web con las apps móviles mediante APIs.',
-    quote:
-      'Detrás de una pantalla simple hay reglas que no perdonan: permisos, saldos, cobranza. Si el backend no las respeta, la interfaz solo disimula.',
-    skills: ['Laravel', 'PHP', 'MySQL', 'APIs'],
-    // Barba sin bigote: `2` recorre mejillas y mentón, pero la fila sobre la boca
-    // se queda en piel.
-    pixels: [
-      '..............',
-      '...11111111...',
-      '..1111111111..',
-      '..1111111111..',
-      '..1133333311..',
-      '..1333333331..',
-      '..1355335531..',
-      '..1333333331..',
-      '..1233333321..',
-      '..1223443221..',
-      '...22222222...',
-      '...66666666...',
-      '..6666666666..',
-      '.666666776666.',
-    ],
-    palette: {
-      '1': '#4b3a2a',
-      '2': '#5c4632',
-      ...PIEL_CLARA,
-      '5': '#0c3b45',
-      '6': '#20666b',
-      '7': '#cff0ea',
-    },
-  },
-  {
     id: 'francisco',
     name: 'Francisco',
     role: 'IA & ChatBots',
@@ -557,17 +521,18 @@ export const TEAM: readonly TeamMember[] = [
     quote:
       'La mitad del trabajo es convertir lo que ya existe —papeles, hojas de cálculo, correos— en datos con los que el sistema pueda trabajar.',
     skills: ['Angular', 'TypeScript', 'AWS'],
-    // Peinado partido al medio (`2` es la raya) y complexión ancha: la cara ocupa
-    // doce columnas y los hombros llegan al borde.
+    // Peinado partido al medio (`2` es la raya), complexión ancha y audífonos
+    // puestos: `7` la diadema y las copas grises, `8` las almohadillas negras
+    // pegadas a la cabeza. Playera negra (`6`).
     pixels: [
-      '...11111111...',
-      '..1111221111..',
-      '.111112211111.',
-      '.111112211111.',
-      '.113333333311.',
-      '.133333333331.',
-      '.133553355331.',
-      '.133333333331.',
+      '...77777777...',
+      '..7111221117..',
+      '.711112211117.',
+      '71111122111117',
+      '78133333333187',
+      '78333333333387',
+      '78335533553387',
+      '78333333333387',
       '.133334433331.',
       '..3333333333..',
       '...33333333...',
@@ -575,7 +540,51 @@ export const TEAM: readonly TeamMember[] = [
       '.666666666666.',
       '66666666666666',
     ],
-    palette: { '1': '#2b1a12', '2': '#5a3b24', ...PIEL_MORENA, '5': '#0c3b45', '6': '#d96c2c' },
+    palette: {
+      '1': '#2b1a12',
+      '2': '#5a3b24',
+      ...PIEL_MORENA,
+      '5': '#0c3b45',
+      '6': '#17191d',
+      '7': '#8b9099',
+      '8': '#0b0c0e',
+    },
+  },
+  {
+    id: 'jesus',
+    name: 'Jesús',
+    role: 'Backend & Desarrollo Web',
+    specialty: 'Sistemas web · APIs · Gestión de información',
+    bio: 'Plataformas web para procesos de empresa: clientes, créditos, cobranza, usuarios y permisos. Integra los sistemas web con las apps móviles mediante APIs.',
+    quote:
+      'Detrás de una pantalla simple hay reglas que no perdonan: permisos, saldos, cobranza. Si el backend no las respeta, la interfaz solo disimula.',
+    skills: ['Laravel', 'PHP', 'MySQL', 'APIs'],
+    // Barba sin bigote: `2` recorre mejillas y mentón, pero la fila sobre la boca
+    // se queda en piel.
+    pixels: [
+      '..............',
+      '...11111111...',
+      '..1111111111..',
+      '..1111111111..',
+      '..1133333311..',
+      '..1333333331..',
+      '..1355335531..',
+      '..1333333331..',
+      '..1233333321..',
+      '..1223443221..',
+      '...22222222...',
+      '...66666666...',
+      '..6666666666..',
+      '.666666776666.',
+    ],
+    palette: {
+      '1': '#4b3a2a',
+      '2': '#5c4632',
+      ...PIEL_CLARA,
+      '5': '#0c3b45',
+      '6': '#20666b',
+      '7': '#cff0ea',
+    },
   },
   {
     id: 'miguel',
@@ -683,13 +692,13 @@ export const FOOTER_COLUMNS: readonly FooterColumn[] = [
       { label: 'Sistemas SaaS', href: '#servicios' },
       { label: 'Apps móviles Android', href: '#servicios' },
       { label: 'ChatBots para tu negocio', href: '#servicios' },
-      { label: 'Tecnologías', href: '#tecnologias' },
     ],
   },
   {
     title: 'Estudio',
     links: [
       { label: 'Productos propios', href: '#productos' },
+      { label: 'Tecnologías', href: '#tecnologias' },
       { label: 'Nosotros', href: '#nosotros' },
       { label: 'Equipo', href: '#equipo' },
       { label: 'Proceso', href: '#proceso' },

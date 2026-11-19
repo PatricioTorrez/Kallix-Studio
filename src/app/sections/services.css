@@ -90,10 +90,18 @@
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  margin-top: 0.4rem;
+  /* 44 px de área táctil; el margen negativo conserva la posición de antes. */
+  min-height: 44px;
+  margin-block: calc(0.4rem - 11px) -11px;
   font-family: var(--font-mono);
   font-size: 0.8rem;
   color: var(--accent);
+}
+
+/* El subrayado global va a `bottom: -2px` de la caja; aquí la caja mide 44 px
+   y el texto va centrado, así que se sube hasta quedar bajo el texto. */
+.link::after {
+  bottom: calc(50% - 0.85em);
 }
 
 .link kx-icon {
@@ -109,29 +117,17 @@
   border: 1px solid var(--stroke-strong);
   border-radius: var(--r-lg);
   box-shadow: var(--shadow-md);
-  transform-style: preserve-3d;
-}
-
-/* Foco de luz que sigue al cursor: la directiva solo lo traslada. */
-.spot {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1;
-  width: 320px;
-  height: 320px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(231, 168, 78, 0.22), transparent 62%);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity var(--d-slow) ease;
 }
 
 /* Esquina pixelada: el acento gráfico de la marca, no un adorno de relleno. */
+/* Arriba y no abajo: en una columna la maqueta llega al pie de la tarjeta y el
+   adorno se le montaba encima. Arriba a la derecha solo hay aire. Se gira para
+   que la escalera siga bajando hacia la esquina. */
 .corner {
   position: absolute;
+  top: 14px;
   right: 14px;
-  bottom: 14px;
+  rotate: -90deg;
   width: 18px;
   height: 18px;
   background:
@@ -154,10 +150,6 @@
   }
 
   .service:hover .corner {
-    opacity: 1;
-  }
-
-  .visual:hover .spot {
     opacity: 1;
   }
 
@@ -185,12 +177,6 @@
   }
 
   .corner {
-    display: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .spot {
     display: none;
   }
 }

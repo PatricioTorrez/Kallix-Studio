@@ -9,18 +9,15 @@
       <h2 class="h2">Software <span class="gradient-text">de la casa</span>.</h2>
     </kx-section-header>
 
-    <!-- Una ficha por pantalla, sin asomo de la siguiente: el asomo se probó el
-         2026-09-21 y Patricio lo descartó. Reponerlo es quitar `[full]` y darle
-         un valor a `--peek` en `products.css`; el carrusel lo sigue sabiendo
-         hacer. El indicador son los iconos de las apps, así los cuatro se
-         reconocen de un vistazo aunque solo uno esté desplegado. -->
+    <!-- La siguiente ficha asoma por la derecha (`--peek` en `products.css`).
+         Volver a una sola ficha es añadir `[full]="true"`. El indicador son los
+         iconos de las apps, así los cuatro se reconocen de un vistazo aunque
+         solo uno esté desplegado. -->
     <kx-carousel
       class="catalog"
       label="los productos"
       [items]="products"
       [itemLabels]="productNames"
-      [full]="true"
-      [autoplayMs]="9000"
       kxReveal="scale"
     >
       <ng-template #slide let-product>
@@ -35,7 +32,7 @@
                más profesional y el escenario luminoso tiraba a póster. Lo que
                queda de marca es la sombra teñida bajo la placa. -->
           <div class="stage">
-            <div class="icon">
+            <div class="icon" data-slide-pop>
               <img
                 class="app-icon"
                 [src]="product.icon"
@@ -48,9 +45,9 @@
             </div>
           </div>
 
-          <div class="body">
+          <div class="body" data-slide-stagger>
             <div class="top">
-              <h3 class="h3 name">{{ product.name }}</h3>
+              <h3 class="h3 name" translate="no">{{ product.name }}</h3>
               <kx-badge [tone]="product.kind === 'android' ? 'amber' : 'teal'">
                 {{ kindLabel(product.kind) }}
               </kx-badge>

@@ -52,14 +52,12 @@
         label="el equipo"
         [items]="team"
         [itemLabels]="teamNames"
-        [full]="true"
-        [autoplayMs]="8000"
         kxReveal="scale"
       >
         <ng-template #slide let-member>
           <article class="member card card--glass card--lit">
-            <div class="member-id">
-              <div class="avatar">
+            <div class="member-id" data-slide-stagger>
+              <div class="avatar" data-slide-pop>
                 <kx-pixel-avatar
                   [pixels]="member.pixels"
                   [palette]="member.palette"
@@ -71,7 +69,7 @@
               <p class="specialty">{{ member.specialty }}</p>
             </div>
 
-            <div class="member-say">
+            <div class="member-say" data-slide-stagger>
               <span class="quote-mark" aria-hidden="true">“</span>
               <blockquote>{{ member.quote }}</blockquote>
               <p class="bio">{{ member.bio }}</p>

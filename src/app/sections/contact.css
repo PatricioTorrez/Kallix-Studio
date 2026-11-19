@@ -165,7 +165,8 @@ textarea:focus-visible {
 
 .error {
   font-size: 0.8rem;
-  color: #eda274;
+  /* Rol con variante clara: el #eda274 fijo daba ~2:1 sobre crema. */
+  color: var(--badge-rust);
 }
 
 .error--block {
@@ -210,7 +211,9 @@ legend {
 }
 
 .chip span {
-  display: block;
+  display: flex;
+  align-items: center;
+  min-height: 44px;
   padding: 0.45rem 0.85rem;
   border: 1px solid var(--stroke);
   border-radius: var(--r-pill);

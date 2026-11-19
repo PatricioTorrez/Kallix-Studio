@@ -85,8 +85,8 @@
 .socials a {
   display: grid;
   place-items: center;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border: 1px solid var(--stroke);
   border-radius: var(--r-sm);
   color: var(--text-muted);
@@ -123,9 +123,26 @@
 }
 
 .column a {
+  position: relative;
   font-size: 0.9rem;
   color: var(--text-muted);
   transition: color var(--d-base) ease;
+}
+
+/* El mismo subrayado que crece desde la izquierda que usa `.link`: un solo
+   gesto de enlace en todo el sitio. */
+.column a::after,
+.legal a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(50% - 0.8em);
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--d-base) var(--ease-out);
 }
 
 /* Marca de agua pixel: identidad sin robar protagonismo. */
@@ -162,13 +179,41 @@
 }
 
 .legal a {
+  position: relative;
   transition: color var(--d-base) ease;
+}
+
+/* En pantallas táctiles los enlaces miden 44 px de alto (antes 17) para el
+   dedo; el relleno sustituye al hueco de la lista. Con ratón se queda la
+   lista compacta. */
+@media (pointer: coarse) {
+  .column ul {
+    gap: 0;
+    margin-block: -0.6rem;
+  }
+
+  .column a,
+  .legal a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .legal {
+    column-gap: 1.25rem;
+    row-gap: 0;
+  }
 }
 
 @media (hover: hover) and (pointer: fine) {
   .column a:hover,
   .legal a:hover {
     color: var(--accent-cool);
+  }
+
+  .column a:hover::after,
+  .legal a:hover::after {
+    transform: scaleX(1);
   }
 
   .socials a:hover {

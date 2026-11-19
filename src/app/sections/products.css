@@ -15,7 +15,12 @@
   pointer-events: none;
 }
 
+/* El icono va centrado en el escenario, así que la siguiente app empieza a
+   unos 105 px del borde de su ficha: con menos asomo solo se vería el canto
+   vacío de la tarjeta. Medido el 2026-09-21. */
 .catalog {
+  --peek: clamp(3.25rem, 12vw, 10.5rem);
+
   margin-top: clamp(2.5rem, 6vw, 4rem);
 }
 

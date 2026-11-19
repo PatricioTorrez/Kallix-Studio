@@ -107,8 +107,8 @@
 .menu-btn {
   display: grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   border: 1px solid var(--stroke-strong);
   border-radius: var(--r-sm);
   background: var(--surface);

@@ -16,7 +16,12 @@
         <ul class="socials">
           @for (social of socials; track social.label) {
             <li>
-              <a [href]="social.href" target="_blank" rel="noopener" [attr.aria-label]="social.label">
+              <a
+                [href]="social.href"
+                target="_blank"
+                rel="noopener"
+                [attr.aria-label]="social.label"
+              >
                 <kx-icon [name]="social.icon" [size]="18" />
               </a>
             </li>
@@ -30,7 +35,9 @@
             <h2 class="column-title mono">{{ column.title }}</h2>
             <ul>
               @for (link of column.links; track link.label) {
-                <li><a [href]="link.href">{{ link.label }}</a></li>
+                <li>
+                  <a [href]="link.href">{{ link.label }}</a>
+                </li>
               }
             </ul>
           </div>
@@ -43,8 +50,6 @@
     <div class="bottom">
       <p>© {{ year }} KALLIX. Todos los derechos reservados.</p>
       <ul class="legal">
-        <li><a href="#nosotros">Aviso de privacidad</a></li>
-        <li><a href="#nosotros">Términos de servicio</a></li>
         <li><a href="#top">Volver arriba</a></li>
       </ul>
     </div>

@@ -17,7 +17,7 @@
           [kxRevealDelay]="$index * 70"
         >
           @if (plan.highlighted) {
-            <span class="ribbon mono">Más elegido</span>
+            <span class="ribbon mono">Recomendado</span>
           }
 
           <header class="plan-head">
@@ -34,7 +34,12 @@
             }
           </ul>
 
-          <a class="btn" [class.btn--primary]="plan.highlighted" [class.btn--secondary]="!plan.highlighted" href="#contacto">
+          <a
+            class="btn"
+            [class.btn--primary]="plan.highlighted"
+            [class.btn--secondary]="!plan.highlighted"
+            href="#contacto"
+          >
             {{ plan.cta }}
             <kx-icon class="btn__arrow" name="arrowRight" [size]="16" />
           </a>
@@ -43,7 +48,8 @@
     </ul>
 
     <p class="note" kxReveal="up">
-      Todos los modelos incluyen diseño UI/UX, código en tu repositorio y 30 días de garantía sobre lo entregado.
+      Todos los modelos incluyen diseño UI/UX, código en tu repositorio y 30 días de garantía sobre
+      lo entregado.
     </p>
   </div>
 </section>
