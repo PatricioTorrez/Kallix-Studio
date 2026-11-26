@@ -33,7 +33,7 @@
   right: 1.25rem;
   padding: 0.25rem 0.6rem;
   border-radius: var(--r-pill);
-  background: var(--accent);
+  background: var(--accent-fill);
   color: var(--accent-ink);
   font-size: 0.66rem;
   letter-spacing: 0.1em;

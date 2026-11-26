@@ -45,6 +45,7 @@ import { Icon } from './icon';
       role="region"
       aria-roledescription="carrusel"
       [attr.aria-label]="label()"
+      [attr.data-dir]="direction()"
     >
       <div class="rail" [class.is-full]="full()">
         @for (item of items(); track $index) {
@@ -252,7 +253,7 @@ import { Icon } from './icon';
     }
 
     .dot:not(.is-thumb).is-active::before {
-      background: var(--accent);
+      background: var(--accent-fill);
       transform: scaleX(1.5);
     }
 
@@ -351,6 +352,8 @@ export class Carousel {
   protected readonly slide = contentChild.required<TemplateRef<unknown>>('slide');
   protected readonly thumb = contentChild<TemplateRef<unknown>>('thumb');
   protected readonly active = signal(0);
+  /** Hacia dónde se avanzó por última vez: el texto entra desde ese lado. */
+  protected readonly direction = signal<'next' | 'prev'>('next');
 
   private readonly viewport = viewChild.required<ElementRef<HTMLElement>>('viewport');
   private frame = 0;
@@ -460,6 +463,7 @@ export class Carousel {
     // Acotado: el rebote elástico de iOS puede dar un scrollLeft fuera de rango.
     const index = this.clamp(Math.round(position));
     if (index === this.active()) return;
+    this.direction.set(index > this.active() ? 'next' : 'prev');
     this.active.set(index);
     this.activeChange.emit(index);
   }

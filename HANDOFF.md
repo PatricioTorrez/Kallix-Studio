@@ -1,7 +1,7 @@
 # KALLIX — Landing Page
 
 Documento de continuidad. Todo lo necesario para retomar el proyecto sin volver a
-deducir decisiones. Última actualización: **2026-11-18**.
+deducir decisiones. Última actualización: **2026-11-26**.
 
 > **La marca pasó de «Kallix Studio» a «KALLIX»** el 2026-08-11, en versalitas en
 > todas partes. El logotipo ya no es pixel art: `logo.ts` lleva el isotipo oficial
@@ -17,6 +17,88 @@ Landing page completa y funcional. Build de producción sin warnings, pruebas en
 **La página ofrece tres cosas y solo tres:** sistemas SaaS, apps móviles Android y
 chatbots para negocios. Todo el contenido inventado (portafolio, testimonios,
 clientes, productos propios, estadísticas) se eliminó el 2026-08-07; ver §7.
+
+### Cambios del 2026-11-26 — enlace de Games y entrada del texto en carruseles
+
+- **Games ya tiene sitio:** `GAMES.externalUrl` = `https://kallix-games.netlify.app/`.
+  El botón es un enlace a pestaña nueva; el aviso «próximamente» solo sale si
+  la URL vuelve a `null`.
+- **El texto de las fichas entra según el avance.** `kx-carousel` pone
+  `data-dir="next|prev"` en el visor y el texto llega desde ese lado (18 px y
+  4 px de subida, 440 ms), en vez de subir siempre igual a contrapelo del
+  deslizamiento. Pasos de 55 ms por bloque (`--slide-step`), y las listas
+  —características de producto, habilidades del equipo— ya no entran en bloque:
+  cada `li` llega por su cuenta desde los 165 ms, 35 ms entre uno y otro, con
+  su índice en `[style.--i]`. Todo termina antes de 900 ms. Con movimiento
+  reducido no hay entrada escalonada (el carrusel ya hace fundido cruzado).
+  Medido por CDP: dirección, retrasos y fin de las animaciones.
+
+### Cambios del 2026-11-26 — tema claro completo y corrección de color
+
+Lo pidió Claudio: «no todo se hace claro» y una corrección de colores del claro.
+
+- **Hero, CTA y footer dejaron de ser `.on-dark`**: siguen el tema. La única
+  zona oscura fija es Games (propuesta §27). Para devolver una zona a oscuro
+  basta con ponerle `class="on-dark"` en `app.html`.
+- **Las maquetas SVG (`project-preview.ts`) siguen el tema**: pantalla
+  `--preview-pane` (oscuro `#06212a`, claro `#e9f1ef`) y trazos con
+  `rgba(var(--veil), …)` en lugar del blanco verdoso fijo.
+- **Tarjetas blancas en claro.** `.card` pinta `--card-bg`: en oscuro el
+  degradado de siempre, en claro `--bg-raised`. Antes salían gris beige porque
+  el velo era casi negro (`4, 22, 28`); ahora `--veil` claro es tinta turquesa
+  (`17, 74, 85`), así superficies y bordes tiran a la marca y no a barro.
+- **Rellenos ámbar en ambos temas.** Nuevo token `--accent-fill` (ámbar de
+  marca) para botones primarios, píldoras, pestañas y marcas, siempre con
+  `--accent-ink` oscuro encima (7.6:1). Se fue el café `#8a560f` como relleno
+  con texto crema; `--accent` sigue siendo café en claro, pero **solo para
+  texto**. Regla: `background` → `--accent-fill`, `color` → `--accent`.
+- Tokens nuevos por tema: `--sprite-shadow` (sombra de los sprites pixel, que en
+  claro ensuciaba con negro al 55 %) y `--sun-opacity` (el sol de bandas del
+  hero baja a 0.45 en claro).
+- `scripts/contrast.mjs`: la superficie tintada se recalculó con el velo nuevo
+  y el par de botón es ahora `--accent-ink` sobre `--accent-fill`. Todo en OK.
+
+Verificado por CDP (Chrome headless, script de un solo uso fuera del repo) a
+1440 en ambos temas y a 390 en claro: página completa capturada tras recorrerla.
+
+### Cambios del 2026-11-26 — Kallix 2.0: landing centralizada con Games
+
+Claudio trajo dos versiones de la propuesta «Kallix Studio 2.0». La primera
+partía el sitio en rutas (`/servicios`, `/games`…); se implementó y **se
+descartó el mismo día** con la segunda: todo se queda en el inicio y Games
+tendrá un sitio externo propio. No hay rutas: `app.routes.ts` sigue vacío.
+
+- **Orden nuevo** (propuesta §35): hero, **áreas**, servicios, productos,
+  **games**, tecnologías, estudio (+ equipo), modelos, CTA, proceso, FAQ,
+  contacto.
+- **Anclas renombradas:** `#top` → `#inicio` (hero) y `#nosotros` → `#estudio`
+  (about). Las demás no cambiaron.
+- **Navegación:** cinco áreas (`NAV_LINKS`) y un desplegable «Más» (`NAV_MORE`:
+  Tecnologías, Equipo, Modelos, Proceso, FAQ). «Más» se marca cuando la sección
+  visible es una de las suyas; se cierra con Escape (devuelve el foco), clic
+  fuera, al salir el foco o al elegir un enlace. En el drawer móvil las cinco
+  secundarias van en una rejilla de dos columnas debajo de las principales.
+- **`kx-areas`** (`sections/areas.ts`): «Tres áreas. Un mismo estudio.», tres
+  tarjetas con enlace a su sección. Datos en `AREAS`.
+- **`kx-games`** (`sections/games.ts`): presentación de la división, no
+  catálogo. Siempre `.on-dark`. Configuración en `GAMES` (`kallix.data.ts`):
+  mientras `externalUrl` sea `null` el botón «Visitar KALLIX Studio Games» sale
+  `disabled` con «Sitio web próximamente.» (`aria-describedby`); al poner la
+  URL se convierte en enlace a pestaña nueva sin tocar el componente. Mito'th
+  aparece solo con lo confirmado (estado, género, plataforma). Sin imagen: el
+  arte real entra cuando exista.
+- **Hero:** entradilla nueva (servicios, productos propios y videojuegos) y el
+  botón secundario pasa a «Explorar productos» → `#productos`.
+- **Footer** por áreas (Servicios, Productos, Estudio, Games) y «Contacto» junto
+  a «Volver arriba». Privacidad y Términos siguen fuera hasta que existan.
+
+Sin hacer de la propuesta: catálogo en cuadrícula con filtros, equipo en
+rejilla, motivo de contacto en el formulario, botones que preseleccionan el
+motivo, nueva descripción de «nosotros», ajustes de espaciado y tipografía.
+
+Verificado: build sin warnings, 21 pruebas en verde (dos nuevas para «Más»),
+captura completa a 1440 en Chrome headless. **No** verificado: móvil real y
+tema claro de las secciones nuevas.
 
 ### Cambios del 2026-11-18
 

@@ -18,15 +18,80 @@ export interface NavLink {
   readonly href: string;
 }
 
+/** Las áreas, en la barra. */
 export const NAV_LINKS: readonly NavLink[] = [
+  { label: 'Inicio', href: '#inicio' },
   { label: 'Servicios', href: '#servicios' },
   { label: 'Productos', href: '#productos' },
+  { label: 'Games', href: '#games' },
+  { label: 'Estudio', href: '#estudio' },
+];
+
+/** Lo secundario, dentro del desplegable «Más». */
+export const NAV_MORE: readonly NavLink[] = [
   { label: 'Tecnologías', href: '#tecnologias' },
-  { label: 'Modelos', href: '#modelos' },
-  { label: 'Proceso', href: '#proceso' },
   { label: 'Equipo', href: '#equipo' },
+  { label: 'Modelos de trabajo', href: '#modelos' },
+  { label: 'Proceso', href: '#proceso' },
   { label: 'FAQ', href: '#faq' },
 ];
+
+/* ── Áreas del estudio ──────────────────────────────────────────────────── */
+
+export interface Area {
+  readonly title: string;
+  readonly text: string;
+  readonly cta: string;
+  readonly href: string;
+  readonly icon: IconName;
+}
+
+export const AREAS: readonly Area[] = [
+  {
+    title: 'Servicios',
+    text: 'Soluciones tecnológicas para empresas y negocios.',
+    cta: 'Ver servicios',
+    href: '#servicios',
+    icon: 'code',
+  },
+  {
+    title: 'Productos',
+    text: 'Software propio diseñado para necesidades reales.',
+    cta: 'Ver productos',
+    href: '#productos',
+    icon: 'layers',
+  },
+  {
+    title: 'Games',
+    text: 'Videojuegos, historias y experiencias interactivas.',
+    cta: 'Conocer Games',
+    href: '#games',
+    icon: 'sparkle',
+  },
+];
+
+/* ── KALLIX Studio Games ────────────────────────────────────────────────── */
+
+/**
+ * Games tiene su propio sitio. Si `externalUrl` vuelve a `null`, el botón sale
+ * deshabilitado con el aviso `soon`; con URL, es un enlace a pestaña nueva.
+ */
+export const GAMES = {
+  name: 'KALLIX Studio Games',
+  eyebrow: 'Nuestra división de videojuegos',
+  title: 'Construimos',
+  titleAccent: 'otros mundos',
+  lede: 'Una división dedicada a crear videojuegos, historias y experiencias interactivas. Exploramos nuevas formas de combinar tecnología, creatividad y entretenimiento.',
+  cta: 'Visitar KALLIX Studio Games',
+  externalUrl: 'https://kallix-games.netlify.app/' as string | null,
+  soon: 'Sitio web próximamente.',
+  featured: {
+    status: 'Proyecto en desarrollo',
+    name: "Mito'th",
+    subtitle: 'Survival Terror',
+    meta: 'Survival horror · Roblox',
+  },
+} as const;
 
 /* ── Datos de contacto ──────────────────────────────────────────────────── */
 
@@ -690,27 +755,26 @@ export const FOOTER_COLUMNS: readonly FooterColumn[] = [
     title: 'Servicios',
     links: [
       { label: 'Sistemas SaaS', href: '#servicios' },
-      { label: 'Apps móviles Android', href: '#servicios' },
-      { label: 'ChatBots para tu negocio', href: '#servicios' },
+      { label: 'Aplicaciones móviles', href: '#servicios' },
+      { label: 'Chatbots e IA', href: '#servicios' },
     ],
+  },
+  {
+    title: 'Productos',
+    links: [{ label: 'Catálogo de productos', href: '#productos' }],
   },
   {
     title: 'Estudio',
     links: [
-      { label: 'Productos propios', href: '#productos' },
-      { label: 'Tecnologías', href: '#tecnologias' },
-      { label: 'Nosotros', href: '#nosotros' },
+      { label: 'Nosotros', href: '#estudio' },
       { label: 'Equipo', href: '#equipo' },
+      { label: 'Tecnologías', href: '#tecnologias' },
       { label: 'Proceso', href: '#proceso' },
     ],
   },
   {
-    title: 'Contacto',
-    links: [
-      { label: 'Modelos de trabajo', href: '#modelos' },
-      { label: 'Preguntas frecuentes', href: '#faq' },
-      { label: 'Escríbenos', href: '#contacto' },
-    ],
+    title: 'Games',
+    links: [{ label: 'Conocer la división', href: '#games' }],
   },
 ];
 

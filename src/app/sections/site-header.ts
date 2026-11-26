@@ -11,7 +11,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { ThemeService } from '../core/theme.service';
-import { NAV_LINKS } from '../data/kallix.data';
+import { NAV_LINKS, NAV_MORE } from '../data/kallix.data';
 import { Icon } from '../ui/icon';
 import { Logo } from '../ui/logo';
 
@@ -21,12 +21,19 @@ import { Logo } from '../ui/logo';
   imports: [Logo, Icon],
   templateUrl: './site-header.html',
   styleUrl: './site-header.css',
+  host: { '(document:click)': 'onDocumentClick($event)' },
 })
 export class SiteHeader implements OnDestroy {
   protected readonly links = NAV_LINKS;
+  protected readonly more = NAV_MORE;
   protected readonly scrolled = signal(false);
   protected readonly menuOpen = signal(false);
   protected readonly active = signal<string>('');
+  protected readonly moreOpen = signal(false);
+  /** «Más» se marca cuando la sección visible es una de las suyas. */
+  protected readonly moreActive = computed(() =>
+    this.more.some((link) => link.href === this.active()),
+  );
 
   private readonly themeService = inject(ThemeService);
 
@@ -94,7 +101,30 @@ export class SiteHeader implements OnDestroy {
     this.menuOpen.set(false);
   }
 
+  protected toggleMore(): void {
+    this.moreOpen.update((open) => !open);
+  }
+
+  protected closeMore(): void {
+    this.moreOpen.set(false);
+  }
+
+  /** Clic fuera del desplegable, o el foco sale de él con el tabulador: se cierra. */
+  protected onDocumentClick(event: MouseEvent): void {
+    if (this.moreOpen() && !(event.target as Element).closest?.('.more')) this.closeMore();
+  }
+
+  protected onMoreFocusout(event: FocusEvent): void {
+    const next = event.relatedTarget as Node | null;
+    if (!next || !(event.currentTarget as HTMLElement).contains(next)) this.closeMore();
+  }
+
   protected onKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Escape' && this.moreOpen()) {
+      this.closeMore();
+      this.host.querySelector<HTMLButtonElement>('.more-btn')?.focus();
+      return;
+    }
     if (event.key === 'Escape' && this.menuOpen()) {
       this.closeMenu();
       this.host.querySelector<HTMLButtonElement>('.menu-btn')?.focus();
@@ -120,7 +150,7 @@ export class SiteHeader implements OnDestroy {
   };
 
   private watchSections(): void {
-    this.sections = this.links
+    this.sections = [...this.links, ...this.more]
       .map((link) => ({ href: link.href, element: document.querySelector<HTMLElement>(link.href) }))
       .filter((section): section is { href: string; element: HTMLElement } => !!section.element);
   }

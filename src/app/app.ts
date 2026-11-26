@@ -1,8 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { About } from './sections/about';
+import { Areas } from './sections/areas';
 import { Contact } from './sections/contact';
 import { Cta } from './sections/cta';
 import { Faq } from './sections/faq';
+import { Games } from './sections/games';
 import { Hero } from './sections/hero';
 import { Pricing } from './sections/pricing';
 import { Process } from './sections/process';
@@ -18,10 +20,12 @@ import { Tech } from './sections/tech';
   imports: [
     SiteHeader,
     Hero,
-    About,
+    Areas,
     Services,
     Products,
+    Games,
     Tech,
+    About,
     Pricing,
     Cta,
     Process,

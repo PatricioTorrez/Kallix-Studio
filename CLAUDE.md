@@ -63,8 +63,8 @@ Esta es la decisión que más fácil se rompe al continuar.
 
   `[data-theme='light'] .on-dark` (0,2,0) gana a `[data-theme='light']` (0,1,0) y las
   custom properties se heredan: cualquier subárbol con `.on-dark` conserva el lienzo
-  oscuro aunque la página esté en claro. Hoy la llevan `kx-hero`, `kx-cta` y
-  `kx-site-footer` en `app.html`.
+  oscuro aunque la página esté en claro. Desde el 2026-11-26 solo la lleva `kx-games`
+  (desde su `host`): hero, CTA y footer siguen el tema.
 - `.on-dark` además **pinta** `background` y `color`. Un `:host { background }` de
   componente le gana (los estilos de componente llegan después que los globales), así que
   tiene que componer sobre `var(--bg)`.

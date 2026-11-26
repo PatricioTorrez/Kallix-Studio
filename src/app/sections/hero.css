@@ -35,7 +35,7 @@
   );
   mask-image: repeating-linear-gradient(180deg, #000 0 10px, transparent 10px 15px);
   -webkit-mask-image: repeating-linear-gradient(180deg, #000 0 10px, transparent 10px 15px);
-  opacity: 0.75;
+  opacity: var(--sun-opacity);
 }
 
 .aurora--teal {
@@ -61,8 +61,8 @@
   inset: 0;
   background: repeating-linear-gradient(
     180deg,
-    rgba(4, 22, 28, 0) 0 3px,
-    rgba(4, 22, 28, 0.35) 3px 4px
+    rgba(var(--substrate), 0) 0 3px,
+    rgba(var(--substrate), 0.35) 3px 4px
   );
   opacity: 0.35;
 }
@@ -201,7 +201,7 @@
   width: 6px;
   height: 6px;
   flex: none;
-  background: var(--accent);
+  background: var(--accent-fill);
 }
 
 .tag:nth-child(2)::before {
@@ -284,7 +284,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--accent-fill);
 }
 
 .mock[data-kind='chatbot'] .mock-dot {
@@ -329,7 +329,7 @@
 .sprite {
   position: absolute;
   width: 42px;
-  filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.55));
+  filter: drop-shadow(0 10px 22px var(--sprite-shadow));
 }
 
 .sprite-float {

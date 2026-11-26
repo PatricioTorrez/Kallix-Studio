@@ -55,7 +55,7 @@ import { PixelSprite } from '../ui/pixel-sprite';
       text-align: center;
       background:
         radial-gradient(70% 120% at 50% 0%, rgba(231, 168, 78, 0.16), transparent 62%),
-        linear-gradient(180deg, rgba(207, 240, 234, 0.07), rgba(207, 240, 234, 0.02));
+        linear-gradient(180deg, rgba(var(--veil), 0.07), rgba(var(--veil), 0.02));
     }
 
     .glow {
@@ -86,7 +86,7 @@ import { PixelSprite } from '../ui/pixel-sprite';
       position: absolute;
       width: 38px;
       opacity: 0.9;
-      filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.5));
+      filter: drop-shadow(0 8px 18px var(--sprite-shadow));
     }
 
     .sprite--a {

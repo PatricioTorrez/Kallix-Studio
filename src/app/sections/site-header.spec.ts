@@ -44,3 +44,40 @@ describe('SiteHeader — control de tema', () => {
     ).toBeTruthy();
   });
 });
+
+describe('SiteHeader — desplegable «Más»', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({ imports: [SiteHeader] }).compileComponents();
+  });
+
+  it('abre, se cierra con Escape y devuelve el foco al botón', async () => {
+    const fixture = TestBed.createComponent(SiteHeader);
+    await fixture.whenStable();
+    const root = fixture.nativeElement as HTMLElement;
+    const button = root.querySelector<HTMLButtonElement>('.more-btn')!;
+
+    button.click();
+    await fixture.whenStable();
+    expect(button.getAttribute('aria-expanded')).toBe('true');
+    expect(root.querySelector('.more-menu.is-open')).toBeTruthy();
+
+    button.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await fixture.whenStable();
+    expect(button.getAttribute('aria-expanded')).toBe('false');
+    expect(document.activeElement).toBe(button);
+  });
+
+  it('se cierra con un clic fuera', async () => {
+    const fixture = TestBed.createComponent(SiteHeader);
+    await fixture.whenStable();
+    const button = (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>(
+      '.more-btn',
+    )!;
+
+    button.click();
+    await fixture.whenStable();
+    document.body.click();
+    await fixture.whenStable();
+    expect(button.getAttribute('aria-expanded')).toBe('false');
+  });
+});

@@ -1,4 +1,4 @@
-<section class="section" id="nosotros">
+<section class="section" id="estudio">
   <div class="container">
     <kx-section-header
       eyebrow="El estudio"
@@ -74,8 +74,8 @@
               <blockquote>{{ member.quote }}</blockquote>
               <p class="bio">{{ member.bio }}</p>
               <ul class="skills">
-                @for (skill of member.skills; track skill) {
-                  <li>{{ skill }}</li>
+                @for (skill of member.skills; track skill; let i = $index) {
+                  <li [style.--i]="i">{{ skill }}</li>
                 }
               </ul>
             </div>

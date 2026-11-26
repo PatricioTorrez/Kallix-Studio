@@ -88,6 +88,14 @@
   --accent: var(--amber-500);
   --accent-soft: rgba(231, 168, 78, 0.14);
   --accent-ink: #14252c;
+  /* Relleno de botones, píldoras y marcas: el ámbar de marca en ambos temas,
+     siempre con `--accent-ink` encima (7.6:1). `--accent` es para texto. */
+  --accent-fill: var(--amber-500);
+  /* Fondo de `.card` y pantalla de las maquetas de `project-preview.ts`. */
+  --card-bg: linear-gradient(180deg, var(--surface-2), var(--surface));
+  --preview-pane: #06212a;
+  --sprite-shadow: rgba(0, 0, 0, 0.55);
+  --sun-opacity: 0.75;
   /* Contraparte fría de `--accent`, para antetítulos, iconos y metadatos. La
      paleta cruda no cambia con el tema: usarla como color de texto deja el
      elemento ilegible en claro. */
@@ -130,7 +138,9 @@
    ========================================================================= */
 
 [data-theme='light'] {
-  --veil: 4, 22, 28;
+  /* Tinte de superficies y bordes: tinta turquesa, no casi negro. Con 4,22,28
+     las superficies salían gris barro sobre crema. */
+  --veil: 17, 74, 85;
   --substrate: 244, 241, 236;
   --avatar-ground: linear-gradient(180deg, rgba(244, 241, 236, 0.7), rgba(244, 241, 236, 0.5));
   --light-mix: 100%;
@@ -149,7 +159,11 @@
      sirve también como texto de tamaño normal, no solo grande. */
   --accent: #8a560f;
   --accent-soft: rgba(138, 86, 15, 0.12);
-  --accent-ink: #fffdf7;
+  /* Tarjetas blancas sobre crema, no gris superpuesto. */
+  --card-bg: var(--bg-raised);
+  --preview-pane: #e9f1ef;
+  --sprite-shadow: rgba(17, 74, 85, 0.22);
+  --sun-opacity: 0.45;
   --accent-cool: #1f6b66;
   --figure: var(--text);
   /* El teal-300 es prácticamente invisible sobre crema. */
@@ -174,7 +188,7 @@
   --shadow-sm: 0 1px 2px rgba(var(--veil), 0.08);
   --shadow-md: 0 12px 32px -18px rgba(var(--veil), 0.35);
   --shadow-lg: 0 30px 70px -40px rgba(var(--veil), 0.45);
-  --glow-accent: 0 14px 40px -18px rgba(138, 86, 15, 0.4);
+  --glow-accent: 0 14px 40px -18px rgba(231, 168, 78, 0.6);
   --glow-teal: 0 14px 40px -18px rgba(43, 125, 119, 0.32);
 }
 
@@ -274,7 +288,7 @@ p {
 ::selection {
   /* `--accent`, no `--amber-500`: en claro el ámbar de marca no contrasta con
      la tinta clara que le corresponde. */
-  background: var(--accent);
+  background: var(--accent-fill);
   color: var(--accent-ink);
 }
 
@@ -318,7 +332,7 @@ p {
   z-index: 200;
   padding: 0.7rem 1.1rem;
   border-radius: var(--r-pill);
-  background: var(--accent);
+  background: var(--accent-fill);
   color: var(--accent-ink);
   font-family: var(--font-display);
   font-weight: 600;
@@ -397,7 +411,7 @@ p {
   content: '';
   width: 6px;
   height: 6px;
-  background: var(--accent);
+  background: var(--accent-fill);
   box-shadow: 0 0 12px 2px rgba(231, 168, 78, 0.55);
 }
 
@@ -429,12 +443,12 @@ p {
   position: relative;
   border: 1px solid var(--stroke);
   border-radius: var(--r-lg);
-  background: linear-gradient(180deg, var(--surface-2), var(--surface));
+  background: var(--card-bg);
   overflow: hidden;
 }
 
 .card--glass {
-  background: linear-gradient(180deg, rgba(207, 240, 234, 0.07), rgba(207, 240, 234, 0.02));
+  background: linear-gradient(180deg, rgba(var(--veil), 0.07), rgba(var(--veil), 0.02));
   backdrop-filter: blur(18px) saturate(150%);
   -webkit-backdrop-filter: blur(18px) saturate(150%);
 }
@@ -507,7 +521,7 @@ p {
 }
 
 .btn--primary {
-  background: var(--accent);
+  background: var(--accent-fill);
   color: var(--accent-ink);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.4),
@@ -710,31 +724,55 @@ p {
    Opt-in: `data-slide-stagger` escalona a sus hijos directos; `data-slide-pop`
    hace aparecer un elemento (retrato, icono). La animación se repite cada vez
    que una ficha gana `.is-active`. `backwards`, nunca `both`: no fija el estado
-   final ni bloquea el hover. */
+   final ni bloquea el hover.
+
+   El texto llega desde el lado hacia el que se avanzó (`data-dir` lo pone
+   `kx-carousel`), así acompaña al desplazamiento en vez de subir a contrapelo.
+   Las listas no entran en bloque: cada elemento llega por su cuenta, tras el
+   párrafo. `.is-active` cambia a mitad del deslizamiento, así que el texto
+   entra justo cuando la ficha se está asentando. */
+.kx-slide {
+  --slide-dx: 18px;
+}
+
+[data-dir='prev'] .kx-slide {
+  --slide-dx: -18px;
+}
+
 .kx-slide.is-active [data-slide-stagger] > * {
-  animation: slide-rise 460ms var(--ease-out) backwards;
+  animation: slide-in 440ms var(--ease-out) backwards;
+  animation-delay: calc(var(--slide-step, 0) * 55ms);
 }
 
 .kx-slide.is-active [data-slide-stagger] > :nth-child(2) {
-  animation-delay: 60ms;
+  --slide-step: 1;
 }
 
 .kx-slide.is-active [data-slide-stagger] > :nth-child(3) {
-  animation-delay: 120ms;
+  --slide-step: 2;
 }
 
 .kx-slide.is-active [data-slide-stagger] > :nth-child(n + 4) {
-  animation-delay: 180ms;
+  --slide-step: 3;
+}
+
+.kx-slide.is-active [data-slide-stagger] > ul {
+  animation: none;
+}
+
+.kx-slide.is-active [data-slide-stagger] > ul > li {
+  animation: slide-in 380ms var(--ease-out) backwards;
+  animation-delay: calc(165ms + var(--i, 0) * 35ms);
 }
 
 .kx-slide.is-active [data-slide-pop] {
   animation: slide-pop 520ms var(--ease-out) backwards;
 }
 
-@keyframes slide-rise {
+@keyframes slide-in {
   from {
     opacity: 0;
-    transform: translate3d(0, 10px, 0);
+    transform: translate3d(var(--slide-dx), 4px, 0);
   }
 }
 
@@ -770,6 +808,13 @@ p {
   }
 
   .aurora {
+    animation: none !important;
+  }
+
+  /* El carrusel ya hace un fundido cruzado; sin esto, los retrasos dejarían
+     el texto en blanco un instante. */
+  .kx-slide [data-slide-stagger] *,
+  .kx-slide [data-slide-pop] {
     animation: none !important;
   }
 }

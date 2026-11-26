@@ -163,7 +163,7 @@ export type PreviewName =
     }
 
     .pane {
-      fill: #06212a;
+      fill: var(--preview-pane);
     }
 
     .panel,
@@ -171,17 +171,17 @@ export type PreviewName =
     .key,
     .row,
     .bubble {
-      fill: rgba(207, 240, 234, 0.06);
-      stroke: rgba(207, 240, 234, 0.12);
+      fill: rgba(var(--veil), 0.06);
+      stroke: rgba(var(--veil), 0.12);
       stroke-width: 1;
     }
 
     .dim {
-      fill: rgba(207, 240, 234, 0.28);
+      fill: rgba(var(--veil), 0.28);
     }
 
     .dot {
-      fill: rgba(207, 240, 234, 0.55);
+      fill: rgba(var(--veil), 0.55);
     }
 
     .accent {
@@ -225,12 +225,12 @@ export type PreviewName =
 
     .grid-line {
       fill: none;
-      stroke: rgba(207, 240, 234, 0.1);
+      stroke: rgba(var(--veil), 0.1);
       stroke-width: 1;
     }
 
     .cell {
-      fill: rgba(207, 240, 234, 0.07);
+      fill: rgba(var(--veil), 0.07);
     }
 
     .cell.is-busy {
@@ -242,7 +242,7 @@ export type PreviewName =
     }
 
     .dot-live {
-      fill: #f6e2b3;
+      fill: var(--figure);
     }
   `,
 })

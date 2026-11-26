@@ -26,7 +26,10 @@ describe('App', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
     for (const id of [
-      'nosotros',
+      'inicio',
+      'estudio',
+      'productos',
+      'games',
       'servicios',
       'tecnologias',
       'modelos',
@@ -44,7 +47,7 @@ describe('App', () => {
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
 
-    for (const selector of ['kx-hero', 'kx-cta', 'kx-site-footer']) {
+    for (const selector of ['kx-games']) {
       expect(compiled.querySelector(`${selector}.on-dark`)).toBeTruthy();
     }
   });
@@ -54,7 +57,15 @@ describe('App', () => {
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
 
-    for (const selector of ['kx-about', 'kx-services', 'kx-pricing', 'kx-contact']) {
+    for (const selector of [
+      'kx-hero',
+      'kx-about',
+      'kx-services',
+      'kx-pricing',
+      'kx-cta',
+      'kx-contact',
+      'kx-site-footer',
+    ]) {
       expect(compiled.querySelector(`${selector}.on-dark`)).toBeNull();
     }
   });

@@ -2,7 +2,7 @@
   <div class="progress" #progress aria-hidden="true"></div>
 
   <div class="container bar">
-    <a class="brand" href="#top" aria-label="KALLIX, ir al inicio">
+    <a class="brand" href="#inicio" aria-label="KALLIX, ir al inicio">
       <kx-logo variant="navbar" />
     </a>
 
@@ -19,6 +19,32 @@
             </a>
           </li>
         }
+        <li class="more" (focusout)="onMoreFocusout($event)">
+          <button
+            type="button"
+            class="more-btn"
+            [class.is-active]="moreActive()"
+            [attr.aria-expanded]="moreOpen()"
+            aria-controls="menu-mas"
+            (click)="toggleMore()"
+          >
+            Más
+            <kx-icon name="chevronDown" [size]="14" />
+          </button>
+          <ul class="more-menu" id="menu-mas" [class.is-open]="moreOpen()">
+            @for (link of more; track link.href) {
+              <li>
+                <a
+                  [href]="link.href"
+                  [attr.aria-current]="active() === link.href ? 'true' : null"
+                  (click)="closeMore()"
+                >
+                  {{ link.label }}
+                </a>
+              </li>
+            }
+          </ul>
+        </li>
       </ul>
     </nav>
 
@@ -71,6 +97,14 @@
             {{ link.label }}
             <kx-icon name="arrowUpRight" [size]="18" />
           </a>
+        </li>
+      }
+    </ul>
+
+    <ul class="drawer-more" aria-label="Más secciones">
+      @for (link of more; track link.href) {
+        <li>
+          <a [href]="link.href" (click)="closeMenu()">{{ link.label }}</a>
         </li>
       }
     </ul>

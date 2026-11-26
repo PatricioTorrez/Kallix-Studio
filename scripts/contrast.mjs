@@ -28,7 +28,8 @@ const SURFACES = {
   'bg-raised': '#fbfaf8',
   bg: '#f4f1ec',
   tintada: '#efe7dc',
-  'surface-3': '#ece9e5',
+  // `--surface` (tinta turquesa 17,74,85 al 3.5 %) compuesta sobre `--bg`; antes #ece9e5.
+  'surface-3': '#ecebe7',
 };
 
 /** [rol, color, mínimo exigido] — texto normal 4.5, elementos grandes 3.0 */
@@ -56,7 +57,8 @@ const ON_SURFACE = [
 ];
 
 /** [nombre, primer plano, fondo, mínimo] — pares que no van sobre superficie */
-const PAIRS = [['accent-ink / accent', '#fffdf7', '#8a560f', 4.5]];
+// Botones, píldoras y pestañas activas: `--accent-ink` sobre `--accent-fill`.
+const PAIRS = [['accent-ink / accent-fill', '#14252c', '#e7a84e', 4.5]];
 
 let failed = false;
 

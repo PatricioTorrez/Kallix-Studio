@@ -57,8 +57,8 @@
             <p class="desc">{{ product.description }}</p>
 
             <ul class="features">
-              @for (feature of product.features; track feature) {
-                <li>
+              @for (feature of product.features; track feature; let i = $index) {
+                <li [style.--i]="i">
                   <kx-icon name="check" [size]="14" />
                   {{ feature }}
                 </li>

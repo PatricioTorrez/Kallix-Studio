@@ -48,7 +48,7 @@
   padding: 0.85rem 1rem;
   border: 1px solid var(--stroke);
   border-radius: var(--r-md);
-  background: var(--surface);
+  background: var(--card-bg);
   transition:
     transform var(--d-base) var(--ease-out),
     border-color var(--d-base) ease,
@@ -233,7 +233,7 @@ legend {
 }
 
 .chip input:checked + span {
-  background: var(--accent);
+  background: var(--accent-fill);
   border-color: transparent;
   color: var(--accent-ink);
   font-weight: 500;

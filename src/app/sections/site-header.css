@@ -65,7 +65,8 @@
   margin: 0;
 }
 
-.nav a {
+.nav a,
+.more-btn {
   position: relative;
   display: block;
   padding: 0.45rem 0.85rem;
@@ -78,19 +79,21 @@
     background-color var(--d-base) ease;
 }
 
-.nav a.is-active {
+.nav a.is-active,
+.more-btn.is-active {
   color: var(--text);
 }
 
 /* Punto que marca la sección visible */
-.nav a.is-active::after {
+.nav a.is-active::after,
+.more-btn.is-active::after {
   content: '';
   position: absolute;
   left: 50%;
   bottom: 1px;
   width: 4px;
   height: 4px;
-  background: var(--accent);
+  background: var(--accent-fill);
   transform: translateX(-50%);
 }
 
@@ -121,6 +124,71 @@
 
 .menu-btn:active {
   transform: scale(0.94);
+}
+
+/* --- Desplegable «Más» ---------------------------------------------------- */
+
+.more {
+  position: relative;
+}
+
+.more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.more-btn kx-icon {
+  transition: transform var(--d-base) var(--ease-out);
+}
+
+.more-btn[aria-expanded='true'] kx-icon {
+  transform: rotate(180deg);
+}
+
+/* `.nav ul` es una fila; el menú es una columna. */
+.nav .more-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+  min-width: 13rem;
+  padding: 0.4rem;
+  border: 1px solid var(--stroke);
+  border-radius: var(--r-md);
+  background: rgba(var(--substrate), 0.96);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  box-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.45);
+  transform-origin: top right;
+  transform: translate3d(0, -4px, 0) scale(0.97);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    transform var(--d-base) var(--ease-out),
+    opacity var(--d-base) var(--ease-out),
+    visibility 0s linear var(--d-base);
+}
+
+.nav .more-menu.is-open {
+  transform: none;
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.more-menu a {
+  border-radius: var(--r-sm);
+}
+
+.more-menu a[aria-current='true'] {
+  color: var(--text);
 }
 
 /* --- Control de tema ------------------------------------------------------ */
@@ -198,6 +266,11 @@
   .theme-btn kx-icon,
   .theme-row kx-icon {
     animation: none;
+  }
+
+  /* El desplegable solo aparece, sin desplazarse. */
+  .nav .more-menu {
+    transform: none;
   }
 }
 
@@ -283,6 +356,22 @@
   letter-spacing: -0.02em;
 }
 
+.drawer .drawer-more {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 1rem;
+}
+
+.drawer .drawer-more a {
+  min-height: 44px;
+  padding: 0.75rem 0.25rem;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--text-muted);
+}
+
 .drawer a kx-icon {
   margin-left: auto;
   color: var(--accent-cool);
@@ -295,7 +384,8 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .nav a:hover {
+  .nav a:hover,
+  .more-btn:hover {
     color: var(--text);
     background: var(--surface-2);
   }
